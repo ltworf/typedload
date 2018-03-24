@@ -17,5 +17,42 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
+from typing import *
+
+
 class Loader:
-    pass
+
+    def __init__(self):
+        # Types that do not need conversion
+        self.basictypes = {int, bool, float, str}
+
+        # If true, it attempts to do casting of basic types
+        # otherwise an exception is raised
+        self.basiccast = True
+
+    def _basicload(self, value: Any, type_: type) -> Any:
+        """
+        This converts a value into a basic type.
+
+        In theory it does nothing, but it performs type checking
+        and raises if conditions fail.
+
+        It also attempts casting, if enabled.
+        """
+
+        if type_ not in self.basictypes:
+            raise TypeError('Type %s is not a basic type' % type_)
+
+        if type(value) != type_:
+            if self.basiccast:
+                return type_(value)
+            else:
+                raise TypeError('%s is not of type %s' % (value, type_))
+        return value
+
+    def load(self, value: Any, type_: type):
+
+        if type_ in self.basictypes:
+            return self._basicload(value, type_)
+        else:
+            raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
