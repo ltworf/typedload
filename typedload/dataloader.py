@@ -61,14 +61,23 @@ class Loader:
                 raise TypeError('%s is not of type %s' % (value, type_))
         return value
 
-    def _listload(self, value: Any, type_: type) -> List:
+    def _listload(self, value, type_: type) -> List:
         """
         This loads into something like List[int]
         """
         t = type_.__args__[0]
         return [self.load(v, t) for v in value]
 
-    def _tupleload(self, value, type_) -> Tuple:
+    def _dictload(self, value, type_: type) -> Dict:
+        """
+        This loads into something like Dict[str,str]
+
+        Recursively loads both keys and values.
+        """
+        key_type, value_type = type_.__args__
+        return {self.load(k, key_type): self.load(v, value_type) for k, v in value.items()}
+
+    def _tupleload(self, value, type_: type) -> Tuple:
         """
         This loads into something like Tuple[int,str]
         """
@@ -89,5 +98,7 @@ class Loader:
             return self._tupleload(value, type_)
         elif issubclass(type_, list) and getattr(type_, '__origin__', None) == List:
             return self._listload(value, type_)
+        elif issubclass(type_, dict) and getattr(type_, '__origin__', None) == Dict:
+            return self._dictload(value, type_)
         else:
             raise TypeError('Cannot deal with value %s of type %s' % (value, type_))

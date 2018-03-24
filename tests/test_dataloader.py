@@ -18,10 +18,35 @@
 
 
 from enum import Enum
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 import unittest
 
 from typedload import dataloader
+
+
+class TestDict(unittest.TestCase):
+
+    def test_load_dict(self):
+        loader = dataloader.Loader()
+        class State(Enum):
+            OK = 'ok'
+            FAILED = 'failed'
+
+        v = {'1': 'ok', '15': 'failed'}
+        r = {1: State.OK, 15: State.FAILED}
+        assert loader.load(v, Dict[int, State]) == r
+
+    def test_load_nondict(self):
+
+        class SimDict():
+
+            def items(self):
+                return zip(range(12), range(12))
+
+        loader = dataloader.Loader()
+        assert loader.load(SimDict(), Dict[str, int]) == {str(k): v for k,v in zip(range(12), range(12))}
+        with self.assertRaises(AttributeError):
+            loader.load(33, Dict[int, str])
 
 
 class TestTuple(unittest.TestCase):
