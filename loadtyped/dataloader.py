@@ -31,6 +31,11 @@ class Loader:
         # otherwise an exception is raised
         self.basiccast = True
 
+        # Raise errors if the value has more data than the
+        # type expects.
+        # By default the extra data is ignored.
+        self.failonextra = False
+
     def _basicload(self, value: Any, type_: type) -> Any:
         """
         This converts a value into a basic type.
@@ -51,11 +56,24 @@ class Loader:
                 raise TypeError('%s is not of type %s' % (value, type_))
         return value
 
-    def load(self, value: Any, type_: type):
+    def _tupleload(self, value, type_):
+        """
+        This loads into something like Tuple[int,str]
+        """
+        if self.failonextra and len(value) > len(type_.__args__):
+            raise ValueError('Value %s is too long for type %s' % (value, type_))
+        elif len(value) < len(type_.__args__):
+            raise ValueError('Value %s is too short for type %s' % (value, type_))
+
+        return tuple(self.load(v, t) for v, t in zip(value, type_.__args__))
+
+    def load(self, value: Any, type_: type) -> Any:
 
         if type_ in self.basictypes:
             return self._basicload(value, type_)
         elif issubclass(type_, Enum):
             return type_(value)
+        elif issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple:
+            return self._tupleload(value, type_)
         else:
             raise TypeError('Cannot deal with value %s of type %s' % (value, type_))

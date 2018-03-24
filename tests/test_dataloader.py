@@ -18,9 +18,28 @@
 
 
 from enum import Enum
+from typing import Tuple
 import unittest
 
 from loadtyped import dataloader
+
+
+class TestTuple(unittest.TestCase):
+
+    def test_load_nested_tuple(self):
+        loader = dataloader.Loader()
+        assert loader.load([1, 2, 3, [1, 2]], Tuple[int,int,int,Tuple[str,str]]) == (1, 2, 3, ('1', '2'))
+
+    def test_load_tuple(self):
+        loader = dataloader.Loader()
+
+        assert loader.load([1, 2, 3], Tuple[int,int,int]) == (1, 2, 3)
+        assert loader.load(['2', False, False], Tuple[int, bool]) == (2, False)
+
+        with self.assertRaises(ValueError):
+            loader.load(['2', False], Tuple[int, bool, bool])
+            loader.failonextra = True
+            assert loader.load(['2', False, False], Tuple[int, bool]) == (2, False)
 
 
 class TestEnum(unittest.TestCase):
@@ -36,6 +55,7 @@ class TestEnum(unittest.TestCase):
         assert loader.load('2', TestEnum) == TestEnum.LABEL2
         with self.assertRaises(ValueError):
             loader.load(2, TestEnum)
+        assert loader.load(['2', 1], Tuple[TestEnum, TestEnum]) == (TestEnum.LABEL2, TestEnum.LABEL1)
 
 
 class TestBasicTypes(unittest.TestCase):
