@@ -1,7 +1,7 @@
-# loadtyped
+# typedload
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
 #
-# loadtyped is free software: you can redistribute it and/or modify
+# typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -21,7 +21,7 @@ from enum import Enum
 from typing import Tuple
 import unittest
 
-from loadtyped import dataloader
+from typedload import dataloader
 
 
 class TestTuple(unittest.TestCase):

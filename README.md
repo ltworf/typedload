@@ -1,4 +1,4 @@
-loadtyped
+typedload
 =========
 
 Dynamic data structures are nice, but they quickly become difficult to work
