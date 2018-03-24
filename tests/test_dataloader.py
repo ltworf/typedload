@@ -18,13 +18,27 @@
 
 
 from enum import Enum
-from typing import Tuple
+from typing import List, Tuple
 import unittest
 
 from typedload import dataloader
 
 
 class TestTuple(unittest.TestCase):
+
+    def test_load_list_of_tuples(self):
+        t = List[Tuple[str, int, Tuple[int, int]]]
+        v = [
+            ['a', 12, [1, 1]],
+            ['b', 15, [3, 2]],
+        ]
+        r = [
+            ('a', 12, (1, 1)),
+            ('b', 15, (3, 2)),
+        ]
+        loader = dataloader.Loader()
+        assert loader.load(v, t) == r
+
 
     def test_load_nested_tuple(self):
         loader = dataloader.Loader()
@@ -71,6 +85,10 @@ class TestBasicTypes(unittest.TestCase):
         with self.assertRaises(ValueError):
             loader.load('ciao', float)
 
+    def test_list_basic(self):
+        loader = dataloader.Loader()
+        assert loader.load(range(12), List[int]) == list(range(12))
+        assert loader.load(range(12), List[str]) == [str(i) for i in range(12)]
 
     def test_extra_basic(self):
         # Add more basic types

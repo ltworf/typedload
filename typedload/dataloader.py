@@ -61,7 +61,14 @@ class Loader:
                 raise TypeError('%s is not of type %s' % (value, type_))
         return value
 
-    def _tupleload(self, value, type_):
+    def _listload(self, value: Any, type_: type) -> List:
+        """
+        This loads into something like List[int]
+        """
+        t = type_.__args__[0]
+        return [self.load(v, t) for v in value]
+
+    def _tupleload(self, value, type_) -> Tuple:
         """
         This loads into something like Tuple[int,str]
         """
@@ -80,5 +87,7 @@ class Loader:
             return type_(value)
         elif issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple:
             return self._tupleload(value, type_)
+        elif issubclass(type_, list) and getattr(type_, '__origin__', None) == List:
+            return self._listload(value, type_)
         else:
             raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
