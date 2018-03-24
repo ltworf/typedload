@@ -17,6 +17,7 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
+from enum import Enum
 from typing import *
 
 
@@ -54,5 +55,7 @@ class Loader:
 
         if type_ in self.basictypes:
             return self._basicload(value, type_)
+        elif issubclass(type_, Enum):
+            return type_(value)
         else:
             raise TypeError('Cannot deal with value %s of type %s' % (value, type_))

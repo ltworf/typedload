@@ -17,9 +17,26 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
+from enum import Enum
 import unittest
 
 from loadtyped import dataloader
+
+
+class TestEnum(unittest.TestCase):
+
+    def test_load_enum(self):
+        loader = dataloader.Loader()
+
+        class TestEnum(Enum):
+            LABEL1 = 1
+            LABEL2 = '2'
+
+        assert loader.load(1, TestEnum) == TestEnum.LABEL1
+        assert loader.load('2', TestEnum) == TestEnum.LABEL2
+        with self.assertRaises(ValueError):
+            loader.load(2, TestEnum)
+
 
 class TestBasicTypes(unittest.TestCase):
 
