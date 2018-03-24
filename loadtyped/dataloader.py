@@ -21,6 +21,11 @@ from enum import Enum
 from typing import *
 
 
+__all__ = [
+    'Loader',
+]
+
+
 class Loader:
 
     def __init__(self):
