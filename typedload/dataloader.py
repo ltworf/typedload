@@ -77,6 +77,13 @@ class Loader:
         key_type, value_type = type_.__args__
         return {self.load(k, key_type): self.load(v, value_type) for k, v in value.items()}
 
+    def _setload(self, value, type_: type) -> Set:
+        """
+        This loads into something like Set[int]
+        """
+        t = type_.__args__[0]
+        return {self.load(i, t) for i in value}
+
     def _tupleload(self, value, type_: type) -> Tuple:
         """
         This loads into something like Tuple[int,str]
@@ -100,5 +107,7 @@ class Loader:
             return self._listload(value, type_)
         elif issubclass(type_, dict) and getattr(type_, '__origin__', None) == Dict:
             return self._dictload(value, type_)
+        elif issubclass(type_, set) and getattr(type_, '__origin__', None) == Set:
+            return self._setload(value, type_)
         else:
             raise TypeError('Cannot deal with value %s of type %s' % (value, type_))

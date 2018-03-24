@@ -18,10 +18,19 @@
 
 
 from enum import Enum
-from typing import Dict, List, Tuple
+from typing import Dict, List, Set, Tuple
 import unittest
 
 from typedload import dataloader
+
+
+class TestSet(unittest.TestCase):
+
+    def test_load_set(self):
+        loader = dataloader.Loader()
+        r = {(1, 1), (2, 2), (0, 0)}
+        assert loader.load(zip(range(3), range(3)), Set[Tuple[int,int]]) == r
+        assert loader.load([1, '2', 2], Set[int]) == {1, 2}
 
 
 class TestDict(unittest.TestCase):
