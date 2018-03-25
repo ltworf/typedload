@@ -175,6 +175,12 @@ class TestBasicTypes(unittest.TestCase):
         loader.basictypes.add(bytes)
         assert loader.load(b'ciao', bytes) == b'ciao'
 
+    def test_none_basic(self):
+        loader = dataloader.Loader()
+        loader.load(None, type(None))
+        with self.assertRaises(ValueError):
+            loader.load(12, type(None))
+
     def test_basic_nocasting(self):
         # Casting enabled, by default
         loader = dataloader.Loader()

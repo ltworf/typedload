@@ -26,6 +26,9 @@ __all__ = [
 ]
 
 
+NONETYPE = type(None)
+
+
 class Loader:
 
     def __init__(self):
@@ -120,7 +123,10 @@ class Loader:
         return type_(**params)
 
     def load(self, value: Any, type_: type) -> Any:
-
+        if type_ == NONETYPE:
+            if value is None:
+                return None
+            raise ValueError('%s is not None' % value)
         if type_ in self.basictypes:
             return self._basicload(value, type_)
         elif issubclass(type_, Enum):
