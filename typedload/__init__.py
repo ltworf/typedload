@@ -16,6 +16,23 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
+
+from typing import Any
+
+
 __all__ = [
     'dataloader',
+    'load',
 ]
+
+
+def load(value: Any, type_: type) -> Any:
+    """
+    Quick function call to load data into a type.
+
+    It is useful to avoid creating the Loader object,
+    in case only the default parameters are used.
+    """
+    from . import dataloader
+    loader = dataloader.Loader()
+    return loader.load(value, type_)
