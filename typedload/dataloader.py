@@ -95,6 +95,30 @@ class Loader:
 
         return tuple(self.load(v, t) for v, t in zip(value, type_.__args__))
 
+    def _namedtupleload(self, value: Dict[str, Any], type_: type) -> Tuple:
+        """
+        This loads a Dict[str, Any] into a NamedTuple.
+        """
+        fields = set(type_._fields)
+        optaional_fields = set(type_._field_defaults.keys())
+        necessary_fields = fields.difference(optaional_fields)
+        vfields = set(value.keys())
+
+        if necessary_fields.intersection(vfields) != necessary_fields:
+            raise ValueError('Data does not contain fields: %s' % necessary_fields.difference(vfields))
+
+        if self.failonextra and len(vfields.difference(fields)):
+            raise ValueError('Dictionary %s has unrecognized fields and cannot be loaded into %s' % (value, type_))
+
+        type_hints = get_type_hints(type_)
+
+        params = {}
+        for k, v in value.items():
+            if k not in fields:
+                continue
+            params[k] = self.load(v, type_hints[k])
+        return type_(**params)
+
     def load(self, value: Any, type_: type) -> Any:
 
         if type_ in self.basictypes:
@@ -109,5 +133,7 @@ class Loader:
             return self._dictload(value, type_)
         elif issubclass(type_, set) and getattr(type_, '__origin__', None) == Set:
             return self._setload(value, type_)
+        elif issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_defaults', '_field_types', '_fields'}):
+            return self._namedtupleload(value, type_)
         else:
             raise TypeError('Cannot deal with value %s of type %s' % (value, type_))

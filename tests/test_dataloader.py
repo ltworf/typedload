@@ -18,10 +18,53 @@
 
 
 from enum import Enum
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, NamedTuple, Set, Tuple
 import unittest
 
 from typedload import dataloader
+
+
+class TestNamedTuple(unittest.TestCase):
+
+    def test_simple(self):
+        class A(NamedTuple):
+            a: int
+            b: str
+        loader = dataloader.Loader()
+        r = A(1,'1')
+        assert loader.load({'a': 1, 'b': 1}, A) == r
+        assert loader.load({'a': 1, 'b': 1, 'c': 3}, A) == r
+        loader.failonextra = True
+        with self.assertRaises(ValueError):
+            loader.load({'a': 1, 'b': 1, 'c': 3}, A)
+
+    def test_simple_defaults(self):
+        class A(NamedTuple):
+            a: int = 1
+            b: str = '1'
+        loader = dataloader.Loader()
+        r = A(1,'1')
+        assert loader.load({}, A) == r
+
+    def test_nested(self):
+        class A(NamedTuple):
+            a: int
+
+        class B(NamedTuple):
+            a: A
+        loader = dataloader.Loader()
+        r = B(A(1))
+        assert loader.load({'a': {'a': 1}}, B) == r
+        with self.assertRaises(TypeError):
+            loader.load({'a': {'a': 1}}, A)
+
+    def test_fail(self):
+        class A(NamedTuple):
+            a: int
+            q: str
+        loader = dataloader.Loader()
+        with self.assertRaises(ValueError):
+            loader.load({'a': 3}, A)
 
 
 class TestSet(unittest.TestCase):
