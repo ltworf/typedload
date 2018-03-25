@@ -189,7 +189,7 @@ class TestBasicTypes(unittest.TestCase):
         assert loader.load(True, bool) == True
         assert loader.load(1.5, float) == 1.5
         with self.assertRaises(TypeError):
-            assert loader.load(1.1, int) == 1
-            assert loader.load(False, int) == 0
-            assert loader.load('ciao', str) == 'ciao'
-            assert loader.load('1', float) == 1.0
+            loader.load(1.1, int)
+            loader.load(False, int)
+            loader.load('ciao', str)
+            loader.load('1', float)
