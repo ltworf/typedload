@@ -18,10 +18,54 @@
 
 
 from enum import Enum
-from typing import Dict, List, NamedTuple, Set, Tuple
+from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
 from typedload import dataloader
+
+
+class TestUnion(unittest.TestCase):
+
+    def test_ComplicatedUnion(self):
+        class A(NamedTuple):
+            a: int
+
+        class B(NamedTuple):
+            a: str
+
+        class C(NamedTuple):
+            val: Union[A, B]
+
+        loader = dataloader.Loader()
+        loader.basiccast = False
+        assert type(loader.load({'val': {'a': 1}}, C).val) == A
+        assert type(loader.load({'val': {'a': '1'}}, C).val) == B
+
+
+    def test_optional(self):
+        loader = dataloader.Loader()
+        assert loader.load(1, Optional[int]) == 1
+        assert loader.load(None, Optional[int]) == None
+        assert loader.load('1', Optional[int]) == 1
+        with self.assertRaises(ValueError):
+            loader.load('ciao', Optional[int])
+            loader.basiccast = False
+            loader.load('1', Optional[int])
+
+    def test_union(self):
+        loader = dataloader.Loader()
+        loader.basiccast = False
+        assert loader.load(1, Optional[Union[int, str]]) == 1
+        assert loader.load('a', Optional[Union[int, str]]) == 'a'
+        assert loader.load(None, Optional[Union[int, str]]) == None
+        assert type(loader.load(1, Optional[Union[int, float]])) == int
+        assert type(loader.load(1.0, Optional[Union[int, float]])) == float
+        with self.assertRaises(ValueError):
+            loader.load('', Optional[Union[int, float]])
+
+        loader.basiccast = True
+        assert type(loader.load(1, Optional[Union[int, float]])) == int
+        assert type(loader.load(1.0, Optional[Union[int, float]])) == float
 
 
 class TestNamedTuple(unittest.TestCase):

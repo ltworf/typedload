@@ -122,12 +122,37 @@ class Loader:
             params[k] = self.load(v, type_hints[k])
         return type_(**params)
 
+    def _unionload(self, value, type_: type) -> Any:
+        """
+        Loads a value into a union.
+
+        Basically this iterates all the types inside the
+        union, until one that doesn't raise an exception
+        is found.
+
+        If no suitable type is found, an exception is raised.
+        """
+
+        # Do not convert basic types, if possible
+        if type(value) in set(type_.__args__).intersection(self.basictypes):
+            return value
+
+        # Try all types
+        for t in type_.__args__:
+            try:
+                return self.load(value, t)
+            except:
+                pass
+        raise ValueError('Value %s could not be loaded into %s' % (value, type_))
+
     def load(self, value: Any, type_: type) -> Any:
         if type_ == NONETYPE:
             if value is None:
                 return None
             raise ValueError('%s is not None' % value)
-        if type_ in self.basictypes:
+        elif getattr(type_, '__origin__', None) == Union:
+            return self._unionload(value, type_)
+        elif type_ in self.basictypes:
             return self._basicload(value, type_)
         elif issubclass(type_, Enum):
             return type_(value)
