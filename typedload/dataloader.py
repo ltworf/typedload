@@ -1,4 +1,6 @@
 # typedload
+# Module to load data into typed data structures
+
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
@@ -30,6 +32,42 @@ NONETYPE = type(None)
 
 
 class Loader:
+    """
+    A loader object that recursively loads data into
+    the desired type.
+
+    basictypes: a set of types that are considered as
+        building blocks for everything else and do not
+        need to be converted further.
+        If you are not loading from json, you probably
+        want to add bytes to the set.
+
+    failonextra: When enabled, the loader will raise
+        exceptions if there are fields in the data that
+        are not being used by the type.
+
+    basiccast: When enabled, instead of trying to perform
+        casts, exceptions will be raised.
+        Since many json seem to encode numbers as strings,
+        to avoid extra complications this functionality is
+        provided.
+        If you know that your original data is encoded
+        properly, it is better to disable this.
+
+
+    There is support for:
+        * Basic python types (int, str, bool, float, NoneType)
+        * NamedTuple
+        * Enum
+        * List[SomeType]
+        * Dict[TypeA, TypeB]
+        * Tuple[TypeA, TypeB, TypeC]
+        * Set[SomeType]
+        * Union[TypeA, TypeB]
+
+    Using unions is complicated. If the types in the union are too
+    similar to each other, it is easy to obtain an unexpected type.
+    """
 
     def __init__(self):
         # Types that do not need conversion
@@ -146,6 +184,9 @@ class Loader:
         raise ValueError('Value %s could not be loaded into %s' % (value, type_))
 
     def load(self, value: Any, type_: type) -> Any:
+        """
+        Loads value into the typed data structure.
+        """
         if type_ == NONETYPE:
             if value is None:
                 return None
