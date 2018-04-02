@@ -54,8 +54,8 @@ def get_data(city: Optional[str]) -> Dict[str, Any]:
     """
     req = urllib.request.Request(get_url(city))
     with urllib.request.urlopen(req) as f:
-        r = f.read()
-    answer = r.decode('ascii')
+        response = f.read()
+    answer = response.decode('ascii')
     data = json.loads(answer)
     r = data['query']['results']['channel']  # Remove some useless nesting
     return r
