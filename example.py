@@ -121,7 +121,7 @@ def main():
     print()
     print('Forecast')
     for i in weather.item.forecast:
-        print('%s\tMin: %s%s\tMax: %s%s\t%s' % (i.day, i.low, weather.units.temperature, i.high, weather.units.temperature, i.text))
+        print('%s\tMin: %2s%s\tMax: %2s%s\t%s' % (i.day, i.low, weather.units.temperature, i.high, weather.units.temperature, i.text))
 
 
 if __name__ == '__main__':
