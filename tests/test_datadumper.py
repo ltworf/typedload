@@ -38,6 +38,10 @@ class TestDumpLoad(unittest.TestCase):
 
 class TestBasicDump(unittest.TestCase):
 
+    def test_dump_dict(self):
+        dumper = datadumper.Dumper()
+        assert dumper.dump({EnumA.B: 'ciao'}) == {'2': 'ciao'}
+
     def test_dump_enums(self):
         dumper = datadumper.Dumper()
         assert dumper.dump(EnumA.A) == 1

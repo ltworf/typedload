@@ -43,4 +43,6 @@ class Dumper:
             return [self.dump(i) for i in value]
         elif issubclass(type(value), Enum):
             return self.dump(value.value)
+        elif issubclass(type(value), Dict):
+            return {self.dump(k): self.dump(v) for k, v in value.items()}
         raise ValueError('Unable to dump %s' % value)
