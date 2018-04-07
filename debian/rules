@@ -5,4 +5,7 @@ export PYBUILD_NAME=typedload
 	dh $@ --with python3 --buildsystem=pybuild
 
 override_dh_auto_test:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	make test
+endif
+
