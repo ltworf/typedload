@@ -33,6 +33,7 @@ class EnumA(Enum):
 class NamedA(NamedTuple):
     a: int
     b: str
+    c: str = 'no'
 
 
 class TestDumpLoad(unittest.TestCase):
@@ -46,6 +47,7 @@ class TestBasicDump(unittest.TestCase):
     def test_dump_namedtuple(self):
         dumper = datadumper.Dumper()
         assert dumper.dump(NamedA(1, 'a')) == {'a': 1, 'b': 'a'}
+        assert dumper.dump(NamedA(1, 'a', 'yes')) == {'a': 1, 'b': 'a', 'c': 'yes'}
 
     def test_dump_dict(self):
         dumper = datadumper.Dumper()
