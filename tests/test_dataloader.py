@@ -179,6 +179,19 @@ class TestTuple(unittest.TestCase):
 
 class TestEnum(unittest.TestCase):
 
+    def test_load_difficult_enum(self):
+        class TestEnum(Enum):
+            A: int = 1
+            B: Tuple[int,int,int] = (1, 2, 3)
+        loader = dataloader.Loader()
+        assert loader.load(1, TestEnum) == TestEnum.A
+        assert loader.load((1, 2, 3), TestEnum) == TestEnum.B
+        assert loader.load([1, 2, 3], TestEnum) == TestEnum.B
+        assert loader.load([1, 2, 3, 4], TestEnum) == TestEnum.B
+        loader.failonextra = True
+        with self.assertRaises(ValueError):
+            loader.load([1, 2, 3, 4], TestEnum)
+
     def test_load_enum(self):
         loader = dataloader.Loader()
 

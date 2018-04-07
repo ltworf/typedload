@@ -184,6 +184,32 @@ class Loader:
                 pass
         raise ValueError('Value %s could not be loaded into %s' % (value, type_))
 
+    def _enumload(self, value, type_) -> Enum:
+        """
+        This loads something into an Enum.
+
+        It tries with basic types first.
+
+        If that fails, it tries to look for type annotations inside the
+        Enum, and tries to use those to load the value into something
+        that is compatible with the Enum.
+
+        Of course if that fails too, a ValueError is raised.
+        """
+        try:
+            # Try naïve conversion
+            return type_(value)  # type: ignore
+        except:
+            pass
+
+        # Try with the typing hints
+        for _, t in get_type_hints(type_).items():
+            try:
+                return type_(self.load(value, t))
+            except:
+                pass
+        raise ValueError('Value %s could not be loaded into %s' % (value, type_))
+
     def load(self, value: Any, type_: Type[T]) -> T:
         """
         Loads value into the typed data structure.
@@ -197,7 +223,7 @@ class Loader:
         elif type_ in self.basictypes:
             return self._basicload(value, type_)
         elif issubclass(type_, Enum):
-            return type_(value)  # type: ignore
+            return self._enumload(value, type_)
         elif issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple:
             return self._tupleload(value, type_)
         elif issubclass(type_, list) and getattr(type_, '__origin__', None) == List:
