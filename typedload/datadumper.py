@@ -41,4 +41,6 @@ class Dumper:
             return value
         elif issubclass(type(value), list) or issubclass(type(value), tuple) or issubclass(type(value), set):
             return [self.dump(i) for i in value]
+        elif issubclass(type(value), Enum):
+            return self.dump(value.value)
         raise ValueError('Unable to dump %s' % value)

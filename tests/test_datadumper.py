@@ -21,10 +21,28 @@ from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
-from typedload import datadumper
+from typedload import datadumper, dataloader, dump, load
+
+
+class EnumA(Enum):
+    A: int = 1
+    B: str = '2'
+    C: Tuple[int, int] = (1, 2)
+
+
+class TestDumpLoad(unittest.TestCase):
+
+    def test_enum(self):
+        assert load(dump(EnumA.C), EnumA) == EnumA.C
 
 
 class TestBasicDump(unittest.TestCase):
+
+    def test_dump_enums(self):
+        dumper = datadumper.Dumper()
+        assert dumper.dump(EnumA.A) == 1
+        assert dumper.dump(EnumA.B) == '2'
+        assert dumper.dump(EnumA.C) == [1, 2]
 
     def test_dump_iterables(self):
         dumper = datadumper.Dumper()
