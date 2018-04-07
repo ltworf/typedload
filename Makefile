@@ -4,10 +4,12 @@ all: pypi
 test:
 	python3 -m tests
 
-pypi:
-	python3 setup.py sdist
-	mv dist pypi
-	gpg --detach-sign -a pypi/*
+pypi: setup.py typedload
+	mkdir -p dist pypi
+	./setup.py sdist
+	mv dist/typedload-`./setup.py --version`.tar.gz pypi
+	rmdir dist
+	gpg --detach-sign -a pypi/typedload-`./setup.py --version`.tar.gz
 
 clean:
 	$(RM) -r pypi
