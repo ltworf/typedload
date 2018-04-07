@@ -1,0 +1,23 @@
+Source: typedload
+Section: python
+Priority: optional
+Maintainer: Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>
+Build-Depends: debhelper (>= 11), python3, dh-python
+Standards-Version: 4.1.4
+Homepage: https://github.com/ltworf/typedload#typedload
+X-Python3-Version: >= 3.6
+
+Package: python3-typedload
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: Python3 module to load and dump data into typed structures
+ This module provides an API to load dictionaries and list (usually loaded
+ from json) into Python's NamedTuples, sets, enums, and various other typed
+ data structures.
+ .
+ It also allows one to dump them from typed data structures to json-like
+ dictionaries and lists.
+ .
+ This allows all the code that uses external data to have the advantages
+ of using types, and causes all errors with the data to be noticed when it
+ is loaded, rather than when it is used.
