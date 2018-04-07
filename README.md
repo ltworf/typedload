@@ -57,3 +57,19 @@ And then converted back:
 data = typedload.dump(t_data)
 ```
 
+Supported types
+===============
+
+Since this is not magic, not all types are supported.
+
+The following things are supported:
+
+ * Basic python types (int, str, bool, float, NoneType)
+ * NamedTuple
+ * Enum
+ * Optional[SomeType]
+ * List[SomeType]
+ * Dict[TypeA, TypeB]
+ * Tuple[TypeA, TypeB, TypeC]
+ * Set[SomeType]
+ * Union[TypeA, TypeB]

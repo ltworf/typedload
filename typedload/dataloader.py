@@ -60,6 +60,7 @@ class Loader:
         * Basic python types (int, str, bool, float, NoneType)
         * NamedTuple
         * Enum
+        * Optional[SomeType]
         * List[SomeType]
         * Dict[TypeA, TypeB]
         * Tuple[TypeA, TypeB, TypeC]
