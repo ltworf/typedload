@@ -1,5 +1,5 @@
 typedload (0.9-1) unstable; urgency=low
 
-  * Initial release.
+  * Initial release. (Closes: #895158)
 
  -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Sun, 08 Apr 2018 00:03:24 +0200
