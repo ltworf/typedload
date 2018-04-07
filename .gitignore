@@ -3,3 +3,4 @@ loadtyped.kdev4
 __pycache__/
 .mypy_cache/
 pypi/
+MANIFEST
