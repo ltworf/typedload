@@ -58,6 +58,8 @@ from typing import Any, Type, TypeVar
 __all__ = [
     'dataloader',
     'load',
+    'datadumper',
+    'dump',
 ]
 
 
@@ -74,3 +76,17 @@ def load(value: Any, type_: Type[T]) -> T:
     from . import dataloader
     loader = dataloader.Loader()
     return loader.load(value, type_)
+
+
+def dump(value: Any) -> Any:
+    """
+    Quick function to dump a data structure into
+    something that is compatible with json or
+    other programs and languages.
+
+    It is useful to avoid creating the Dumper object,
+    in case only the default parameters are used.
+    """
+    from . import datadumper
+    dumper = datadumper.Dumper()
+    return dumper.dump(value)

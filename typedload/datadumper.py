@@ -1,4 +1,7 @@
 # typedload
+# This module is the inverse of dataloader. It converts typed
+# data structures to things that json can treat.
+
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
@@ -16,11 +19,24 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
+from enum import Enum
+from typing import *
 
-import unittest
 
-from .test_dataloader import *
-from .test_datadumper import *
+__all__ = [
+    'Dumper',
+]
 
-if __name__ == '__main__':
-    unittest.main()
+
+NONETYPE = type(None)
+
+
+class Dumper:
+
+    def __init__(self):
+        self.basictypes = {int, bool, float, str, NONETYPE}
+
+    def dump(self, value: Any) -> Any:
+        if type(value) in self.basictypes:
+            return value
+        raise ValueError('Unable to dump %s' % value)

@@ -17,10 +17,24 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
+from enum import Enum
+from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
-from .test_dataloader import *
-from .test_datadumper import *
+from typedload import datadumper
 
-if __name__ == '__main__':
-    unittest.main()
+
+class TestBasicTypes(unittest.TestCase):
+
+    def test_basic_casting(self):
+        # Casting enabled, by default
+        dumper = datadumper.Dumper()
+        assert dumper.dump(1) == 1
+        assert dumper.dump('1') == '1'
+        assert dumper.dump(None) == None
+        dumper.basictypes = {int, str}
+        assert dumper.dump('1') == '1'
+        assert dumper.dump(1) == 1
+        with self.assertRaises(ValueError):
+            assert dumper.dump(None) == None
+            assert dumper.dump(True) == True
