@@ -18,6 +18,7 @@ clean:
 	$(RM) -r `find . -name __pycache__`
 	$(RM) typedload_`./setup.py --version`.orig.tar.gz
 	$(RM) typedload_`./setup.py --version`.orig.tar.gz.asc
+	$(RM) -r deb-pkg
 
 .PHONY: dist
 dist: clean
@@ -35,3 +36,12 @@ dist: clean
 .PHONY: upload
 upload: pypi
 	twine upload pypi/typedload-`./setup.py --version`.tar.gz
+
+deb-pkg: dist
+	mv typedload_`./setup.py --version`.orig.tar.gz* /tmp
+	cd /tmp; tar -xf typedload_*.orig.tar.gz
+	cp -r debian /tmp/typedload/
+	cd /tmp/typedload/; dpkg-buildpackage
+	mkdir deb-pkg
+	mv /tmp/typedload_* /tmp/python3-typedload_*.deb deb-pkg
+	$(RM) -r /tmp/typedload
