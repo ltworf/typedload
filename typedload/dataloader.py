@@ -93,14 +93,11 @@ class Loader:
         It also attempts casting, if enabled.
         """
 
-        if type_ not in self.basictypes:
-            raise TypeError('Type %s is not a basic type' % type_)
-
         if type(value) != type_:
             if self.basiccast:
                 return type_(value)
             else:
-                raise TypeError('%s is not of type %s' % (value, type_))
+                raise ValueError('%s is not of type %s' % (value, type_))
         return value
 
     def _listload(self, value, type_) -> List:
