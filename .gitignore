@@ -1,3 +1,4 @@
 loadtyped.kdev4
 .kdev4/
 __pycache__/
+.mypy_cache/
