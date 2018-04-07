@@ -31,6 +31,7 @@ class TestBasicDump(unittest.TestCase):
         assert dumper.dump([1]) == [1]
         assert dumper.dump((1, 2)) == [1, 2]
         assert dumper.dump([(1, 1), (0, 0)]) == [[1, 1], [0, 0]]
+        assert dumper.dump({1, 2}) == [1, 2]
 
     def test_basic_types(self):
         # Casting enabled, by default

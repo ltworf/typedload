@@ -39,6 +39,6 @@ class Dumper:
     def dump(self, value: Any) -> Any:
         if type(value) in self.basictypes:
             return value
-        elif issubclass(type(value), list) or issubclass(type(value), tuple):
+        elif issubclass(type(value), list) or issubclass(type(value), tuple) or issubclass(type(value), set):
             return [self.dump(i) for i in value]
         raise ValueError('Unable to dump %s' % value)
