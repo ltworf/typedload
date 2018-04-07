@@ -27,6 +27,7 @@ dist: clean
 		typedload/Makefile \
 		typedload/tests \
 		typedload/LICENSE \
+		typedload/CHANGELOG \
 		typedload/README.md \
 		typedload/example.py \
 		typedload/typedload
