@@ -34,13 +34,29 @@ NONETYPE = type(None)
 class Dumper:
 
     def __init__(self):
+        """
+        This dumps data structures recursively using only
+        basic types, lists and dictionaries.
+
+        A value dumped in this way from a typed data structure
+        can be loaded back using dataloader.
+
+        There is support for:
+        * Basic python types (int, str, bool, float, NoneType)
+        * NamedTuple
+        * Enum
+        * List[SomeType]
+        * Dict[TypeA, TypeB]
+        * Tuple[TypeA, TypeB, TypeC]
+        * Set[SomeType]
+        """
         self.basictypes = {int, bool, float, str, NONETYPE}
 
     def dump(self, value: Any) -> Any:
         if type(value) in self.basictypes:
             return value
         elif isinstance(value, tuple) and '_fields' in dir(value) and '_field_defaults' in dir(value):
-            # Named tuple
+            # Named tuple, skip default values
             return {k: self.dump(v) for k, v in value._asdict().items() if k not in value._field_defaults or value._field_defaults[k] != v}
         elif issubclass(type(value), list) or issubclass(type(value), tuple) or issubclass(type(value), set):
             return [self.dump(i) for i in value]
