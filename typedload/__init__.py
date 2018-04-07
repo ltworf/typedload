@@ -52,7 +52,7 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
-from typing import Any
+from typing import Any, Type, TypeVar
 
 
 __all__ = [
@@ -61,7 +61,10 @@ __all__ = [
 ]
 
 
-def load(value: Any, type_: type) -> Any:
+T = TypeVar('T')
+
+
+def load(value: Any, type_: Type[T]) -> T:
     """
     Quick function call to load data into a type.
 

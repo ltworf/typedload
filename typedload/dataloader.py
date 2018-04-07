@@ -29,6 +29,7 @@ __all__ = [
 
 
 NONETYPE = type(None)
+T = TypeVar('T')
 
 
 class Loader:
@@ -183,7 +184,7 @@ class Loader:
                 pass
         raise ValueError('Value %s could not be loaded into %s' % (value, type_))
 
-    def load(self, value: Any, type_: type) -> Any:
+    def load(self, value: Any, type_: Type[T]) -> T:
         """
         Loads value into the typed data structure.
         """
@@ -196,15 +197,15 @@ class Loader:
         elif type_ in self.basictypes:
             return self._basicload(value, type_)
         elif issubclass(type_, Enum):
-            return type_(value)
+            return type_(value)  # type: ignore
         elif issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple:
             return self._tupleload(value, type_)
         elif issubclass(type_, list) and getattr(type_, '__origin__', None) == List:
-            return self._listload(value, type_)
+            return self._listload(value, type_)  # type: ignore
         elif issubclass(type_, dict) and getattr(type_, '__origin__', None) == Dict:
-            return self._dictload(value, type_)
+            return self._dictload(value, type_)  # type: ignore
         elif issubclass(type_, set) and getattr(type_, '__origin__', None) == Set:
-            return self._setload(value, type_)
+            return self._setload(value, type_)  # type: ignore
         elif issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_defaults', '_field_types', '_fields'}):
             return self._namedtupleload(value, type_)
         else:
