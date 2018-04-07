@@ -223,7 +223,7 @@ class Loader:
         elif type_ in self.basictypes:
             return self._basicload(value, type_)
         elif issubclass(type_, Enum):
-            return self._enumload(value, type_)
+            return self._enumload(value, type_)  # type: ignore
         elif issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple:
             return self._tupleload(value, type_)
         elif issubclass(type_, list) and getattr(type_, '__origin__', None) == List:
