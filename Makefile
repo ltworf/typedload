@@ -29,3 +29,7 @@ dist: clean
 		typedload/typedload
 	mv ../typedload.tar.gz typedload_`./setup.py --version`.orig.tar.gz
 	gpg --detach-sign -a *.orig.tar.gz
+
+.PHONY: upload
+upload: pypi
+	twine upload pypi/typedload-`./setup.py --version`.tar.gz
