@@ -22,7 +22,7 @@ from distutils.core import setup
 
 setup(
     name='typedload',
-    version='1.0',
+    version='0.9',
     description='Load and dump data from json-like format into typed data structures',
     long_description='''Manipulating data loaded from json is very error prone.
 
@@ -39,11 +39,10 @@ can be converted to json.
     url='https://github.com/ltworf/typedload',
     author='Salvo \'LtWorf\' Tomaselli',
     author_email='tiposchi@tiscali.it',
-    license='GPL',
+    license='GPLv3',
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        #'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: GPL License',
         'Programming Language :: Python :: 3.6',
     ],
     keywords='typing types mypy json',
