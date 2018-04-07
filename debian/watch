@@ -1,0 +1,5 @@
+version=3
+
+opts="pgpsigurlmangle=s/$/.asc/" \
+https://github.com/ltworf/typedload/releases \
+/download/(?:\d[\d.]*)/@PACKAGE@_(\d[\d.]*)(?:\.orig)?@ARCHIVE_EXT@
