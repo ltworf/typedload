@@ -17,11 +17,36 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
+from enum import Enum
+from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
-from .test_dataloader import *
-from .test_datadumper import *
-from .test_dumpload import *
+from typedload import dump, load
 
-if __name__ == '__main__':
-    unittest.main()
+
+class Result(Enum):
+    PASS = True
+    FAIL = False
+
+
+class Student(NamedTuple):
+    name: str
+    id: int
+    email: Optional[str] = None
+
+
+class ExamResults(NamedTuple):
+    results: List[Tuple[Student, Result]]
+
+
+class TestDumpLoad(unittest.TestCase):
+
+    def test_dump_load_results(self):
+        results = ExamResults(
+            [
+                (Student('Anna', 1), Result.PASS),
+                (Student('Alfio', 2), Result.PASS),
+                (Student('Iano', 3, 'iano@iano.it'), Result.PASS),
+            ]
+        )
+        assert load(dump(results), ExamResults) == results
