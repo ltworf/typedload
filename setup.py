@@ -46,6 +46,5 @@ can be converted to json.
         'Programming Language :: Python :: 3.6',
     ],
     keywords='typing types mypy json',
-    python_requires='>=3.6',
     packages=['typedload'],
 )
