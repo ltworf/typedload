@@ -39,6 +39,9 @@ class Dumper:
     def dump(self, value: Any) -> Any:
         if type(value) in self.basictypes:
             return value
+        elif isinstance(value, tuple) and '_fields' in dir(value) and '_field_defaults' in dir(value):
+            # Named tuple
+            return {k: self.dump(v) for k, v in value._asdict().items()}
         elif issubclass(type(value), list) or issubclass(type(value), tuple) or issubclass(type(value), set):
             return [self.dump(i) for i in value]
         elif issubclass(type(value), Enum):

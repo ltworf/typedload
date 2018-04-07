@@ -30,6 +30,11 @@ class EnumA(Enum):
     C: Tuple[int, int] = (1, 2)
 
 
+class NamedA(NamedTuple):
+    a: int
+    b: str
+
+
 class TestDumpLoad(unittest.TestCase):
 
     def test_enum(self):
@@ -37,6 +42,10 @@ class TestDumpLoad(unittest.TestCase):
 
 
 class TestBasicDump(unittest.TestCase):
+
+    def test_dump_namedtuple(self):
+        dumper = datadumper.Dumper()
+        assert dumper.dump(NamedA(1, 'a')) == {'a': 1, 'b': 'a'}
 
     def test_dump_dict(self):
         dumper = datadumper.Dumper()
