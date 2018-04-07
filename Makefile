@@ -16,6 +16,8 @@ clean:
 	$(RM) -r .mypy_cache
 	$(RM) MANIFEST
 	$(RM) -r `find . -name __pycache__`
+	$(RM) typedload_`./setup.py --version`.orig.tar.gz
+	$(RM) typedload_`./setup.py --version`.orig.tar.gz.asc
 
 .PHONY: dist
 dist: clean
