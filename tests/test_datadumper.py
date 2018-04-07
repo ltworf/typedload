@@ -24,9 +24,15 @@ import unittest
 from typedload import datadumper
 
 
-class TestBasicTypes(unittest.TestCase):
+class TestBasicDump(unittest.TestCase):
 
-    def test_basic_casting(self):
+    def test_dump_iterables(self):
+        dumper = datadumper.Dumper()
+        assert dumper.dump([1]) == [1]
+        assert dumper.dump((1, 2)) == [1, 2]
+        assert dumper.dump([(1, 1), (0, 0)]) == [[1, 1], [0, 0]]
+
+    def test_basic_types(self):
         # Casting enabled, by default
         dumper = datadumper.Dumper()
         assert dumper.dump(1) == 1
