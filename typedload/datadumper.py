@@ -58,10 +58,10 @@ class Dumper:
         elif isinstance(value, tuple) and '_fields' in dir(value) and '_field_defaults' in dir(value):
             # Named tuple, skip default values
             return {k: self.dump(v) for k, v in value._asdict().items() if k not in value._field_defaults or value._field_defaults[k] != v}
-        elif issubclass(type(value), list) or issubclass(type(value), tuple) or issubclass(type(value), set):
+        elif isinstance(value, list) or isinstance(value, tuple) or isinstance(value, set):
             return [self.dump(i) for i in value]
-        elif issubclass(type(value), Enum):
+        elif isinstance(value, Enum):
             return self.dump(value.value)
-        elif issubclass(type(value), Dict):
+        elif isinstance(value, Dict):
             return {self.dump(k): self.dump(v) for k, v in value.items()}
         raise ValueError('Unable to dump %s' % value)
