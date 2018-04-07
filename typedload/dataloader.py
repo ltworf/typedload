@@ -102,14 +102,14 @@ class Loader:
                 raise TypeError('%s is not of type %s' % (value, type_))
         return value
 
-    def _listload(self, value, type_: type) -> List:
+    def _listload(self, value, type_) -> List:
         """
         This loads into something like List[int]
         """
         t = type_.__args__[0]
         return [self.load(v, t) for v in value]
 
-    def _dictload(self, value, type_: type) -> Dict:
+    def _dictload(self, value, type_) -> Dict:
         """
         This loads into something like Dict[str,str]
 
@@ -118,14 +118,14 @@ class Loader:
         key_type, value_type = type_.__args__
         return {self.load(k, key_type): self.load(v, value_type) for k, v in value.items()}
 
-    def _setload(self, value, type_: type) -> Set:
+    def _setload(self, value, type_) -> Set:
         """
         This loads into something like Set[int]
         """
         t = type_.__args__[0]
         return {self.load(i, t) for i in value}
 
-    def _tupleload(self, value, type_: type) -> Tuple:
+    def _tupleload(self, value, type_) -> Tuple:
         """
         This loads into something like Tuple[int,str]
         """
@@ -136,7 +136,7 @@ class Loader:
 
         return tuple(self.load(v, t) for v, t in zip(value, type_.__args__))
 
-    def _namedtupleload(self, value: Dict[str, Any], type_: type) -> Tuple:
+    def _namedtupleload(self, value: Dict[str, Any], type_) -> Tuple:
         """
         This loads a Dict[str, Any] into a NamedTuple.
         """
@@ -160,7 +160,7 @@ class Loader:
             params[k] = self.load(v, type_hints[k])
         return type_(**params)
 
-    def _unionload(self, value, type_: type) -> Any:
+    def _unionload(self, value, type_) -> Any:
         """
         Loads a value into a union.
 
