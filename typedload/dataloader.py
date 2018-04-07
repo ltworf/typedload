@@ -210,6 +210,9 @@ class Loader:
     def load(self, value: Any, type_: Type[T]) -> T:
         """
         Loads value into the typed data structure.
+
+        TypeError is raised if there is no known way to treat type_,
+        otherwise all errors raise a ValueError.
         """
         if type_ == NONETYPE:
             if value is None:
