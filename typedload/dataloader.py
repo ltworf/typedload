@@ -145,7 +145,13 @@ class Loader:
         vfields = set(value.keys())
 
         if necessary_fields.intersection(vfields) != necessary_fields:
-            raise ValueError('Data does not contain fields: %s' % necessary_fields.difference(vfields))
+            raise ValueError(
+                'Value %s does not contain fields: %s which are necessary for type %s' % (
+                    value,
+                    necessary_fields.difference(vfields),
+                    type_
+                )
+            )
 
         if self.failonextra and len(vfields.difference(fields)):
             raise ValueError('Dictionary %s has unrecognized fields and cannot be loaded into %s' % (value, type_))
