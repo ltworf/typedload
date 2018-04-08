@@ -49,6 +49,9 @@ class TestBasicDump(unittest.TestCase):
         assert dumper.dump(NamedA(1, 'a')) == {'a': 1, 'b': 'a'}
         assert dumper.dump(NamedA(1, 'a', 'yes')) == {'a': 1, 'b': 'a', 'c': 'yes'}
 
+        dumper.hidedefault = False
+        assert dumper.dump(NamedA(1, 'a')) == {'a': 1, 'b': 'a', 'c': 'no'}
+
     def test_dump_dict(self):
         dumper = datadumper.Dumper()
         assert dumper.dump({EnumA.B: 'ciao'}) == {'2': 'ciao'}

@@ -41,16 +41,21 @@ class Dumper:
         A value dumped in this way from a typed data structure
         can be loaded back using dataloader.
 
+        hidedefault: When enabled, does not include fields that
+            have the same value as the default in the dump.
+
         There is support for:
-        * Basic python types (int, str, bool, float, NoneType)
-        * NamedTuple
-        * Enum
-        * List[SomeType]
-        * Dict[TypeA, TypeB]
-        * Tuple[TypeA, TypeB, TypeC]
-        * Set[SomeType]
+            * Basic python types (int, str, bool, float, NoneType)
+            * NamedTuple
+            * Enum
+            * List[SomeType]
+            * Dict[TypeA, TypeB]
+            * Tuple[TypeA, TypeB, TypeC]
+            * Set[SomeType]
         """
         self.basictypes = {int, bool, float, str, NONETYPE}
+
+        self.hidedefault = True
 
     def dump(self, value: Any) -> Any:
         if type(value) in self.basictypes:
@@ -59,7 +64,7 @@ class Dumper:
             # Named tuple, skip default values
             return {
                 k: self.dump(v) for k, v in value._asdict().items()
-                if k not in value._field_defaults or value._field_defaults[k] != v
+                if not self.hidedefault or k not in value._field_defaults or value._field_defaults[k] != v
             }  # type: ignore
         elif isinstance(value, list) or isinstance(value, tuple) or isinstance(value, set):
             return [self.dump(i) for i in value]
