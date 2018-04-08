@@ -180,13 +180,21 @@ class Loader:
         if type(value) in set(type_.__args__).intersection(self.basictypes):
             return value
 
+        exceptions = []
+
         # Try all types
         for t in type_.__args__:
             try:
                 return self.load(value, t)
-            except:
-                pass
-        raise ValueError('Value %s could not be loaded into %s' % (value, type_))
+            except Exception as e:
+                exceptions.append(str(e))
+        raise ValueError(
+            'Value %s could not be loaded into %s\n\nConversion exceptions were:\n%s' % (
+                value,
+                type_,
+                '\n'.join(exceptions)
+            )
+        )
 
     def _enumload(self, value, type_) -> Enum:
         """
