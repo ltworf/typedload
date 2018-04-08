@@ -22,7 +22,7 @@ from distutils.core import setup
 
 setup(
     name='typedload',
-    version='0.9',
+    version='1.0',
     description='Load and dump data from json-like format into typed data structures',
     long_description='''Manipulating data loaded from json is very error prone.
 
