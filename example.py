@@ -99,11 +99,18 @@ class Item(NamedTuple):
     title: str
 
 
+class Wind(NamedTuple):
+    chill: int
+    direction: int
+    speed: float
+
+
 class Weather(NamedTuple):
     item: Item
     units: Units
     astronomy: Astronomy
     atmosphere: Atmosphere
+    wind: Wind
 
 
 def main():
@@ -115,6 +122,7 @@ def main():
     print()
     print('%s %s%s' % (weather.item.condition.text, weather.item.condition.temp, weather.units.temperature))
     print()
+    print('Wind: %d%s' % (weather.wind.speed, weather.units.speed))
     print('Humidity: %s%%' % (weather.atmosphere.humidity, ))
     print('Pressure: %s%s' % (weather.atmosphere.pressure, weather.units.pressure))
     print('Visibility: %s%s' % (weather.atmosphere.humidity, weather.units.distance))
