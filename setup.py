@@ -47,4 +47,5 @@ can be converted to json.
     ],
     keywords='typing types mypy json',
     packages=['typedload'],
+    package_data={"typedload": ["py.typed"]},
 )

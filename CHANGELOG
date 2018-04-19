@@ -1,6 +1,7 @@
 1.0
 * Has a setting to hide default fields or not, in dumps
 * Better error reporting
+* Add file for PEP 561
 
 0.9
 * Initial release
