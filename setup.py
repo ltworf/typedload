@@ -22,7 +22,7 @@ from distutils.core import setup
 
 setup(
     name='typedload',
-    version='1.0',
+    version='1.1',
     description='Load and dump data from json-like format into typed data structures',
     long_description='''Manipulating data loaded from json is very error prone.
 
@@ -41,7 +41,7 @@ can be converted to json.
     author_email='tiposchi@tiscali.it',
     license='GPLv3',
     classifiers=[
-        #'Development Status :: 5 - Production/Stable',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3.6',
     ],
