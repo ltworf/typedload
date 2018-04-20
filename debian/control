@@ -6,6 +6,7 @@ Build-Depends: debhelper (>= 11), python3, dh-python
 Standards-Version: 4.1.4
 Homepage: https://github.com/ltworf/typedload#typedload
 X-Python3-Version: >= 3.6
+Vcs-Browser: https://github.com/ltworf/typedload
 
 Package: python3-typedload
 Architecture: all
