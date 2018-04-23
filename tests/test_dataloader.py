@@ -21,7 +21,7 @@ from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
-from typedload import dataloader
+from typedload import dataloader, load
 
 
 class TestRealCase(unittest.TestCase):
@@ -75,6 +75,23 @@ class TestRealCase(unittest.TestCase):
         }
         loader = dataloader.Loader()
         loader.load(c, BoardItem)
+
+
+class TestLegacy(unittest.TestCase):
+
+    def test_legacyload(self):
+        A = NamedTuple('A', [('a', int), ('b', str)])
+        assert load({'a': 101, 'b': 'ciao'}, A) == A(101, 'ciao')
+
+    def test_nestedlegacyload(self):
+        A = NamedTuple('A', [('a', int), ('b', str)])
+        B = NamedTuple('B', [('a', A), ('b', List[A])])
+
+        assert load({'a': {'a': 101, 'b': 'ciao'}, 'b': []}, B) == B(A(101, 'ciao'), [])
+        assert load(
+            {'a': {'a': 101, 'b': 'ciao'}, 'b': [{'a': 1, 'b': 'a'},{'a': 0, 'b': 'b'}]},
+            B
+        ) == B(A(101, 'ciao'), [A(1, 'a'),A(0, 'b')])
 
 
 class TestUnion(unittest.TestCase):

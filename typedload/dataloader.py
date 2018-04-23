@@ -140,7 +140,7 @@ class Loader:
         This loads a Dict[str, Any] into a NamedTuple.
         """
         fields = set(type_._fields)
-        optaional_fields = set(type_._field_defaults.keys())
+        optaional_fields = set(getattr(type_, '_field_defaults', {}).keys())
         necessary_fields = fields.difference(optaional_fields)
         vfields = set(value.keys())
 
@@ -247,7 +247,7 @@ class Loader:
             return self._dictload(value, type_)  # type: ignore
         elif issubclass(type_, set) and getattr(type_, '__origin__', None) == Set:
             return self._setload(value, type_)  # type: ignore
-        elif issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_defaults', '_field_types', '_fields'}):
+        elif issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}):
             return self._namedtupleload(value, type_)
         else:
             raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
