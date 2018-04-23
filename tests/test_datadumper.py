@@ -42,6 +42,13 @@ class TestDumpLoad(unittest.TestCase):
         assert load(dump(EnumA.C), EnumA) == EnumA.C
 
 
+class TestLegacyDump(unittest.TestCase):
+
+    def test_dump(self):
+        A = NamedTuple('A',[('a', int), ('b', str)])
+        assert dump(A(1, '12')) == {'a': 1, 'b': '12'}
+
+
 class TestBasicDump(unittest.TestCase):
 
     def test_dump_namedtuple(self):
