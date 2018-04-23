@@ -2,7 +2,8 @@ all: pypi
 
 .PHONY: test
 test:
-	python3 -m tests
+	# Only run tests on python 3.6 or greater
+	test `python3 --version | cut -d. -f2` -gt 5 && python3 -m tests || echo "WARNING: Skipping tests, python version is too old"
 
 pypi: setup.py typedload
 	mkdir -p dist pypi
