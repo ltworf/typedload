@@ -101,6 +101,19 @@ class Loader:
             (lambda type_: issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), self._namedtupleload),
         ]
 
+    def load(self, value: Any, type_: Type[T]) -> T:
+        """
+        Loads value into the typed data structure.
+
+        TypeError is raised if there is no known way to treat type_,
+        otherwise all errors raise a ValueError.
+        """
+        for cond, func in self.handlers:
+            if cond(type_):
+                return func(value, type_)
+
+        raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
+
     def _basicload(self, value: Any, type_: type) -> Any:
         """
         This converts a value into a basic type.
@@ -247,16 +260,3 @@ class Loader:
         if value is None:
             return None
         raise ValueError('%s is not None' % value)
-
-    def load(self, value: Any, type_: Type[T]) -> T:
-        """
-        Loads value into the typed data structure.
-
-        TypeError is raised if there is no known way to treat type_,
-        otherwise all errors raise a ValueError.
-        """
-        for cond, func in self.handlers:
-            if cond(type_):
-                return func(value, type_)
-
-        raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
