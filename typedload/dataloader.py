@@ -196,7 +196,7 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
     if l.failonextra and len(vfields.difference(fields)):
         raise ValueError('Dictionary %s has unrecognized fields and cannot be loaded into %s' % (value, type_))
 
-    type_hints = get_type_hints(type_)
+    type_hints = type_._field_types
 
     params = {}
     for k, v in value.items():
