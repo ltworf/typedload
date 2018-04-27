@@ -115,7 +115,11 @@ class Loader:
         otherwise all errors raise a ValueError.
         """
         for cond, func in self.handlers:
-            if cond(type_):
+            try:
+                match = cond(type_)
+            except:
+                match = False
+            if match:
                 return func(self, value, type_)
 
         raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
