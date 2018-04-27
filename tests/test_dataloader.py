@@ -320,3 +320,19 @@ class TestBasicTypes(unittest.TestCase):
             loader.load(False, int)
             loader.load('ciao', str)
             loader.load('1', float)
+
+
+class TestHandlers(unittest.TestCase):
+
+    def test_custom_handler(self):
+        class Q:
+            def __eq__(self, other):
+                return isinstance(other, Q)
+
+        loader = dataloader.Loader()
+        loader.handlers.append((
+            lambda t: t == Q,
+            lambda l, v, t: Q()
+        ))
+        assert loader.load('test', Q) == Q()
+
