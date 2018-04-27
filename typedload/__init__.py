@@ -60,6 +60,7 @@ __all__ = [
     'load',
     'datadumper',
     'dump',
+    'attrload',
 ]
 
 
@@ -90,3 +91,15 @@ def dump(value: Any) -> Any:
     from . import datadumper
     dumper = datadumper.Dumper()
     return dumper.dump(value)
+
+
+def attrload(value: Any, type_: Type[T]) -> T:
+    """
+    Quick function call to load data supporting the attr module
+    in addition to the default ones.
+    """
+    from . import dataloader
+    from .plugins import attrload
+    loader = dataloader.Loader()
+    attrload.add2loader(loader)
+    return loader.load(value, type_)
