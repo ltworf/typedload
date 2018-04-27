@@ -55,6 +55,8 @@ class Loader:
         If you know that your original data is encoded
         properly, it is better to disable this.
 
+    handlers: This is the list that the loader uses to
+        perform its task.
 
     There is support for:
         * Basic python types (int, str, bool, float, NoneType)
@@ -83,6 +85,21 @@ class Loader:
         # type expects.
         # By default the extra data is ignored.
         self.failonextra = False
+
+        # The list of handlers to use to load the data.
+        # It gets iterated in order, and the first condition
+        # that matches is used to load the value.
+        self.handlers = [
+            (lambda type_: type_ == NONETYPE, self._noneload),
+            (lambda type_: getattr(type_, '__origin__', None) == Union, self._unionload),
+            (lambda type_: type_ in self.basictypes, self._basicload),
+            (lambda type_: issubclass(type_, Enum), self._enumload),
+            (lambda type_: issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple, self._tupleload),
+            (lambda type_: issubclass(type_, list) and getattr(type_, '__origin__', None) == List, self._listload),
+            (lambda type_: issubclass(type_, dict) and getattr(type_, '__origin__', None) == Dict, self._dictload),
+            (lambda type_: issubclass(type_, set) and getattr(type_, '__origin__', None) == Set, self._setload),
+            (lambda type_: issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), self._namedtupleload),
+        ]
 
     def _basicload(self, value: Any, type_: type) -> Any:
         """
@@ -238,19 +255,7 @@ class Loader:
         TypeError is raised if there is no known way to treat type_,
         otherwise all errors raise a ValueError.
         """
-        l = [
-            (lambda type_: type_ == NONETYPE, self._noneload),
-            (lambda type_: getattr(type_, '__origin__', None) == Union, self._unionload),
-            (lambda type_: type_ in self.basictypes, self._basicload),
-            (lambda type_: issubclass(type_, Enum), self._enumload),
-            (lambda type_: issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple, self._tupleload),
-            (lambda type_: issubclass(type_, list) and getattr(type_, '__origin__', None) == List, self._listload),
-            (lambda type_: issubclass(type_, dict) and getattr(type_, '__origin__', None) == Dict, self._dictload),
-            (lambda type_: issubclass(type_, set) and getattr(type_, '__origin__', None) == Set, self._setload),
-            (lambda type_: issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), self._namedtupleload),
-        ]
-
-        for cond, func in l:
+        for cond, func in self.handlers:
             if cond(type_):
                 return func(value, type_)
 
