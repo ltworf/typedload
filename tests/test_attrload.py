@@ -17,21 +17,24 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
+from enum import Enum
+from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
-from .test_dataloader import *
-from .test_datadumper import *
-from .test_dumpload import *
+import attr
 
-# Run tests for the attr plugin only if it is loaded
-try:
-    import attr
-    attr_module = True
-except:
-    attr_module = False
+from typedload import attrload
 
-if attr_module:
-    from .test_attrload import *
 
-if __name__ == '__main__':
-    unittest.main()
+@attr.s
+class Person:
+    name = attr.ib(default='Turiddu', type=str)
+
+
+class TestAttrload(unittest.TestCase):
+
+    def test_stopboard(self):
+        assert attrload({'name': 'gino'}, Person) == Person('gino')
+        assert attrload({}, Person) == Person('Turiddu')
+
+
