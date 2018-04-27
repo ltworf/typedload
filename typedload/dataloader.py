@@ -90,15 +90,15 @@ class Loader:
         # It gets iterated in order, and the first condition
         # that matches is used to load the value.
         self.handlers = [
-            (lambda type_: type_ == NONETYPE, self._noneload),
-            (lambda type_: getattr(type_, '__origin__', None) == Union, self._unionload),
-            (lambda type_: type_ in self.basictypes, self._basicload),
-            (lambda type_: issubclass(type_, Enum), self._enumload),
-            (lambda type_: issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple, self._tupleload),
-            (lambda type_: issubclass(type_, list) and getattr(type_, '__origin__', None) == List, self._listload),
-            (lambda type_: issubclass(type_, dict) and getattr(type_, '__origin__', None) == Dict, self._dictload),
-            (lambda type_: issubclass(type_, set) and getattr(type_, '__origin__', None) == Set, self._setload),
-            (lambda type_: issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), self._namedtupleload),
+            (lambda type_: type_ == NONETYPE, _noneload),
+            (lambda type_: getattr(type_, '__origin__', None) == Union, _unionload),
+            (lambda type_: type_ in self.basictypes, _basicload),
+            (lambda type_: issubclass(type_, Enum), _enumload),
+            (lambda type_: issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple, _tupleload),
+            (lambda type_: issubclass(type_, list) and getattr(type_, '__origin__', None) == List, _listload),
+            (lambda type_: issubclass(type_, dict) and getattr(type_, '__origin__', None) == Dict, _dictload),
+            (lambda type_: issubclass(type_, set) and getattr(type_, '__origin__', None) == Set, _setload),
+            (lambda type_: issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), _namedtupleload),
         ]
 
     def load(self, value: Any, type_: Type[T]) -> T:
@@ -110,153 +110,153 @@ class Loader:
         """
         for cond, func in self.handlers:
             if cond(type_):
-                return func(value, type_)
+                return func(self, value, type_)
 
         raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
 
-    def _basicload(self, value: Any, type_: type) -> Any:
-        """
-        This converts a value into a basic type.
+def _basicload(self, value: Any, type_: type) -> Any:
+    """
+    This converts a value into a basic type.
 
-        In theory it does nothing, but it performs type checking
-        and raises if conditions fail.
+    In theory it does nothing, but it performs type checking
+    and raises if conditions fail.
 
-        It also attempts casting, if enabled.
-        """
+    It also attempts casting, if enabled.
+    """
 
-        if type(value) != type_:
-            if self.basiccast:
-                return type_(value)
-            else:
-                raise ValueError('%s is not of type %s' % (value, type_))
-        return value
+    if type(value) != type_:
+        if self.basiccast:
+            return type_(value)
+        else:
+            raise ValueError('%s is not of type %s' % (value, type_))
+    return value
 
-    def _listload(self, value, type_) -> List:
-        """
-        This loads into something like List[int]
-        """
-        t = type_.__args__[0]
-        return [self.load(v, t) for v in value]
+def _listload(self, value, type_) -> List:
+    """
+    This loads into something like List[int]
+    """
+    t = type_.__args__[0]
+    return [self.load(v, t) for v in value]
 
-    def _dictload(self, value, type_) -> Dict:
-        """
-        This loads into something like Dict[str,str]
+def _dictload(self, value, type_) -> Dict:
+    """
+    This loads into something like Dict[str,str]
 
-        Recursively loads both keys and values.
-        """
-        key_type, value_type = type_.__args__
-        return {self.load(k, key_type): self.load(v, value_type) for k, v in value.items()}
+    Recursively loads both keys and values.
+    """
+    key_type, value_type = type_.__args__
+    return {self.load(k, key_type): self.load(v, value_type) for k, v in value.items()}
 
-    def _setload(self, value, type_) -> Set:
-        """
-        This loads into something like Set[int]
-        """
-        t = type_.__args__[0]
-        return {self.load(i, t) for i in value}
+def _setload(self, value, type_) -> Set:
+    """
+    This loads into something like Set[int]
+    """
+    t = type_.__args__[0]
+    return {self.load(i, t) for i in value}
 
-    def _tupleload(self, value, type_) -> Tuple:
-        """
-        This loads into something like Tuple[int,str]
-        """
-        if self.failonextra and len(value) > len(type_.__args__):
-            raise ValueError('Value %s is too long for type %s' % (value, type_))
-        elif len(value) < len(type_.__args__):
-            raise ValueError('Value %s is too short for type %s' % (value, type_))
+def _tupleload(self, value, type_) -> Tuple:
+    """
+    This loads into something like Tuple[int,str]
+    """
+    if self.failonextra and len(value) > len(type_.__args__):
+        raise ValueError('Value %s is too long for type %s' % (value, type_))
+    elif len(value) < len(type_.__args__):
+        raise ValueError('Value %s is too short for type %s' % (value, type_))
 
-        return tuple(self.load(v, t) for v, t in zip(value, type_.__args__))
+    return tuple(self.load(v, t) for v, t in zip(value, type_.__args__))
 
-    def _namedtupleload(self, value: Dict[str, Any], type_) -> Tuple:
-        """
-        This loads a Dict[str, Any] into a NamedTuple.
-        """
-        fields = set(type_._fields)
-        optaional_fields = set(getattr(type_, '_field_defaults', {}).keys())
-        necessary_fields = fields.difference(optaional_fields)
-        vfields = set(value.keys())
+def _namedtupleload(self, value: Dict[str, Any], type_) -> Tuple:
+    """
+    This loads a Dict[str, Any] into a NamedTuple.
+    """
+    fields = set(type_._fields)
+    optaional_fields = set(getattr(type_, '_field_defaults', {}).keys())
+    necessary_fields = fields.difference(optaional_fields)
+    vfields = set(value.keys())
 
-        if necessary_fields.intersection(vfields) != necessary_fields:
-            raise ValueError(
-                'Value %s does not contain fields: %s which are necessary for type %s' % (
-                    value,
-                    necessary_fields.difference(vfields),
-                    type_
-                )
-            )
-
-        if self.failonextra and len(vfields.difference(fields)):
-            raise ValueError('Dictionary %s has unrecognized fields and cannot be loaded into %s' % (value, type_))
-
-        type_hints = get_type_hints(type_)
-
-        params = {}
-        for k, v in value.items():
-            if k not in fields:
-                continue
-            params[k] = self.load(v, type_hints[k])
-        return type_(**params)
-
-    def _unionload(self, value, type_) -> Any:
-        """
-        Loads a value into a union.
-
-        Basically this iterates all the types inside the
-        union, until one that doesn't raise an exception
-        is found.
-
-        If no suitable type is found, an exception is raised.
-        """
-
-        # Do not convert basic types, if possible
-        if type(value) in set(type_.__args__).intersection(self.basictypes):
-            return value
-
-        exceptions = []
-
-        # Try all types
-        for t in type_.__args__:
-            try:
-                return self.load(value, t)
-            except Exception as e:
-                exceptions.append(str(e))
+    if necessary_fields.intersection(vfields) != necessary_fields:
         raise ValueError(
-            'Value %s could not be loaded into %s\n\nConversion exceptions were:\n%s' % (
+            'Value %s does not contain fields: %s which are necessary for type %s' % (
                 value,
-                type_,
-                '\n'.join(exceptions)
+                necessary_fields.difference(vfields),
+                type_
             )
         )
 
-    def _enumload(self, value, type_) -> Enum:
-        """
-        This loads something into an Enum.
+    if self.failonextra and len(vfields.difference(fields)):
+        raise ValueError('Dictionary %s has unrecognized fields and cannot be loaded into %s' % (value, type_))
 
-        It tries with basic types first.
+    type_hints = get_type_hints(type_)
 
-        If that fails, it tries to look for type annotations inside the
-        Enum, and tries to use those to load the value into something
-        that is compatible with the Enum.
+    params = {}
+    for k, v in value.items():
+        if k not in fields:
+            continue
+        params[k] = self.load(v, type_hints[k])
+    return type_(**params)
 
-        Of course if that fails too, a ValueError is raised.
-        """
+def _unionload(self, value, type_) -> Any:
+    """
+    Loads a value into a union.
+
+    Basically this iterates all the types inside the
+    union, until one that doesn't raise an exception
+    is found.
+
+    If no suitable type is found, an exception is raised.
+    """
+
+    # Do not convert basic types, if possible
+    if type(value) in set(type_.__args__).intersection(self.basictypes):
+        return value
+
+    exceptions = []
+
+    # Try all types
+    for t in type_.__args__:
         try:
-            # Try naïve conversion
-            return type_(value)  # type: ignore
+            return self.load(value, t)
+        except Exception as e:
+            exceptions.append(str(e))
+    raise ValueError(
+        'Value %s could not be loaded into %s\n\nConversion exceptions were:\n%s' % (
+            value,
+            type_,
+            '\n'.join(exceptions)
+        )
+    )
+
+def _enumload(self, value, type_) -> Enum:
+    """
+    This loads something into an Enum.
+
+    It tries with basic types first.
+
+    If that fails, it tries to look for type annotations inside the
+    Enum, and tries to use those to load the value into something
+    that is compatible with the Enum.
+
+    Of course if that fails too, a ValueError is raised.
+    """
+    try:
+        # Try naïve conversion
+        return type_(value)  # type: ignore
+    except:
+        pass
+
+    # Try with the typing hints
+    for _, t in get_type_hints(type_).items():
+        try:
+            return type_(self.load(value, t))
         except:
             pass
+    raise ValueError('Value %s could not be loaded into %s' % (value, type_))
 
-        # Try with the typing hints
-        for _, t in get_type_hints(type_).items():
-            try:
-                return type_(self.load(value, t))
-            except:
-                pass
-        raise ValueError('Value %s could not be loaded into %s' % (value, type_))
-
-    def _noneload(self, value, type_) -> None:
-        """
-        Loads a value that can only be None,
-        so it fails if it isn't
-        """
-        if value is None:
-            return None
-        raise ValueError('%s is not None' % value)
+def _noneload(self, value, type_) -> None:
+    """
+    Loads a value that can only be None,
+    so it fails if it isn't
+    """
+    if value is None:
+        return None
+    raise ValueError('%s is not None' % value)
