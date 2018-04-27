@@ -222,6 +222,15 @@ class Loader:
                 pass
         raise ValueError('Value %s could not be loaded into %s' % (value, type_))
 
+    def _noneload(self, value, type_) -> None:
+        """
+        Loads a value that can only be None,
+        so it fails if it isn't
+        """
+        if value is None:
+            return None
+        raise ValueError('%s is not None' % value)
+
     def load(self, value: Any, type_: Type[T]) -> T:
         """
         Loads value into the typed data structure.
@@ -229,25 +238,20 @@ class Loader:
         TypeError is raised if there is no known way to treat type_,
         otherwise all errors raise a ValueError.
         """
-        if type_ == NONETYPE:
-            if value is None:
-                return None
-            raise ValueError('%s is not None' % value)
-        elif getattr(type_, '__origin__', None) == Union:
-            return self._unionload(value, type_)
-        elif type_ in self.basictypes:
-            return self._basicload(value, type_)
-        elif issubclass(type_, Enum):
-            return self._enumload(value, type_)  # type: ignore
-        elif issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple:
-            return self._tupleload(value, type_)
-        elif issubclass(type_, list) and getattr(type_, '__origin__', None) == List:
-            return self._listload(value, type_)  # type: ignore
-        elif issubclass(type_, dict) and getattr(type_, '__origin__', None) == Dict:
-            return self._dictload(value, type_)  # type: ignore
-        elif issubclass(type_, set) and getattr(type_, '__origin__', None) == Set:
-            return self._setload(value, type_)  # type: ignore
-        elif issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}):
-            return self._namedtupleload(value, type_)
-        else:
-            raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
+        l = [
+            (lambda type_: type_ == NONETYPE, self._noneload),
+            (lambda type_: getattr(type_, '__origin__', None) == Union, self._unionload),
+            (lambda type_: type_ in self.basictypes, self._basicload),
+            (lambda type_: issubclass(type_, Enum), self._enumload),
+            (lambda type_: issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple, self._tupleload),
+            (lambda type_: issubclass(type_, list) and getattr(type_, '__origin__', None) == List, self._listload),
+            (lambda type_: issubclass(type_, dict) and getattr(type_, '__origin__', None) == Dict, self._dictload),
+            (lambda type_: issubclass(type_, set) and getattr(type_, '__origin__', None) == Set, self._setload),
+            (lambda type_: issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), self._namedtupleload),
+        ]
+
+        for cond, func in l:
+            if cond(type_):
+                return func(value, type_)
+
+        raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
