@@ -57,6 +57,12 @@ class Loader:
 
     handlers: This is the list that the loader uses to
         perform its task.
+        The elements are: Tuple[Condition,Loader]
+        Condition(type) -> Bool
+        Loader(loader, value, type) -> type
+
+        In most cases, it is sufficient to append new elements
+        at the end, to handle more types.
 
     There is support for:
         * Basic python types (int, str, bool, float, NoneType)
