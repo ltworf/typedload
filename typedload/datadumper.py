@@ -44,6 +44,27 @@ class Dumper:
         hidedefault: When enabled, does not include fields that
             have the same value as the default in the dump.
 
+        raiseconditionerrors: Enabled by default.
+            Raises exceptions when evaluating a condition from an
+            handler. When disabled, the exceptions are not raised
+            and the condition is considered False.
+
+        handlers: This is the list that the dumper uses to
+            perform its task.
+            The type is:
+            List[
+                Tuple[
+                    Callable[[Any], bool],
+                    Callable[['Dumper', Any], Any]
+                ]
+            ]
+            The elements are: Tuple[Condition,Dumper]
+            Condition(value) -> Bool
+            Dumper(dumper, value) -> simpler_value
+
+            In most cases, it is sufficient to append new elements
+            at the end, to handle more types.
+
         There is support for:
             * Basic python types (int, str, bool, float, NoneType)
             * NamedTuple
@@ -57,20 +78,34 @@ class Dumper:
 
         self.hidedefault = True
 
+        # Raise errors if the condition fails
+        self.raiseconditionerrors = True
+
+        self.handlers = [
+            (lambda value: type(value) in self.basictypes, lambda l, value: value),
+            (lambda value: isinstance(value, tuple) and hasattr(value, '_fields') and hasattr(value, '_asdict'), _namedtupledump),
+            (lambda value: isinstance(value, (list, tuple, set)), lambda l, value: [l.dump(i) for i in value]),
+            (lambda value: isinstance(value, Enum), lambda l, value: l.dump(value.value)),
+            (lambda value: isinstance(value, Dict), lambda l, value: {l.dump(k): l.dump(v) for k, v in value.items()}),
+        ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
+
     def dump(self, value: Any) -> Any:
-        if type(value) in self.basictypes:
-            return value
-        elif isinstance(value, tuple) and {'_fields', '_asdict'}.issubset(set(dir(value))):
-            field_defaults = getattr(value, '_field_defaults', {})
-            # Named tuple, skip default values
-            return {
-                k: self.dump(v) for k, v in value._asdict().items()  # type: ignore
-                if not self.hidedefault or k not in field_defaults or field_defaults[k] != v  # type: ignore
-            }
-        elif isinstance(value, list) or isinstance(value, tuple) or isinstance(value, set):
-            return [self.dump(i) for i in value]
-        elif isinstance(value, Enum):
-            return self.dump(value.value)
-        elif isinstance(value, Dict):
-            return {self.dump(k): self.dump(v) for k, v in value.items()}
+        for cond, func in self.handlers:
+            try:
+                r = cond(value)
+            except:
+                if self.raiseconditionerrors:
+                    raise
+                r = False
+            if r:
+                return func(self, value)
         raise ValueError('Unable to dump %s' % value)
+
+
+def _namedtupledump(l, value):
+    field_defaults = getattr(value, '_field_defaults', {})
+    # Named tuple, skip default values
+    return {
+        k: l.dump(v) for k, v in value._asdict().items()  # type: ignore
+        if not l.hidedefault or k not in field_defaults or field_defaults[k] != v  # type: ignore
+    }

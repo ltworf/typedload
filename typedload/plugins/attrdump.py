@@ -1,4 +1,6 @@
 # typedload
+# Module to load data into data structures from the "attr" module
+
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
@@ -17,21 +19,21 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
-import unittest
+from typing import Any, Dict
 
-from .test_dataloader import *
-from .test_datadumper import *
-from .test_dumpload import *
 
-# Run tests for the attr plugin only if it is loaded
-try:
-    import attr
-    attr_module = True
-except ImportError:
-    attr_module = False
+def _condition(value: Any) -> bool:
+    return hasattr(value, '__attrs_attrs__')
 
-if attr_module:
-    from .test_attrload import *
 
-if __name__ == '__main__':
-    unittest.main()
+def _attrdump(d, value) -> Dict[str, Any]:
+    r = {}
+    for attr in value.__attrs_attrs__:
+        attrval = getattr(value, attr.name)
+        if not (d.hidedefault and attrval == attr.default):
+            r[attr.name] = d.dump(attrval)
+    return r
+
+
+def add2dumper(l) -> None:
+    l.handlers.append((_condition, _attrdump))

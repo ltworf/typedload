@@ -88,3 +88,26 @@ class TestBasicDump(unittest.TestCase):
         with self.assertRaises(ValueError):
             assert dumper.dump(None) == None
             assert dumper.dump(True) == True
+
+
+class TestHandlers(unittest.TestCase):
+
+    def test_custom_handler(self):
+        class Q:
+            def __eq__(self, other):
+                return isinstance(other, Q)
+
+        dumper = datadumper.Dumper()
+        dumper.handlers.append((
+            lambda v: isinstance(v, Q),
+            lambda l, v: 12
+        ))
+        assert dumper.dump(Q()) == 12
+
+    def test_broken_handler(self):
+        dumper = datadumper.Dumper()
+        dumper.handlers.insert(0, (lambda v: 'a' + v is None, lambda l, v: None))
+        with self.assertRaises(TypeError):
+            dumper.dump(1)
+        dumper.raiseconditionerrors = False
+        assert dumper.dump(1) == 1
