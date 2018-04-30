@@ -55,6 +55,11 @@ class Loader:
         If you know that your original data is encoded
         properly, it is better to disable this.
 
+    raiseconditionerrors: Enabled by default.
+        Raises exceptions when evaluating a condition from an
+        handler. When disabled, the exceptions are not raised
+        and the condition is considered False.
+
     handlers: This is the list that the loader uses to
         perform its task.
         The elements are: Tuple[Condition,Loader]
@@ -92,6 +97,9 @@ class Loader:
         # By default the extra data is ignored.
         self.failonextra = False
 
+        # Raise errors if the condition fails
+        self.raiseconditionerrors = True
+
         # The list of handlers to use to load the data.
         # It gets iterated in order, and the first condition
         # that matches is used to load the value.
@@ -118,6 +126,8 @@ class Loader:
             try:
                 match = cond(type_)
             except:
+                if self.raiseconditionerrors:
+                    raise
                 match = False
             if match:
                 return func(self, value, type_)

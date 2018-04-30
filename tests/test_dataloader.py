@@ -336,3 +336,10 @@ class TestHandlers(unittest.TestCase):
         ))
         assert loader.load('test', Q) == Q()
 
+    def test_broken_handler(self):
+        loader = dataloader.Loader()
+        loader.handlers.insert(0, (lambda t: 33 + t is None, lambda l, v, t: None))
+        with self.assertRaises(TypeError):
+            loader.load(1, int)
+        loader.raiseconditionerrors = False
+        assert loader.load(1, int) == 1

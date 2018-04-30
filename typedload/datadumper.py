@@ -44,6 +44,11 @@ class Dumper:
         hidedefault: When enabled, does not include fields that
             have the same value as the default in the dump.
 
+        raiseconditionerrors: Enabled by default.
+            Raises exceptions when evaluating a condition from an
+            handler. When disabled, the exceptions are not raised
+            and the condition is considered False.
+
         There is support for:
             * Basic python types (int, str, bool, float, NoneType)
             * NamedTuple
@@ -56,6 +61,9 @@ class Dumper:
         self.basictypes = {int, bool, float, str, NONETYPE}
 
         self.hidedefault = True
+
+        # Raise errors if the condition fails
+        self.raiseconditionerrors = True
 
         self.handlers = [
             (lambda value: type(value) in self.basictypes, lambda l, value: value),
@@ -70,6 +78,8 @@ class Dumper:
             try:
                 r = cond(value)
             except:
+                if self.raiseconditionerrors:
+                    raise
                 r = False
             if r:
                 return func(self, value)
