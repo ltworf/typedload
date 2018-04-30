@@ -99,7 +99,19 @@ def attrload(value: Any, type_: Type[T]) -> T:
     in addition to the default ones.
     """
     from . import dataloader
-    from .plugins import attrload
+    from .plugins import attrload as loadplugin
     loader = dataloader.Loader()
-    attrload.add2loader(loader)
+    loadplugin.add2loader(loader)
     return loader.load(value, type_)
+
+
+def attrdump(value: Any) -> Any:
+    """
+    Quick function to do a dump that supports the attr
+    module.
+    """
+    from . import datadumper
+    from .plugins import attrdump as dumpplugin
+    dumper = datadumper.Dumper()
+    dumpplugin.add2dumper(dumper)
+    return dumper.dump(value)
