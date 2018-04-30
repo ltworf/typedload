@@ -22,7 +22,9 @@ import unittest
 
 import attr
 
-from typedload import attrload
+from typedload import attrload, attrdump
+from typedload import datadumper
+from typedload.plugins import attrdump as attrplugin
 
 
 class Hair(Enum):
@@ -47,6 +49,33 @@ class DetailedPerson(Person):
 class Students:
     course = attr.ib(type=str)
     students = attr.ib(type=List[Person])
+
+
+class TestAttrDump(unittest.TestCase):
+
+    def test_basicdump(self):
+        assert attrdump(Person()) == {}
+        assert attrdump(Person('Alfio')) == {'name': 'Alfio'}
+        assert attrdump(Person('Alfio', '33')) == {'name': 'Alfio', 'address': '33'}
+
+    def test_dumpdefault(self):
+        dumper = datadumper.Dumper()
+        attrplugin.add2dumper(dumper)
+        dumper.hidedefault = False
+        assert dumper.dump(Person()) == {'name': 'Turiddu', 'address': None}
+
+    def test_nesteddump(self):
+        assert attrdump(
+            Students('advanced coursing', [
+            Person('Alfio'),
+            Person('Carmelo', 'via mulino'),
+        ])) == {
+            'course': 'advanced coursing',
+            'students': [
+                {'name': 'Alfio'},
+                {'name': 'Carmelo', 'address': 'via mulino'},
+            ]
+        }
 
 
 class TestAttrload(unittest.TestCase):
