@@ -75,5 +75,5 @@ def _condition(t) -> bool:
     return hasattr(t, '__attrs_attrs__')
 
 
-def add2loader(l: 'Loader'):
+def add2loader(l) -> None:
     l.handlers.append((_condition, _attrload))
