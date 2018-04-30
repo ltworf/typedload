@@ -57,20 +57,29 @@ class Dumper:
 
         self.hidedefault = True
 
+        self.handlers = [
+            (lambda value: type(value) in self.basictypes, lambda l, value: value),
+            (lambda value: isinstance(value, tuple) and hasattr(value, '_fields') and hasattr(value, '_asdict'), _namedtupledump),
+            (lambda value: isinstance(value, (list, tuple, set)), lambda l, value: [l.dump(i) for i in value]),
+            (lambda value: isinstance(value, Enum), lambda l, value: l.dump(value.value)),
+            (lambda value: isinstance(value, Dict), lambda l, value: {l.dump(k): l.dump(v) for k, v in value.items()}),
+        ]
+
     def dump(self, value: Any) -> Any:
-        if type(value) in self.basictypes:
-            return value
-        elif isinstance(value, tuple) and {'_fields', '_asdict'}.issubset(set(dir(value))):
-            field_defaults = getattr(value, '_field_defaults', {})
-            # Named tuple, skip default values
-            return {
-                k: self.dump(v) for k, v in value._asdict().items()  # type: ignore
-                if not self.hidedefault or k not in field_defaults or field_defaults[k] != v  # type: ignore
-            }
-        elif isinstance(value, list) or isinstance(value, tuple) or isinstance(value, set):
-            return [self.dump(i) for i in value]
-        elif isinstance(value, Enum):
-            return self.dump(value.value)
-        elif isinstance(value, Dict):
-            return {self.dump(k): self.dump(v) for k, v in value.items()}
+        for cond, func in self.handlers:
+            try:
+                r = cond(value)
+            except:
+                r = False
+            if r:
+                return func(self, value)
         raise ValueError('Unable to dump %s' % value)
+
+
+def _namedtupledump(l, value):
+    field_defaults = getattr(value, '_field_defaults', {})
+    # Named tuple, skip default values
+    return {
+        k: l.dump(v) for k, v in value._asdict().items()  # type: ignore
+        if not l.hidedefault or k not in field_defaults or field_defaults[k] != v  # type: ignore
+    }
