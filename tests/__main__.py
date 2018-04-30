@@ -27,7 +27,7 @@ from .test_dumpload import *
 try:
     import attr
     attr_module = True
-except:
+except ImportError:
     attr_module = False
 
 if attr_module:
