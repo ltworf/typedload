@@ -62,6 +62,14 @@ class Loader:
 
     handlers: This is the list that the loader uses to
         perform its task.
+        The type is:
+        List[
+            Tuple[
+                Callable[[Type[T]], bool],
+                Callable[['Loader', Any, Type[T]], T]
+            ]
+        ]
+
         The elements are: Tuple[Condition,Loader]
         Condition(type) -> Bool
         Loader(loader, value, type) -> type
@@ -113,7 +121,7 @@ class Loader:
             (lambda type_: issubclass(type_, dict) and getattr(type_, '__origin__', None) == Dict, _dictload),
             (lambda type_: issubclass(type_, set) and getattr(type_, '__origin__', None) == Set, _setload),
             (lambda type_: issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), _namedtupleload),
-        ]
+        ]  # type: List[Tuple[Callable[[Type[T]], bool], Callable[['Loader', Any, Type[T]], T]]]
 
     def load(self, value: Any, type_: Type[T]) -> T:
         """

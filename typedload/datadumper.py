@@ -51,9 +51,16 @@ class Dumper:
 
         handlers: This is the list that the dumper uses to
             perform its task.
+            The type is:
+            List[
+                Tuple[
+                    Callable[[Any], bool],
+                    Callable[['Dumper', Any], Any]
+                ]
+            ]
             The elements are: Tuple[Condition,Dumper]
             Condition(value) -> Bool
-            Dumper(dumper, value) -> type
+            Dumper(dumper, value) -> simpler_value
 
             In most cases, it is sufficient to append new elements
             at the end, to handle more types.
@@ -80,7 +87,7 @@ class Dumper:
             (lambda value: isinstance(value, (list, tuple, set)), lambda l, value: [l.dump(i) for i in value]),
             (lambda value: isinstance(value, Enum), lambda l, value: l.dump(value.value)),
             (lambda value: isinstance(value, Dict), lambda l, value: {l.dump(k): l.dump(v) for k, v in value.items()}),
-        ]
+        ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
 
     def dump(self, value: Any) -> Any:
         for cond, func in self.handlers:
