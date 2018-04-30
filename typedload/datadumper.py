@@ -49,6 +49,15 @@ class Dumper:
             handler. When disabled, the exceptions are not raised
             and the condition is considered False.
 
+        handlers: This is the list that the dumper uses to
+            perform its task.
+            The elements are: Tuple[Condition,Dumper]
+            Condition(value) -> Bool
+            Dumper(dumper, value) -> type
+
+            In most cases, it is sufficient to append new elements
+            at the end, to handle more types.
+
         There is support for:
             * Basic python types (int, str, bool, float, NoneType)
             * NamedTuple
