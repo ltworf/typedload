@@ -58,6 +58,13 @@ class TestAttrDump(unittest.TestCase):
         assert attrdump(Person('Alfio')) == {'name': 'Alfio'}
         assert attrdump(Person('Alfio', '33')) == {'name': 'Alfio', 'address': '33'}
 
+    def test_norepr(self):
+        @attr.s
+        class A:
+            i = attr.ib(type=int)
+            j = attr.ib(type=int, repr=False)
+        assert attrdump(A(1,1)) == {'i': 1}
+
     def test_dumpdefault(self):
         dumper = datadumper.Dumper()
         attrplugin.add2dumper(dumper)

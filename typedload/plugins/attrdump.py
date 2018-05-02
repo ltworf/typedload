@@ -30,6 +30,8 @@ def _attrdump(d, value) -> Dict[str, Any]:
     r = {}
     for attr in value.__attrs_attrs__:
         attrval = getattr(value, attr.name)
+        if not attr.repr:
+            continue
         if not (d.hidedefault and attrval == attr.default):
             r[attr.name] = d.dump(attrval)
     return r
