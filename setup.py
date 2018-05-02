@@ -41,7 +41,7 @@ can be converted to json.
     author_email='tiposchi@tiscali.it',
     license='GPLv3',
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+       # 'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3.5',
     ],
