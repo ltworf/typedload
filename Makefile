@@ -36,6 +36,7 @@ dist: clean
 		typedload/CHANGELOG \
 		typedload/README.md \
 		typedload/example.py \
+		typedload/mypy.conf \
 		typedload/typedload
 	mv ../typedload.tar.gz typedload_`./setup.py --version`.orig.tar.gz
 	gpg --detach-sign -a *.orig.tar.gz
