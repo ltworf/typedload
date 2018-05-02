@@ -1,7 +1,9 @@
 1.1
 * Able to load and dump old style NamedTuple
-* Supporting packaging for 3.5
+* Support for Python 3.5
 * Target to run mypy in makefile
+* Refactor to support plugins. The API is still compatible.
+* Plugin for the attr module, seems useful in Python 3.5
 
 1.0
 * Has a setting to hide default fields or not, in dumps
