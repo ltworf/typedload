@@ -268,7 +268,7 @@ def _enumload(l: Loader, value, type_) -> Enum:
     """
     try:
         # Try naïve conversion
-        return type_(value)  # type: ignore
+        return type_(value)
     except:
         pass
 

@@ -106,6 +106,6 @@ def _namedtupledump(l, value):
     field_defaults = getattr(value, '_field_defaults', {})
     # Named tuple, skip default values
     return {
-        k: l.dump(v) for k, v in value._asdict().items()  # type: ignore
-        if not l.hidedefault or k not in field_defaults or field_defaults[k] != v  # type: ignore
+        k: l.dump(v) for k, v in value._asdict().items()
+        if not l.hidedefault or k not in field_defaults or field_defaults[k] != v
     }
