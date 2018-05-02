@@ -60,7 +60,6 @@ __all__ = [
     'load',
     'datadumper',
     'dump',
-    'attrload',
 ]
 
 
