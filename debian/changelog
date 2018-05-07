@@ -1,9 +1,9 @@
-typedload (1.1-1) UNRELEASED; urgency=medium
+typedload (1.1-1) unstable; urgency=low
 
   * New upstream release
   * Use mypy when creating the package
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Wed, 02 May 2018 19:20:18 +0200
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Mon, 07 May 2018 20:13:11 +0200
 
 typedload (1.0-1) unstable; urgency=medium
 
