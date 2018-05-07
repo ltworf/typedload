@@ -3,7 +3,7 @@ all: pypi
 .PHONY: test
 test:
 	# Only run tests on python 3.6 or greater
-	test `python3 --version | cut -d. -f2` -gt 5 && python3 -m tests || echo "WARNING: Skipping tests, python version is too old"
+	if test `python3 --version | cut -d. -f2` -gt 5; then python3 -m tests; else echo "WARNING: Skipping tests, python version is too old"; fi
 
 .PHONY: mypy
 mypy:
