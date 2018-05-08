@@ -1,3 +1,6 @@
+1.2
+* Ship the plugins in pypy
+
 1.1
 * Able to load and dump old style NamedTuple
 * Support for Python 3.5

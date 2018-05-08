@@ -22,7 +22,7 @@ from distutils.core import setup
 
 setup(
     name='typedload',
-    version='1.1',
+    version='1.2',
     description='Load and dump data from json-like format into typed data structures',
     long_description='''Manipulating data loaded from json is very error prone.
 
@@ -46,6 +46,6 @@ can be converted to json.
         'Programming Language :: Python :: 3.5',
     ],
     keywords='typing types mypy json',
-    packages=['typedload'],
+    packages=['typedload', 'typedload.plugins'],
     package_data={"typedload": ["py.typed"]},
 )
