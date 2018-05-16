@@ -32,6 +32,14 @@ NONETYPE = type(None)
 T = TypeVar('T')
 
 
+# This is a workaround for an incompatibility between 3.5.2 and previous, and 3.5.3 and later
+try:
+    issubclass(Union[int,str], Union)
+    HAS_UNIONSUBCLASS = True
+except:
+    HAS_UNIONSUBCLASS = False
+
+
 class Loader:
     """
     A loader object that recursively loads data into
