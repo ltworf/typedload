@@ -116,12 +116,17 @@ class Loader:
         # Raise errors if the condition fails
         self.raiseconditionerrors = True
 
+        if HAS_UNIONSUBCLASS:
+            union_check = lambda type_: issubclass(type_, Union)
+        else:
+            union_check = lambda type_: getattr(type_, '__origin__', None) == Union
+
         # The list of handlers to use to load the data.
         # It gets iterated in order, and the first condition
         # that matches is used to load the value.
         self.handlers = [
             (lambda type_: type_ == NONETYPE, _noneload),
-            (lambda type_: getattr(type_, '__origin__', None) == Union, _unionload),
+            (union_check, _unionload),
             (lambda type_: type_ in self.basictypes, _basicload),
             (lambda type_: issubclass(type_, Enum), _enumload),
             (lambda type_: issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple, _tupleload),
