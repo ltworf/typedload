@@ -34,7 +34,7 @@ T = TypeVar('T')
 
 # This is a workaround for an incompatibility between 3.5.2 and previous, and 3.5.3 and later
 try:
-    issubclass(Union[int,str], Union)
+    issubclass(Union[int,str], Union)  # type: ignore
     HAS_UNIONSUBCLASS = True
 except:
     HAS_UNIONSUBCLASS = False
@@ -119,15 +119,15 @@ class Loader:
 
         if HAS_UNIONSUBCLASS:
             # Old python
-            union_check = lambda type_: issubclass(type_, Union)
+            union_check = lambda type_: issubclass(type_, Union)  # type: ignore
         else:
             union_check = lambda type_: getattr(type_, '__origin__', None) == Union
 
         if HAS_TUPLEARGS:
-            tuple_check = lambda type_: issubclass(type_, Tuple) and getattr(type_, '__origin__', None) == Tuple
+            tuple_check = lambda type_: issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple
         else:
             # Old python
-            tuple_check = lambda type_: issubclass(type_, Tuple) and issubclass(type_, tuple) == False
+            tuple_check = lambda type_: issubclass(type_, Tuple) and issubclass(type_, tuple) == False  # type: ignore
 
         # The list of handlers to use to load the data.
         # It gets iterated in order, and the first condition
