@@ -38,6 +38,7 @@ try:
     HAS_UNIONSUBCLASS = True
 except:
     HAS_UNIONSUBCLASS = False
+HAS_TUPLEARGS = hasattr(Tuple[int, int], '__args__')
 
 
 class Loader:
@@ -117,9 +118,16 @@ class Loader:
         self.raiseconditionerrors = True
 
         if HAS_UNIONSUBCLASS:
+            # Old python
             union_check = lambda type_: issubclass(type_, Union)
         else:
             union_check = lambda type_: getattr(type_, '__origin__', None) == Union
+
+        if HAS_TUPLEARGS:
+            tuple_check = lambda type_: issubclass(type_, Tuple) and getattr(type_, '__origin__', None) == Tuple
+        else:
+            # Old python
+            tuple_check = lambda type_: issubclass(type_, Tuple) and issubclass(type_, tuple) == False
 
         # The list of handlers to use to load the data.
         # It gets iterated in order, and the first condition
@@ -129,7 +137,7 @@ class Loader:
             (union_check, _unionload),
             (lambda type_: type_ in self.basictypes, _basicload),
             (lambda type_: issubclass(type_, Enum), _enumload),
-            (lambda type_: issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple, _tupleload),
+            (tuple_check, _tupleload),
             (lambda type_: issubclass(type_, list) and getattr(type_, '__origin__', None) == List, _listload),
             (lambda type_: issubclass(type_, dict) and getattr(type_, '__origin__', None) == Dict, _dictload),
             (lambda type_: issubclass(type_, set) and getattr(type_, '__origin__', None) == Set, _setload),
@@ -199,12 +207,16 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
     """
     This loads into something like Tuple[int,str]
     """
-    if l.failonextra and len(value) > len(type_.__args__):
+    if HAS_TUPLEARGS:
+        args = type_.__args__
+    else:
+        args = type_.__tuple_params__
+    if l.failonextra and len(value) > len(args):
         raise ValueError('Value %s is too long for type %s' % (value, type_))
-    elif len(value) < len(type_.__args__):
+    elif len(value) < len(args):
         raise ValueError('Value %s is too short for type %s' % (value, type_))
 
-    return tuple(l.load(v, t) for v, t in zip(value, type_.__args__))
+    return tuple(l.load(v, t) for v, t in zip(value, args))
 
 def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
     """
