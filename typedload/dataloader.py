@@ -32,6 +32,15 @@ NONETYPE = type(None)
 T = TypeVar('T')
 
 
+# This is a workaround for an incompatibility between 3.5.2 and previous, and 3.5.3 and later
+try:
+    issubclass(Union[int,str], Union)  # type: ignore
+    HAS_UNIONSUBCLASS = True
+except:
+    HAS_UNIONSUBCLASS = False
+HAS_TUPLEARGS = hasattr(Tuple[int, int], '__args__')
+
+
 class Loader:
     """
     A loader object that recursively loads data into
@@ -108,15 +117,27 @@ class Loader:
         # Raise errors if the condition fails
         self.raiseconditionerrors = True
 
+        if HAS_UNIONSUBCLASS:
+            # Old python
+            union_check = lambda type_: issubclass(type_, Union)  # type: ignore
+        else:
+            union_check = lambda type_: getattr(type_, '__origin__', None) == Union
+
+        if HAS_TUPLEARGS:
+            tuple_check = lambda type_: issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple
+        else:
+            # Old python
+            tuple_check = lambda type_: issubclass(type_, Tuple) and issubclass(type_, tuple) == False  # type: ignore
+
         # The list of handlers to use to load the data.
         # It gets iterated in order, and the first condition
         # that matches is used to load the value.
         self.handlers = [
             (lambda type_: type_ == NONETYPE, _noneload),
-            (lambda type_: getattr(type_, '__origin__', None) == Union, _unionload),
+            (union_check, _unionload),
             (lambda type_: type_ in self.basictypes, _basicload),
             (lambda type_: issubclass(type_, Enum), _enumload),
-            (lambda type_: issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple, _tupleload),
+            (tuple_check, _tupleload),
             (lambda type_: issubclass(type_, list) and getattr(type_, '__origin__', None) == List, _listload),
             (lambda type_: issubclass(type_, dict) and getattr(type_, '__origin__', None) == Dict, _dictload),
             (lambda type_: issubclass(type_, set) and getattr(type_, '__origin__', None) == Set, _setload),
@@ -186,12 +207,16 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
     """
     This loads into something like Tuple[int,str]
     """
-    if l.failonextra and len(value) > len(type_.__args__):
+    if HAS_TUPLEARGS:
+        args = type_.__args__
+    else:
+        args = type_.__tuple_params__
+    if l.failonextra and len(value) > len(args):
         raise ValueError('Value %s is too long for type %s' % (value, type_))
-    elif len(value) < len(type_.__args__):
+    elif len(value) < len(args):
         raise ValueError('Value %s is too short for type %s' % (value, type_))
 
-    return tuple(l.load(v, t) for v, t in zip(value, type_.__args__))
+    return tuple(l.load(v, t) for v, t in zip(value, args))
 
 def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
     """
@@ -234,14 +259,21 @@ def _unionload(l: Loader, value, type_) -> Any:
     If no suitable type is found, an exception is raised.
     """
 
+    if hasattr(type_, '__args__'):
+        args = type_.__args__
+    elif hasattr(type_, '__union_params__'):
+        args = type_.__union_params__
+    else:
+        raise AttributeError('The typing API for this Python version is unknown')
+
     # Do not convert basic types, if possible
-    if type(value) in set(type_.__args__).intersection(l.basictypes):
+    if type(value) in set(args).intersection(l.basictypes):
         return value
 
     exceptions = []
 
     # Try all types
-    for t in type_.__args__:
+    for t in args:
         try:
             return l.load(value, t)
         except Exception as e:
