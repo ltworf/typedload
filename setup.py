@@ -30,7 +30,7 @@ If the format changes unexpectedly, errors arise at the time of use, fields can
 disappear or change type.
 
 This library allows loading data using NamedTuple and similar type hints,
-so obtain a more safe to use data structure. All exceptions will be generated in
+to obtain a more safe to use data structure. All exceptions will be generated in
 a single point, when loading, rather than in multiple points, when using.
 
 It also provides a module to do the opposite and revert back to something that
