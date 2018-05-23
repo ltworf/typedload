@@ -86,6 +86,13 @@ class Loader:
         In most cases, it is sufficient to append new elements
         at the end, to handle more types.
 
+    These parameters can be set as named arguments in the constructor
+    or they can be set later on.
+
+    The constructor will accept any named argument, but only the documented
+    ones have any effect. This is to allow custom handlers to have their
+    own parameters as well.
+
     There is support for:
         * Basic python types (int, str, bool, float, NoneType)
         * NamedTuple
@@ -101,7 +108,7 @@ class Loader:
     similar to each other, it is easy to obtain an unexpected type.
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         # Types that do not need conversion
         self.basictypes = {int, bool, float, str}
 
@@ -143,6 +150,9 @@ class Loader:
             (lambda type_: issubclass(type_, set) and getattr(type_, '__origin__', None) == Set, _setload),
             (lambda type_: issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), _namedtupleload),
         ]  # type: List[Tuple[Callable[[Type[T]], bool], Callable[['Loader', Any, Type[T]], T]]]
+
+        for k, v in kwargs.items():
+            setattr(self, k, v)
 
     def load(self, value: Any, type_: Type[T]) -> T:
         """
