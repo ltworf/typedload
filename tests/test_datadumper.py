@@ -21,7 +21,7 @@ from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
-from typedload import datadumper, dataloader, dump, load
+from typedload import datadumper, dump, load
 
 
 class EnumA(Enum):
@@ -111,3 +111,10 @@ class TestHandlers(unittest.TestCase):
             dumper.dump(1)
         dumper.raiseconditionerrors = False
         assert dumper.dump(1) == 1
+
+
+class TestDumper(unittest.TestCase):
+
+    def test_kwargs(self):
+        with self.assertRaises(ValueError):
+            dump(1, handlers=[])

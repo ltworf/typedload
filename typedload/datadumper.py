@@ -33,7 +33,7 @@ NONETYPE = type(None)
 
 class Dumper:
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """
         This dumps data structures recursively using only
         basic types, lists and dictionaries.
@@ -65,6 +65,13 @@ class Dumper:
             In most cases, it is sufficient to append new elements
             at the end, to handle more types.
 
+        These parameters can be set as named arguments in the constructor
+        or they can be set later on.
+
+        The constructor will accept any named argument, but only the documented
+        ones have any effect. This is to allow custom handlers to have their
+        own parameters as well.
+
         There is support for:
             * Basic python types (int, str, bool, float, NoneType)
             * NamedTuple
@@ -88,6 +95,9 @@ class Dumper:
             (lambda value: isinstance(value, Enum), lambda l, value: l.dump(value.value)),
             (lambda value: isinstance(value, Dict), lambda l, value: {l.dump(k): l.dump(v) for k, v in value.items()}),
         ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
+
+        for k, v in kwargs.items():
+            setattr(self, k, v)
 
     def dump(self, value: Any) -> Any:
         for cond, func in self.handlers:

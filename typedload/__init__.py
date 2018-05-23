@@ -66,7 +66,7 @@ __all__ = [
 T = TypeVar('T')
 
 
-def load(value: Any, type_: Type[T]) -> T:
+def load(value: Any, type_: Type[T], **kwargs) -> T:
     """
     Quick function call to load data into a type.
 
@@ -74,11 +74,11 @@ def load(value: Any, type_: Type[T]) -> T:
     in case only the default parameters are used.
     """
     from . import dataloader
-    loader = dataloader.Loader()
+    loader = dataloader.Loader(**kwargs)
     return loader.load(value, type_)
 
 
-def dump(value: Any) -> Any:
+def dump(value: Any, **kwargs) -> Any:
     """
     Quick function to dump a data structure into
     something that is compatible with json or
@@ -88,29 +88,29 @@ def dump(value: Any) -> Any:
     in case only the default parameters are used.
     """
     from . import datadumper
-    dumper = datadumper.Dumper()
+    dumper = datadumper.Dumper(**kwargs)
     return dumper.dump(value)
 
 
-def attrload(value: Any, type_: Type[T]) -> T:
+def attrload(value: Any, type_: Type[T], **kwargs) -> T:
     """
     Quick function call to load data supporting the attr module
     in addition to the default ones.
     """
     from . import dataloader
     from .plugins import attrload as loadplugin
-    loader = dataloader.Loader()
+    loader = dataloader.Loader(**kwargs)
     loadplugin.add2loader(loader)
     return loader.load(value, type_)
 
 
-def attrdump(value: Any) -> Any:
+def attrdump(value: Any, **kwargs) -> Any:
     """
     Quick function to do a dump that supports the attr
     module.
     """
     from . import datadumper
     from .plugins import attrdump as dumpplugin
-    dumper = datadumper.Dumper()
+    dumper = datadumper.Dumper(**kwargs)
     dumpplugin.add2dumper(dumper)
     return dumper.dump(value)
