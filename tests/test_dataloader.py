@@ -276,6 +276,14 @@ class TestEnum(unittest.TestCase):
         assert loader.load(['2', 1], Tuple[TestEnum, TestEnum]) == (TestEnum.LABEL2, TestEnum.LABEL1)
 
 
+class TestLoader(unittest.TestCase):
+
+    def test_kwargs(self):
+        with self.assertRaises(ValueError):
+            load(1, str, basiccast=False)
+            load(1, int, handlers=[])
+
+
 class TestBasicTypes(unittest.TestCase):
 
     def test_basic_casting(self):
