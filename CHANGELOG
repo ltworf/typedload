@@ -1,3 +1,5 @@
+1.5
+
 1.4
 * Add support for name mangling in attr plugin
 * Parameters can be passed as kwargs
