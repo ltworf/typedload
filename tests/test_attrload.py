@@ -50,6 +50,9 @@ class Students:
     course = attr.ib(type=str)
     students = attr.ib(type=List[Person])
 
+@attr.s
+class Mangle:
+    value = attr.ib(type=int, metadata={'name': 'va.lue'})
 
 class TestAttrDump(unittest.TestCase):
 
@@ -109,10 +112,14 @@ class TestAttrload(unittest.TestCase):
             Person('Carmelo', 'via mulino'),
         ])
 
-    def test_metanames(self):
 
-        @attr.s
-        class T:
-            value = attr.ib(type=int, metadata={'name': 'va.lue'})
+class TestMangling(unittest.TestCase):
 
-        assert attrload({'va.lue': 12}, T) == T(12)
+    def test_load_metanames(self):
+        a = {'va.lue': 12}
+        b = a.copy()
+        assert attrload(a, Mangle) == Mangle(12)
+        assert a == b
+
+    def test_dump_metanames(self):
+        assert attrdump(Mangle(12)) == {'va.lue': 12}
