@@ -223,8 +223,8 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
     This loads a Dict[str, Any] into a NamedTuple.
     """
     fields = set(type_._fields)
-    optaional_fields = set(getattr(type_, '_field_defaults', {}).keys())
-    necessary_fields = fields.difference(optaional_fields)
+    optional_fields = set(getattr(type_, '_field_defaults', {}).keys())
+    necessary_fields = fields.difference(optional_fields)
     vfields = set(value.keys())
 
     if necessary_fields.intersection(vfields) != necessary_fields:
