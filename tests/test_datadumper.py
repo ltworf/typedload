@@ -21,7 +21,7 @@ from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
-from typedload import datadumper, dataloader, dump, load
+from typedload import datadumper, dump, load
 
 
 class EnumA(Enum):
