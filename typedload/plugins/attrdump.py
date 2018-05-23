@@ -45,7 +45,7 @@ def _attrdump(d, value) -> Dict[str, Any]:
         if not attr.repr:
             continue
         if not (d.hidedefault and attrval == attr.default):
-            name = attr.metadata['name'] if 'name' in attr.metadata else attr.name
+            name = attr.metadata.get('name', attr.name)
             r[name] = d.dump(attrval)
     return r
 
