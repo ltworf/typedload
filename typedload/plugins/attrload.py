@@ -52,6 +52,7 @@ class _FakeNamedTuple(tuple):
 
 
 def _attrload(l, value, type_):
+    value = value.copy()
     names = []
     defaults = {}
     types = {}
@@ -60,6 +61,16 @@ def _attrload(l, value, type_):
         names.append(attribute.name)
         types[attribute.name] = attribute.type
         defaults[attribute.name] = attribute.default
+
+        # Manage name mangling
+        if 'name' in attribute.metadata:
+            dataname = attribute.metadata['name']
+            pyname = attribute.name
+
+            if dataname in value:
+                tmp = value[dataname]
+                del value[dataname]
+                value[pyname] = tmp
 
     t = _FakeNamedTuple((
         tuple(names),

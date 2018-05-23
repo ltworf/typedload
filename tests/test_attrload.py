@@ -108,3 +108,11 @@ class TestAttrload(unittest.TestCase):
             Person('Alfio'),
             Person('Carmelo', 'via mulino'),
         ])
+
+    def test_metanames(self):
+
+        @attr.s
+        class T:
+            value = attr.ib(type=int, metadata={'name': 'va.lue'})
+
+        assert attrload({'va.lue': 12}, T) == T(12)
