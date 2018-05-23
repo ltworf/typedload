@@ -1,5 +1,17 @@
 # typedload
 # Module to load data into data structures from the "attr" module
+#
+# Name mangling is supported by having a 'name' attribute in the metadata
+#
+# @attr.s
+# class Example:
+#     attribute = attr.ib(type=int, metadata={'name': 'att.rib.ute:name'}
+#
+# The dictionary key for 'attribute' will be 'att.rib.ute:name'.
+#
+# This is very useful for keys that use invalid or reserved characters that
+# can't be used in variable names.
+# Another common application is to convert camelCase into not_camel_case.
 
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
 #
@@ -52,6 +64,7 @@ class _FakeNamedTuple(tuple):
 
 
 def _attrload(l, value, type_):
+    value = value.copy()
     names = []
     defaults = {}
     types = {}
@@ -60,6 +73,16 @@ def _attrload(l, value, type_):
         names.append(attribute.name)
         types[attribute.name] = attribute.type
         defaults[attribute.name] = attribute.default
+
+        # Manage name mangling
+        if 'name' in attribute.metadata:
+            dataname = attribute.metadata['name']
+            pyname = attribute.name
+
+            if dataname in value:
+                tmp = value[dataname]
+                del value[dataname]
+                value[pyname] = tmp
 
     t = _FakeNamedTuple((
         tuple(names),
