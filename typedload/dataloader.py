@@ -163,6 +163,7 @@ class Loader:
 
         raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
 
+
 def _basicload(l: Loader, value: Any, type_: type) -> Any:
     """
     This converts a value into a basic type.
@@ -180,12 +181,14 @@ def _basicload(l: Loader, value: Any, type_: type) -> Any:
             raise ValueError('%s is not of type %s' % (value, type_))
     return value
 
+
 def _listload(l: Loader, value, type_) -> List:
     """
     This loads into something like List[int]
     """
     t = type_.__args__[0]
     return [l.load(v, t) for v in value]
+
 
 def _dictload(l: Loader, value, type_) -> Dict:
     """
@@ -196,12 +199,14 @@ def _dictload(l: Loader, value, type_) -> Dict:
     key_type, value_type = type_.__args__
     return {l.load(k, key_type): l.load(v, value_type) for k, v in value.items()}
 
+
 def _setload(l: Loader, value, type_) -> Set:
     """
     This loads into something like Set[int]
     """
     t = type_.__args__[0]
     return {l.load(i, t) for i in value}
+
 
 def _tupleload(l: Loader, value, type_) -> Tuple:
     """
@@ -217,6 +222,7 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
         raise ValueError('Value %s is too short for type %s' % (value, type_))
 
     return tuple(l.load(v, t) for v, t in zip(value, args))
+
 
 def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
     """
@@ -247,6 +253,7 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
             continue
         params[k] = l.load(v, type_hints[k])
     return type_(**params)
+
 
 def _unionload(l: Loader, value, type_) -> Any:
     """
@@ -286,6 +293,7 @@ def _unionload(l: Loader, value, type_) -> Any:
         )
     )
 
+
 def _enumload(l: Loader, value, type_) -> Enum:
     """
     This loads something into an Enum.
@@ -311,6 +319,7 @@ def _enumload(l: Loader, value, type_) -> Enum:
         except:
             pass
     raise ValueError('Value %s could not be loaded into %s' % (value, type_))
+
 
 def _noneload(l: Loader, value, type_) -> None:
     """
