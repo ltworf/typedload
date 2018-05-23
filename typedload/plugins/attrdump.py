@@ -11,6 +11,7 @@
 #
 # This is very useful for keys that use invalid or reserved characters that
 # can't be used in variable names.
+# Another common application is to convert camelCase into not_camel_case.
 
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
 #
