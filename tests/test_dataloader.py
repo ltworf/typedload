@@ -136,6 +136,7 @@ class TestUnion(unittest.TestCase):
         loader.basiccast = True
         assert type(loader.load(1, Optional[Union[int, float]])) == int
         assert type(loader.load(1.0, Optional[Union[int, float]])) == float
+        assert loader.load(None, Optional[str]) is None
 
 
 class TestNamedTuple(unittest.TestCase):

@@ -110,7 +110,7 @@ class Loader:
 
     def __init__(self, **kwargs):
         # Types that do not need conversion
-        self.basictypes = {int, bool, float, str}
+        self.basictypes = {int, bool, float, str, NONETYPE}
 
         # If true, it attempts to do casting of basic types
         # otherwise an exception is raised
