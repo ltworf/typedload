@@ -32,15 +32,6 @@ NONETYPE = type(None)
 T = TypeVar('T')
 
 
-# This is a workaround for an incompatibility between 3.5.2 and previous, and 3.5.3 and later
-try:
-    _issubclass(Union[int,str], Union)
-    HAS_UNIONSUBCLASS = True
-except:
-    HAS_UNIONSUBCLASS = False
-HAS_TUPLEARGS = hasattr(Tuple[int, int], '__args__')
-
-
 def _issubclass(t1, t2) -> bool:
     """
     Wrapper around _issubclass to circumvent python 3.7 changing API
@@ -49,6 +40,15 @@ def _issubclass(t1, t2) -> bool:
         return issubclass(t1, t2)
     except TypeError:
         return False
+
+
+# This is a workaround for an incompatibility between 3.5.2 and previous, and 3.5.3 and later
+try:
+    _issubclass(Union[int,str], Union)
+    HAS_UNIONSUBCLASS = True
+except:
+    HAS_UNIONSUBCLASS = False
+HAS_TUPLEARGS = hasattr(Tuple[int, int], '__args__')
 
 
 class Loader:
