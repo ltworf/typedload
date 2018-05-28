@@ -44,7 +44,7 @@ def _issubclass(t1, t2) -> bool:
 
 # This is a workaround for an incompatibility between 3.5.2 and previous, and 3.5.3 and later
 try:
-    issubclass(Union[int,str], Union)
+    issubclass(Union[int,str], Union)  # type: ignore
     HAS_UNIONSUBCLASS = True
 except:
     HAS_UNIONSUBCLASS = False
