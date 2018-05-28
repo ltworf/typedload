@@ -44,6 +44,8 @@ can be converted to json.
        # 'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     keywords='typing types mypy json',
     packages=['typedload', 'typedload.plugins'],
