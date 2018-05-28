@@ -4,3 +4,4 @@ python:
 
 script:
   - make test
+  - make mypy
