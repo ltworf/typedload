@@ -1,6 +1,7 @@
 1.5
 * Improve handling of unions
 * Better continuous integration
+* Support python 3.7
 
 1.4
 * Add support for name mangling in attr plugin

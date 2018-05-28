@@ -32,6 +32,16 @@ NONETYPE = type(None)
 T = TypeVar('T')
 
 
+def _issubclass(t1, t2) -> bool:
+    """
+    Wrapper around _issubclass to circumvent python 3.7 changing API
+    """
+    try:
+        return issubclass(t1, t2)
+    except TypeError:
+        return False
+
+
 # This is a workaround for an incompatibility between 3.5.2 and previous, and 3.5.3 and later
 try:
     issubclass(Union[int,str], Union)  # type: ignore
@@ -126,15 +136,15 @@ class Loader:
 
         if HAS_UNIONSUBCLASS:
             # Old python
-            union_check = lambda type_: issubclass(type_, Union)  # type: ignore
+            union_check = lambda type_: _issubclass(type_, Union)
         else:
             union_check = lambda type_: getattr(type_, '__origin__', None) == Union
 
         if HAS_TUPLEARGS:
-            tuple_check = lambda type_: issubclass(type_, tuple) and getattr(type_, '__origin__', None) == Tuple
+            tuple_check = lambda type_: getattr(type_, '__origin__', None) in {tuple, Tuple}
         else:
             # Old python
-            tuple_check = lambda type_: issubclass(type_, Tuple) and issubclass(type_, tuple) == False  # type: ignore
+            tuple_check = lambda type_: _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
 
         # The list of handlers to use to load the data.
         # It gets iterated in order, and the first condition
@@ -143,12 +153,12 @@ class Loader:
             (lambda type_: type_ == NONETYPE, _noneload),
             (union_check, _unionload),
             (lambda type_: type_ in self.basictypes, _basicload),
-            (lambda type_: issubclass(type_, Enum), _enumload),
+            (lambda type_: _issubclass(type_, Enum), _enumload),
             (tuple_check, _tupleload),
-            (lambda type_: issubclass(type_, list) and getattr(type_, '__origin__', None) == List, _listload),
-            (lambda type_: issubclass(type_, dict) and getattr(type_, '__origin__', None) == Dict, _dictload),
-            (lambda type_: issubclass(type_, set) and getattr(type_, '__origin__', None) == Set, _setload),
-            (lambda type_: issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), _namedtupleload),
+            (lambda type_: getattr(type_, '__origin__', None) in {list, List}, _listload),
+            (lambda type_: getattr(type_, '__origin__', None) in {dict, Dict}, _dictload),
+            (lambda type_: getattr(type_, '__origin__', None) in {set, Set}, _setload),
+            (lambda type_: _issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), _namedtupleload),
         ]  # type: List[Tuple[Callable[[Type[T]], bool], Callable[['Loader', Any, Type[T]], T]]]
 
         for k, v in kwargs.items():
