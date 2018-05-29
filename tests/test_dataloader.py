@@ -77,23 +77,6 @@ class TestRealCase(unittest.TestCase):
         loader.load(c, BoardItem)
 
 
-class TestLegacy(unittest.TestCase):
-
-    def test_legacyload(self):
-        A = NamedTuple('A', [('a', int), ('b', str)])
-        assert load({'a': 101, 'b': 'ciao'}, A) == A(101, 'ciao')
-
-    def test_nestedlegacyload(self):
-        A = NamedTuple('A', [('a', int), ('b', str)])
-        B = NamedTuple('B', [('a', A), ('b', List[A])])
-
-        assert load({'a': {'a': 101, 'b': 'ciao'}, 'b': []}, B) == B(A(101, 'ciao'), [])
-        assert load(
-            {'a': {'a': 101, 'b': 'ciao'}, 'b': [{'a': 1, 'b': 'a'},{'a': 0, 'b': 'b'}]},
-            B
-        ) == B(A(101, 'ciao'), [A(1, 'a'),A(0, 'b')])
-
-
 class TestUnion(unittest.TestCase):
 
     def test_ComplicatedUnion(self):
@@ -182,72 +165,6 @@ class TestNamedTuple(unittest.TestCase):
             loader.load({'a': 3}, A)
 
 
-class TestSet(unittest.TestCase):
-
-    def test_load_set(self):
-        loader = dataloader.Loader()
-        r = {(1, 1), (2, 2), (0, 0)}
-        assert loader.load(zip(range(3), range(3)), Set[Tuple[int,int]]) == r
-        assert loader.load([1, '2', 2], Set[int]) == {1, 2}
-
-
-class TestDict(unittest.TestCase):
-
-    def test_load_dict(self):
-        loader = dataloader.Loader()
-        class State(Enum):
-            OK = 'ok'
-            FAILED = 'failed'
-
-        v = {'1': 'ok', '15': 'failed'}
-        r = {1: State.OK, 15: State.FAILED}
-        assert loader.load(v, Dict[int, State]) == r
-
-    def test_load_nondict(self):
-
-        class SimDict():
-
-            def items(self):
-                return zip(range(12), range(12))
-
-        loader = dataloader.Loader()
-        assert loader.load(SimDict(), Dict[str, int]) == {str(k): v for k,v in zip(range(12), range(12))}
-        with self.assertRaises(AttributeError):
-            loader.load(33, Dict[int, str])
-
-
-class TestTuple(unittest.TestCase):
-
-    def test_load_list_of_tuples(self):
-        t = List[Tuple[str, int, Tuple[int, int]]]
-        v = [
-            ['a', 12, [1, 1]],
-            ['b', 15, [3, 2]],
-        ]
-        r = [
-            ('a', 12, (1, 1)),
-            ('b', 15, (3, 2)),
-        ]
-        loader = dataloader.Loader()
-        assert loader.load(v, t) == r
-
-
-    def test_load_nested_tuple(self):
-        loader = dataloader.Loader()
-        assert loader.load([1, 2, 3, [1, 2]], Tuple[int,int,int,Tuple[str,str]]) == (1, 2, 3, ('1', '2'))
-
-    def test_load_tuple(self):
-        loader = dataloader.Loader()
-
-        assert loader.load([1, 2, 3], Tuple[int,int,int]) == (1, 2, 3)
-        assert loader.load(['2', False, False], Tuple[int, bool]) == (2, False)
-
-        with self.assertRaises(ValueError):
-            loader.load(['2', False], Tuple[int, bool, bool])
-            loader.failonextra = True
-            assert loader.load(['2', False, False], Tuple[int, bool]) == (2, False)
-
-
 class TestEnum(unittest.TestCase):
 
     def test_load_difficult_enum(self):
@@ -275,80 +192,3 @@ class TestEnum(unittest.TestCase):
         with self.assertRaises(ValueError):
             loader.load(2, TestEnum)
         assert loader.load(['2', 1], Tuple[TestEnum, TestEnum]) == (TestEnum.LABEL2, TestEnum.LABEL1)
-
-
-class TestLoader(unittest.TestCase):
-
-    def test_kwargs(self):
-        with self.assertRaises(ValueError):
-            load(1, str, basiccast=False)
-            load(1, int, handlers=[])
-
-
-class TestBasicTypes(unittest.TestCase):
-
-    def test_basic_casting(self):
-        # Casting enabled, by default
-        loader = dataloader.Loader()
-        assert loader.load(1, int) == 1
-        assert loader.load(1.1, int) == 1
-        assert loader.load(False, int) == 0
-        assert loader.load('ciao', str) == 'ciao'
-        assert loader.load('1', float) == 1.0
-        with self.assertRaises(ValueError):
-            loader.load('ciao', float)
-
-    def test_list_basic(self):
-        loader = dataloader.Loader()
-        assert loader.load(range(12), List[int]) == list(range(12))
-        assert loader.load(range(12), List[str]) == [str(i) for i in range(12)]
-
-    def test_extra_basic(self):
-        # Add more basic types
-        loader = dataloader.Loader()
-        with self.assertRaises(TypeError):
-            assert loader.load(b'ciao', bytes) == b'ciao'
-        loader.basictypes.add(bytes)
-        assert loader.load(b'ciao', bytes) == b'ciao'
-
-    def test_none_basic(self):
-        loader = dataloader.Loader()
-        loader.load(None, type(None))
-        with self.assertRaises(ValueError):
-            loader.load(12, type(None))
-
-    def test_basic_nocasting(self):
-        # Casting enabled, by default
-        loader = dataloader.Loader()
-        loader.basiccast = False
-        assert loader.load(1, int) == 1
-        assert loader.load(True, bool) == True
-        assert loader.load(1.5, float) == 1.5
-        with self.assertRaises(ValueError):
-            loader.load(1.1, int)
-            loader.load(False, int)
-            loader.load('ciao', str)
-            loader.load('1', float)
-
-
-class TestHandlers(unittest.TestCase):
-
-    def test_custom_handler(self):
-        class Q:
-            def __eq__(self, other):
-                return isinstance(other, Q)
-
-        loader = dataloader.Loader()
-        loader.handlers.append((
-            lambda t: t == Q,
-            lambda l, v, t: Q()
-        ))
-        assert loader.load('test', Q) == Q()
-
-    def test_broken_handler(self):
-        loader = dataloader.Loader()
-        loader.handlers.insert(0, (lambda t: 33 + t is None, lambda l, v, t: None))
-        with self.assertRaises(TypeError):
-            loader.load(1, int)
-        loader.raiseconditionerrors = False
-        assert loader.load(1, int) == 1
