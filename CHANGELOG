@@ -1,4 +1,5 @@
 1.6
+* Run tests on older python as well
 
 1.5
 * Improve handling of unions
