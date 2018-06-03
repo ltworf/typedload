@@ -50,6 +50,15 @@ class TestDataclassLoad(unittest.TestCase):
             B
         ) == B(A(101, 'ciao'), [A(1, 'a'),A(0, 'b')])
 
+    def test_defaultvalue(self):
+        @dataclass
+        class A:
+            a: int
+            b: Optional[str] = None
+
+        assert load({'a': 1}, A) == A(1)
+        assert load({'a': 1, 'b': 'io'}, A) == A(1, 'io')
+
 class TestDataclassUnion(unittest.TestCase):
 
     def test_ComplicatedUnion(self):
