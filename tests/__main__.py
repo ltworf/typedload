@@ -24,10 +24,12 @@ print('Running tests using %s' % sys.version)
 if sys.version_info.major != 3 or sys.version_info.minor < 5:
     raise Exception('Only version 3.5 and above supported')
 
-if sys.version_info.major == 3 and sys.version_info.minor > 5:
+if sys.version_info.minor > 5:
     from .test_dataloader import *
     from .test_datadumper import *
     from .test_dumpload import *
+if sys.version_info.minor >= 7:
+    from .test_dataclass import *
 from .test_legacytuples_dataloader import *
 
 # Run tests for the attr plugin only if it is loaded
