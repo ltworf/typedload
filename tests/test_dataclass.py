@@ -66,3 +66,14 @@ class TestDataclassUnion(unittest.TestCase):
         loader.basiccast = False
         assert type(loader.load({'val': {'a': 1}}, C).val) == A
         assert type(loader.load({'val': {'a': '1'}}, C).val) == B
+
+class TestDataclassDump(unittest.TestCase):
+
+    def test_dump(self):
+        @dataclass
+        class A:
+            a: int
+            b: int = 0
+
+        assert dump(A(12)) == {'a': 12}
+        assert dump(A(12), hidedefault=False) == {'a': 12, 'b': 0}
