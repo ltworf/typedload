@@ -255,7 +255,7 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
         type_hints = type_._field_types
     else:
         #dataclass
-        import dataclasses
+        import dataclasses  # type: ignore
         fields = set(type_.__dataclass_fields__.keys())
         optional_fields ={k for k,v in type_.__dataclass_fields__.items() if not isinstance (getattr(v, 'default', dataclasses._MISSING_TYPE()), dataclasses._MISSING_TYPE)}
         type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
