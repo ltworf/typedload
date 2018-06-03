@@ -159,6 +159,7 @@ class Loader:
             (lambda type_: getattr(type_, '__origin__', None) in {dict, Dict}, _dictload),
             (lambda type_: getattr(type_, '__origin__', None) in {set, Set}, _setload),
             (lambda type_: _issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), _namedtupleload),
+            (lambda type_: set(dir(type_)).issuperset({'__dataclass_fields__', '__dataclass_params__'}), _namedtupleload),
         ]  # type: List[Tuple[Callable[[Type[T]], bool], Callable[['Loader', Any, Type[T]], T]]]
 
         for k, v in kwargs.items():
@@ -248,8 +249,16 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
     """
     This loads a Dict[str, Any] into a NamedTuple.
     """
-    fields = set(type_._fields)
-    optional_fields = set(getattr(type_, '_field_defaults', {}).keys())
+    if not hasattr(type_, '__dataclass_fields__'):
+        fields = set(type_._fields)
+        optional_fields = set(getattr(type_, '_field_defaults', {}).keys())
+        type_hints = type_._field_types
+    else:
+        #dataclass
+        import dataclasses
+        fields = set(type_.__dataclass_fields__.keys())
+        optional_fields ={k for k,v in type_.__dataclass_fields__.items() if not isinstance (getattr(v, 'default', dataclasses._MISSING_TYPE()), dataclasses._MISSING_TYPE)}
+        type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
     necessary_fields = fields.difference(optional_fields)
     vfields = set(value.keys())
 
@@ -268,8 +277,6 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
         raise ValueError(
             'Dictionary %s has unrecognized fields: %s and cannot be loaded into %s' % (value, extra, type_)
         )
-
-    type_hints = type_._field_types
 
     params = {}
     for k, v in value.items():
