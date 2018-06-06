@@ -112,6 +112,20 @@ class TestAttrload(unittest.TestCase):
             Person('Carmelo', 'via mulino'),
         ])
 
+    def test_uuid(self):
+        import uuid
+
+        @attr.s
+        class A:
+            a = attr.ib(type=int)
+            uuid_value = attr.ib(type=str, init=False)
+
+            def __attrs_post_init__(self):
+                self.uuid_value = str(uuid.uuid4())
+
+        assert type(attrload({'a': 1}, A).uuid_value) == str
+        assert attrload({'a': 1}, A) != attrload({'a': 1}, A)
+
 
 class TestMangling(unittest.TestCase):
 
