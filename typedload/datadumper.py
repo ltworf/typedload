@@ -91,7 +91,7 @@ class Dumper:
         self.handlers = [
             (lambda value: type(value) in self.basictypes, lambda l, value: value),
             (lambda value: isinstance(value, tuple) and hasattr(value, '_fields') and hasattr(value, '_asdict'), _namedtupledump),
-            (lambda value: set(dir(value)).issuperset({'__dataclass_fields__', '__dataclass_params__'}), _dataclassdump),
+            (lambda value: '__dataclass_fields__' in dir(value), _dataclassdump),
             (lambda value: isinstance(value, (list, tuple, set)), lambda l, value: [l.dump(i) for i in value]),
             (lambda value: isinstance(value, Enum), lambda l, value: l.dump(value.value)),
             (lambda value: isinstance(value, Dict), lambda l, value: {l.dump(k): l.dump(v) for k, v in value.items()}),

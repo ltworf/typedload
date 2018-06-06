@@ -159,7 +159,7 @@ class Loader:
             (lambda type_: getattr(type_, '__origin__', None) in {dict, Dict}, _dictload),
             (lambda type_: getattr(type_, '__origin__', None) in {set, Set}, _setload),
             (lambda type_: _issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), _namedtupleload),
-            (lambda type_: set(dir(type_)).issuperset({'__dataclass_fields__', '__dataclass_params__'}), _namedtupleload),
+            (lambda type_: '__dataclass_fields__' in dir(type_), _namedtupleload),
         ]  # type: List[Tuple[Callable[[Type[T]], bool], Callable[['Loader', Any, Type[T]], T]]]
 
         for k, v in kwargs.items():
