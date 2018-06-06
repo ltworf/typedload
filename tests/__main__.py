@@ -20,6 +20,7 @@
 import unittest
 import sys
 
+print('Running tests using %s' % sys.version)
 if sys.version_info.major != 3 or sys.version_info.minor < 5:
     raise Exception('Only version 3.5 and above supported')
 
