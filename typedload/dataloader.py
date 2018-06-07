@@ -165,14 +165,14 @@ class Loader:
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-    def load(self, value: Any, type_: Type[T]) -> T:
+    def index(self, type_: Type[T]) -> int:
         """
-        Loads value into the typed data structure.
+        Returns the index in the handlers list
+        that matches the given type.
 
-        TypeError is raised if there is no known way to treat type_,
-        otherwise all errors raise a ValueError.
+        If no condition matches, ValueError is raised.
         """
-        for cond, func in self.handlers:
+        for i, cond in ((q[0], q[1][0]) for q in enumerate(self.handlers)):
             try:
                 match = cond(type_)
             except:
@@ -180,9 +180,23 @@ class Loader:
                     raise
                 match = False
             if match:
-                return func(self, value, type_)
+                return i
+        raise ValueError('No matching condition found')
 
-        raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
+    def load(self, value: Any, type_: Type[T]) -> T:
+        """
+        Loads value into the typed data structure.
+
+        TypeError is raised if there is no known way to treat type_,
+        otherwise all errors raise a ValueError.
+        """
+        try:
+            index = self.index(type_)
+        except ValueError:
+            raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
+
+        func = self.handlers[index][1]
+        return func(self, value, type_)
 
 
 def _basicload(l: Loader, value: Any, type_: type) -> Any:
