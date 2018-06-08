@@ -115,8 +115,9 @@ class TestHandlersDumper(unittest.TestCase):
     def test_replace_handler(self):
         dumper = datadumper.Dumper()
         index = dumper.index([])
+        assert dumper.dump([11]) == [11]
         dumper.handlers[index] = (dumper.handlers[index][0], lambda *args: 3)
-        assert dumper.dump(12) == 3
+        assert dumper.dump([11]) == 3
 
 
 class TestDumper(unittest.TestCase):
