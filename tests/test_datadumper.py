@@ -90,7 +90,7 @@ class TestBasicDump(unittest.TestCase):
             assert dumper.dump(True) == True
 
 
-class TestHandlers(unittest.TestCase):
+class TestHandlersDumper(unittest.TestCase):
 
     def test_custom_handler(self):
         class Q:
