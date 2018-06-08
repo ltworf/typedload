@@ -112,6 +112,12 @@ class TestHandlers(unittest.TestCase):
         dumper.raiseconditionerrors = False
         assert dumper.dump(1) == 1
 
+    def test_replace_handler(self):
+        dumper = datadumper.Dumper()
+        index = dumper.index([])
+        dumper.handlers[index] = (dumper.handlers[index][0], lambda *args: 3)
+        assert dumper.dump(12) == 3
+
 
 class TestDumper(unittest.TestCase):
 

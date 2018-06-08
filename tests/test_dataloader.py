@@ -192,3 +192,14 @@ class TestEnum(unittest.TestCase):
         with self.assertRaises(ValueError):
             loader.load(2, TestEnum)
         assert loader.load(['2', 1], Tuple[TestEnum, TestEnum]) == (TestEnum.LABEL2, TestEnum.LABEL1)
+
+
+class TestLoaderIndex(unittest.TestCase):
+
+    def test_removal(self):
+
+        loader = dataloader.Loader()
+        assert loader.load(3, int) == 3
+        loader.handlers.pop(loader.index(int))
+        with self.assertRaises(TypeError):
+            loader.load(3, int)

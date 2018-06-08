@@ -1,6 +1,7 @@
 1.6
 * Run tests on older python as well
 * Support for dataclass (Since python 3.7)
+* Added methods to find the appropriate handlers
 
 1.5
 * Improve handling of unions

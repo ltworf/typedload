@@ -100,17 +100,29 @@ class Dumper:
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-    def dump(self, value: Any) -> Any:
-        for cond, func in self.handlers:
+
+    def index(self, value: Any) -> int:
+        """
+        Returns the index in the handlers list
+        that matches the given value.
+
+        If no condition matches, ValueError is raised.
+        """
+        for i, cond in ((j[0], j[1][0]) for j in enumerate(self.handlers)):
             try:
-                r = cond(value)
+                match = cond(value)
             except:
                 if self.raiseconditionerrors:
                     raise
-                r = False
-            if r:
-                return func(self, value)
+                match = False
+            if match:
+                return i
         raise ValueError('Unable to dump %s' % value)
+
+    def dump(self, value: Any) -> Any:
+        index = self.index(value)
+        func = self.handlers[index][1]
+        return func(self, value)
 
 
 def _namedtupledump(l, value):
