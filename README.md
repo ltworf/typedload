@@ -73,3 +73,5 @@ The following things are supported:
  * Tuple[TypeA, TypeB, TypeC]
  * Set[SomeType]
  * Union[TypeA, TypeB]
+ * dataclass (requires Python 3.7)
+ * attr (Handled in a built-in plugin)
