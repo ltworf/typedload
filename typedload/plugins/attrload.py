@@ -45,7 +45,7 @@ class _FakeNamedTuple(tuple):
     """
 
     def __new__(cls, fields):
-        return super(_FakeNamedTuple, cls).__new__(cls, tuple(fields))  # type: ignore
+        return super(_FakeNamedTuple, cls).__new__(cls, tuple(fields))
 
     @property
     def _fields(self):
