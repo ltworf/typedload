@@ -1,3 +1,6 @@
+1.7
+* Make mypy happy again
+
 1.6
 * Run tests on older python as well
 * Support for dataclass (Since python 3.7)
