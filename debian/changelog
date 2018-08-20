@@ -1,3 +1,10 @@
+typedload (1.8-1) unstable; urgency=medium
+
+  * New upstream release
+  * Workaround mypy bug (Closes: #906626)
+
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Mon, 20 Aug 2018 07:56:13 +0200
+
 typedload (1.7-1) unstable; urgency=low
 
   * New upstream release
