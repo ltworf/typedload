@@ -28,7 +28,7 @@ __all__ = [
 ]
 
 
-NONETYPE = type(None)
+NONETYPE = type(None)  # type: Type[Any]
 
 
 class Dumper:
