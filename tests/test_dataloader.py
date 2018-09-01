@@ -202,7 +202,7 @@ class TestForwardRef(unittest.TestCase):
             next: Optional['Node'] = None
         l = {'next': {}, 'value': 12}
         loader = dataloader.Loader()
-        loader.load(l, Node)
+        assert loader.load(l, Node) == Node(value=12,next=Node())
 
 
 class TestLoaderIndex(unittest.TestCase):
