@@ -31,6 +31,12 @@ __all__ = [
 NONETYPE = type(None)  # type: Type[Any]
 T = TypeVar('T')
 
+try:
+    # Since 3.7
+    from typing import ForwardRef
+except ImportError:
+    from typing import _ForwardRef as ForwardRef
+
 
 def _issubclass(t1, t2) -> bool:
     """
