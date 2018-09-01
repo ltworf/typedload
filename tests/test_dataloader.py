@@ -194,6 +194,17 @@ class TestEnum(unittest.TestCase):
         assert loader.load(['2', 1], Tuple[TestEnum, TestEnum]) == (TestEnum.LABEL2, TestEnum.LABEL1)
 
 
+class TestForwardRef(unittest.TestCase):
+
+    def test_known_refs(self):
+        class Node(NamedTuple):
+            value: int = 1
+            next: Optional['Node'] = None
+        l = {'next': {}, 'value': 12}
+        loader = dataloader.Loader()
+        loader.load(l, Node)
+
+
 class TestLoaderIndex(unittest.TestCase):
 
     def test_removal(self):
