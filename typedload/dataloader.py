@@ -33,9 +33,9 @@ T = TypeVar('T')
 
 try:
     # Since 3.7
-    from typing import ForwardRef
+    from typing import ForwardRef  # type: ignore
 except ImportError:
-    from typing import _ForwardRef as ForwardRef
+    from typing import _ForwardRef as ForwardRef  # type: ignore
 
 
 def _issubclass(t1, t2) -> bool:
@@ -162,7 +162,7 @@ class Loader:
         self.raiseconditionerrors = True
 
         # Forward refs dictionary
-        self.frefs = {}  # type Optional[Dict[str, Type]]
+        self.frefs = {}  # type: Optional[Dict[str, Type]]
 
         if HAS_UNIONSUBCLASS:
             # Old python
@@ -245,9 +245,9 @@ def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
     """
     if l.frefs is None:
         raise Exception('ForwardRef resolving is disabled for the loader')
-    t = l.frefs.get(type_.__forward_arg__)
+    t = l.frefs.get(type_.__forward_arg__)  # type: ignore
     if t is None:
-        raise ValueError("ForwardRef '%s' unknown" % type_.__forward_arg__)
+        raise ValueError("ForwardRef '%s' unknown" % type_.__forward_arg__)  # type: ignore
     return l.load(value, t)
 
 
