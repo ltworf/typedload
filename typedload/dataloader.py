@@ -119,6 +119,9 @@ class Loader:
 
         Setting this to None disables any support for ForwardRef.
 
+        Reusing the same loader object on unrelated types might cause
+        failures, if the types are different but use the same names.
+
     These parameters can be set as named arguments in the constructor
     or they can be set later on.
 
@@ -136,6 +139,7 @@ class Loader:
         * Tuple[TypeA, TypeB, TypeC]
         * Set[SomeType]
         * Union[TypeA, TypeB]
+        * ForwardRef
 
     Using unions is complicated. If the types in the union are too
     similar to each other, it is easy to obtain an unexpected type.
