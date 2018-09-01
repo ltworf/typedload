@@ -1,4 +1,5 @@
 1.9
+* Support ForwardRef
 
 1.8
 * Make mypy happy again
