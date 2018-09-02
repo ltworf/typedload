@@ -72,7 +72,7 @@ class Loader:
         exceptions if there are fields in the data that
         are not being used by the type.
 
-    basiccast: When enabled, instead of trying to perform
+    basiccast: When disabled, instead of trying to perform
         casts, exceptions will be raised.
         Since many json seem to encode numbers as strings,
         to avoid extra complications this functionality is
