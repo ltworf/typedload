@@ -31,6 +31,12 @@ __all__ = [
 NONETYPE = type(None)  # type: Type[Any]
 T = TypeVar('T')
 
+try:
+    # Since 3.7
+    from typing import ForwardRef  # type: ignore
+except ImportError:
+    from typing import _ForwardRef as ForwardRef  # type: ignore
+
 
 def _issubclass(t1, t2) -> bool:
     """
@@ -96,6 +102,26 @@ class Loader:
         In most cases, it is sufficient to append new elements
         at the end, to handle more types.
 
+    frefs: Dictionary to resolve ForwardRef.
+        Something like
+        class Node(NamedTuple):
+            next: Optional['Node']
+
+        requires a ForwardRef (also in python3.7), which means that the type
+        is stored as string and must be resolved at runtime.
+
+        This dictionary contains the names of the types as keys, and the
+        actual types as values.
+
+        A loader object by default starts with an empty dictionary and
+        fills it with the types it encounters, but it is possible to
+        manually add more types to the dictionary.
+
+        Setting this to None disables any support for ForwardRef.
+
+        Reusing the same loader object on unrelated types might cause
+        failures, if the types are different but use the same names.
+
     These parameters can be set as named arguments in the constructor
     or they can be set later on.
 
@@ -113,6 +139,7 @@ class Loader:
         * Tuple[TypeA, TypeB, TypeC]
         * Set[SomeType]
         * Union[TypeA, TypeB]
+        * ForwardRef
 
     Using unions is complicated. If the types in the union are too
     similar to each other, it is easy to obtain an unexpected type.
@@ -133,6 +160,9 @@ class Loader:
 
         # Raise errors if the condition fails
         self.raiseconditionerrors = True
+
+        # Forward refs dictionary
+        self.frefs = {}  # type: Optional[Dict[str, Type]]
 
         if HAS_UNIONSUBCLASS:
             # Old python
@@ -160,6 +190,7 @@ class Loader:
             (lambda type_: getattr(type_, '__origin__', None) in {set, Set}, _setload),
             (lambda type_: _issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), _namedtupleload),
             (lambda type_: '__dataclass_fields__' in dir(type_), _namedtupleload),
+            (lambda type_: type(type_) == ForwardRef, _forwardrefload),
         ]  # type: List[Tuple[Callable[[Type[T]], bool], Callable[['Loader', Any, Type[T]], T]]]
 
         for k, v in kwargs.items():
@@ -195,8 +226,29 @@ class Loader:
         except ValueError:
             raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
 
+        # Add type to known types, to resolve ForwardRef later on
+        if self.frefs is not None and hasattr(type_, '__name__'):
+            tname = type_.__name__
+            if tname not in self.frefs:
+                self.frefs[tname] = type_
+
         func = self.handlers[index][1]
         return func(self, value, type_)
+
+
+def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
+    """
+    This resolves a ForwardRef.
+
+    It just looks up the type in the dictionary of known types
+    and loads the value using that.
+    """
+    if l.frefs is None:
+        raise Exception('ForwardRef resolving is disabled for the loader')
+    t = l.frefs.get(type_.__forward_arg__)  # type: ignore
+    if t is None:
+        raise ValueError("ForwardRef '%s' unknown" % type_.__forward_arg__)  # type: ignore
+    return l.load(value, t)
 
 
 def _basicload(l: Loader, value: Any, type_: type) -> Any:
