@@ -233,7 +233,13 @@ class Loader:
                 self.frefs[tname] = type_
 
         func = self.handlers[index][1]
-        return func(self, value, type_)
+        try:
+            return func(self, value, type_)
+        except Exception as e:
+            loadtrace = getattr(e, 'loadtrace', [])
+            loadtrace.append((value, type_))
+            setattr(e, 'loadtrace', loadtrace)
+            raise e
 
 
 def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
