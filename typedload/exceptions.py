@@ -42,7 +42,7 @@ Annotation = NamedTuple('Annotation', [
 
 TraceItem = NamedTuple('TraceItem', [
     ('value', Any),
-    ('type', Type),
+    ('type_', Type),
     ('annotation', Optional[Annotation]),
 ])
 
