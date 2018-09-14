@@ -22,6 +22,8 @@
 from enum import Enum
 from typing import *
 
+from .exceptions import Annotation, AnnotationType
+
 
 __all__ = [
     'Loader',
@@ -214,7 +216,7 @@ class Loader:
                 return i
         raise ValueError('No matching condition found')
 
-    def load(self, value: Any, type_: Type[T]) -> T:
+    def load(self, value: Any, type_: Type[T], *, annotation: Optional[Annotation] = None) -> T:
         """
         Loads value into the typed data structure.
 
@@ -237,7 +239,7 @@ class Loader:
             return func(self, value, type_)
         except Exception as e:
             loadtrace = getattr(e, 'loadtrace', [])
-            loadtrace.append((value, type_))
+            loadtrace.append((value, type_, annotation))
             setattr(e, 'loadtrace', loadtrace)
             raise e
 
@@ -354,7 +356,11 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
     for k, v in value.items():
         if k not in fields:
             continue
-        params[k] = l.load(v, type_hints[k])
+        params[k] = l.load(
+            v,
+            type_hints[k],
+            annotation=(AnnotationType.FIELD, k),
+        )
     return type_(**params)
 
 
