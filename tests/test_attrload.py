@@ -137,3 +137,23 @@ class TestMangling(unittest.TestCase):
 
     def test_dump_metanames(self):
         assert attrdump(Mangle(12)) == {'va.lue': 12}
+
+
+class TestAttrExceptions(unittest.TestCase):
+
+    def test_index(self):
+        try:
+            attrload(
+                {
+                    'course': 'advanced coursing',
+                    'students': [
+                        {'name': 'Alfio'},
+                        {'name': 'Carmelo', 'address': 'via mulino'},
+                        [],
+                    ]
+                },
+                Students,
+            )
+        except Exception as e:
+            assert e.trace[-2].annotation[1] == 'students'
+            assert e.trace[-1].annotation[1] == 2
