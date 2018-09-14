@@ -22,6 +22,8 @@
 from enum import Enum
 from typing import *
 
+from .exceptions import TypedloadValueError
+
 
 __all__ = [
     'Dumper',
@@ -117,7 +119,7 @@ class Dumper:
                 match = False
             if match:
                 return i
-        raise ValueError('Unable to dump %s' % value)
+        raise TypedloadValueError('Unable to dump %s' % value, value=value)
 
     def dump(self, value: Any) -> Any:
         index = self.index(value)
