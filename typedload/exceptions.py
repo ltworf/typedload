@@ -96,11 +96,20 @@ class TypedloadException(Exception):
         )
         if self.trace:
             e += '\nLoad trace:\n'
+        path = []  # type: List[str]
         for i in self.trace:
             e += 'Type: %s ' % i.type_
             if i.annotation:
                 e += 'Annotation: (%s %s) ' % (i.annotation[0], i.annotation[1])
+                path.append(i.annotation[1] if type(i.annotation[1]) != int else '[%d]' % i.annotation[1])  # type: ignore
+            else:
+                path.append(str(None))
             e += 'Value: %s\n' % compress_value(i.value)
+        if path:
+            if path[0] == str(None):
+                path[0] = ''
+            e += 'Path: ' + '.'.join(path) + '\n'
+
         return e
 
 
