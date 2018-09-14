@@ -90,7 +90,8 @@ class TypedloadException(Exception):
             compress_value(self.value),
             self.type_
         )
-        e += '\nLoad trace:\n'
+        if self.trace:
+            e += '\nLoad trace:\n'
         for i in self.trace:
             e += 'Type: %s ' % i.type_
             if i.annotation:
