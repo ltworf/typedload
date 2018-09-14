@@ -238,7 +238,7 @@ class Loader:
         try:
             return func(self, value, type_)
         except TypedloadException as e:
-            e.trace.append(TraceItem(value, type_, annotation))
+            e.trace.insert(0, TraceItem(value, type_, annotation))
             raise e
 
 
@@ -346,7 +346,6 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
     try:
         vfields = set(value.keys())
     except AttributeError as e:
-        print(e)
         raise TypedloadAttributeError(str(e), value=value, type_=type_)
 
     if necessary_fields.intersection(vfields) != necessary_fields:
