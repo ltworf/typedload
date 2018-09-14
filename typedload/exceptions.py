@@ -79,6 +79,25 @@ class TypedloadException(Exception):
         self.type_ = kwargs.get('type_')  # type: Optional[Type]
         self.exceptions = kwargs.get('exceptions', [])  # type: List[Exception]
 
+    def __str__(self) -> str:
+        def compress_value(v: Any) -> str:
+            v = str(v)
+            if len(v) > 80:
+                return v[:77] + '...'
+            return v
+        e = '%s\nValue: %s\nType: %s\n' % (
+            super().__str__(),
+            compress_value(self.value),
+            self.type_
+        )
+        e += '\nLoad trace:\n'
+        for i in self.trace:
+            e += 'Type: %s ' % i.type_
+            if i.annotation:
+                e += 'Annotation: (%s %s) ' % (i.annotation[0], i.annotation[1])
+            e += 'Value: %s\n' % compress_value(i.value)
+        return e
+
 
 class TypedloadValueError(TypedloadException, ValueError):
     """
