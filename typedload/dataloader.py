@@ -303,7 +303,7 @@ def _listload(l: Loader, value, type_) -> List:
     This loads into something like List[int]
     """
     t = type_.__args__[0]
-    return [l.load(v, t) for v in value]
+    return [l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value)]
 
 
 def _dictload(l: Loader, value, type_) -> Dict:
@@ -314,7 +314,9 @@ def _dictload(l: Loader, value, type_) -> Dict:
     """
     key_type, value_type = type_.__args__
     try:
-        return {l.load(k, key_type): l.load(v, value_type) for k, v in value.items()}
+        return {
+            l.load(k, key_type, annotation=Annotation(AnnotationType.KEY, k)): l.load(v, value_type, annotation=Annotation(AnnotationType.VALUE, v))
+            for k, v in value.items()}
     except AttributeError as e:
         raise TypedloadAttributeError(str(e), type_=type_, value=value)
 
@@ -341,7 +343,7 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
     elif len(value) < len(args):
         raise TypedloadValueError('Value is too short for type %s' % type_, value=value, type_=type_)
 
-    return tuple(l.load(v, t) for v, t in zip(value, args))
+    return tuple(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, (v, t) in enumerate(zip(value, args)))
 
 
 def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
@@ -422,7 +424,7 @@ def _unionload(l: Loader, value, type_) -> Any:
     # Try all types
     for t in args:
         try:
-            return l.load(value, t)
+            return l.load(value, t, annotation=Annotation(AnnotationType.UNION, t))
         except Exception as e:
             exceptions.append(e)
     raise TypedloadValueError(
