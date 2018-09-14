@@ -343,7 +343,11 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
         optional_fields ={k for k,v in type_.__dataclass_fields__.items() if not isinstance (getattr(v, 'default', dataclasses._MISSING_TYPE()), dataclasses._MISSING_TYPE)}
         type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
     necessary_fields = fields.difference(optional_fields)
-    vfields = set(value.keys())
+    try:
+        vfields = set(value.keys())
+    except AttributeError as e:
+        print(e)
+        raise TypedloadAttributeError(str(e), value=value, type_=type_)
 
     if necessary_fields.intersection(vfields) != necessary_fields:
         raise TypedloadValueError(
