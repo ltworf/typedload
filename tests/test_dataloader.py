@@ -231,3 +231,54 @@ class TestLoaderIndex(unittest.TestCase):
         loader.handlers.pop(loader.index(int))
         with self.assertRaises(TypeError):
             loader.load(3, int)
+
+
+class TestExceptions(unittest.TestCase):
+
+    def test_index(self):
+        loader = dataloader.Loader()
+        try:
+            loader.load([1, 2, 3, 'q'], List[int])
+        except Exception as e:
+            assert e.trace[-1].annotation[1] == 3
+
+        try:
+            loader.load(['q', 2], Tuple[int,int])
+        except Exception as e:
+            assert e.trace[-1].annotation[1] == 0
+
+        try:
+            loader.load({'q': 1}, Dict[int,int])
+        except Exception as e:
+            assert e.trace[-1].annotation[1] == 'q'
+
+    def test_attrname(self):
+        class A(NamedTuple):
+            a: int
+        class B(NamedTuple):
+            a: A
+            b: int
+        loader = dataloader.Loader()
+
+        try:
+            loader.load({'a': 'q'}, A)
+        except Exception as e:
+            assert e.trace[-1].annotation[1] == 'a'
+
+        try:
+            loader.load({'a':'q','b': {'a': 1}}, B)
+        except Exception as e:
+            assert e.trace[-1].annotation[1] == 'a'
+
+        try:
+            loader.load({'a':3,'b': {'a': 'q'}}, B)
+        except Exception as e:
+            assert e.trace[-1].annotation[1] == 'a'
+
+    def test_typevalue(self):
+        loader = dataloader.Loader()
+        try:
+            loader.load([1, 2, 3, 'q'], List[int])
+        except Exception as e:
+            assert e.value == 'q'
+            assert e.type_ == int
