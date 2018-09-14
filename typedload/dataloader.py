@@ -214,7 +214,7 @@ class Loader:
                 match = False
             if match:
                 return i
-        raise TypedloadValueError('No matching condition found')
+        raise ValueError('No matching condition found')
 
     def load(self, value: Any, type_: Type[T], *, annotation: Optional[Annotation] = None) -> T:
         """
