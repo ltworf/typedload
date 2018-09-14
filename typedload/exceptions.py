@@ -43,7 +43,7 @@ TraceItem = NamedTuple('TraceItem', [
 
 class TypedloadException(Exception):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
         self.trace = []  # type: List[TraceItem]
         self.value = kwargs.get('value')  # type: Any
         self.type_ = kwargs.get('type_')  # type: Optional[Type]
