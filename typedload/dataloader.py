@@ -226,7 +226,11 @@ class Loader:
         try:
             index = self.index(type_)
         except ValueError:
-            raise TypedloadTypeError('Cannot deal with value %s of type %s' % (value, type_))
+            raise TypedloadTypeError(
+                'Cannot deal with value of type %s' % type_,
+                value=value,
+                type_=type_
+            )
 
         # Add type to known types, to resolve ForwardRef later on
         if self.frefs is not None and hasattr(type_, '__name__'):
