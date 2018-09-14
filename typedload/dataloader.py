@@ -244,6 +244,13 @@ class Loader:
         except TypedloadException as e:
             e.trace.insert(0, TraceItem(value, type_, annotation))
             raise e
+        except Exception as e:
+            # This is a bug.
+            raise TypedloadException(
+                '==== SOFTWARE BUG ====: %s. Non TypedloadException encountered' % e,
+                type_=type_,
+                value=value,
+            )
 
 
 def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
@@ -262,7 +269,7 @@ def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
             value=value,
             type_=type_
         )
-    return l.load(value, t)
+    return l.load(value, t, annotation=(AnnotationType.FORWARDREF, type_.__forward_arg__))
 
 
 def _basicload(l: Loader, value: Any, type_: type) -> Any:
@@ -305,7 +312,11 @@ def _dictload(l: Loader, value, type_) -> Dict:
     Recursively loads both keys and values.
     """
     key_type, value_type = type_.__args__
-    return {l.load(k, key_type): l.load(v, value_type) for k, v in value.items()}
+    try:
+        return {l.load(k, key_type): l.load(v, value_type) for k, v in value.items()}
+    except AttributeError as e:
+        raise TypedloadAttributeError(str(e), type_=type_, value=value)
+
 
 
 def _setload(l: Loader, value, type_) -> Set:
