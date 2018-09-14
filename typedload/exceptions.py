@@ -32,6 +32,7 @@ class AnnotationType(Enum):
     """
     FIELD = 'field'
     INDEX = 'index'
+    FORWARDREF = 'forwardref'
 
 
 Annotation = NamedTuple('Annotation', [

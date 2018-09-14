@@ -262,14 +262,15 @@ def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
     """
     if l.frefs is None:
         raise TypedloadException('ForwardRef resolving is disabled for the loader', value=value, type_=type_)
-    t = l.frefs.get(type_.__forward_arg__)  # type: ignore
+    tname = type_.__forward_arg__  # type: ignore
+    t = l.frefs.get(tname)
     if t is None:
         raise TypedloadValueError(
-            "ForwardRef '%s' unknown" % type_.__forward_arg__,  # type: ignore
+            "ForwardRef '%s' unknown" % tname,
             value=value,
             type_=type_
         )
-    return l.load(value, t, annotation=(AnnotationType.FORWARDREF, type_.__forward_arg__))
+    return l.load(value, t, annotation=Annotation(AnnotationType.FORWARDREF, tname))
 
 
 def _basicload(l: Loader, value: Any, type_: type) -> Any:
