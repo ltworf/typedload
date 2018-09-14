@@ -22,7 +22,7 @@
 from enum import Enum
 from typing import *
 
-from .exceptions import Annotation, AnnotationType
+from .exceptions import Annotation, AnnotationType, TraceItem
 
 
 __all__ = [
@@ -239,7 +239,7 @@ class Loader:
             return func(self, value, type_)
         except Exception as e:
             loadtrace = getattr(e, 'loadtrace', [])
-            loadtrace.append((value, type_, annotation))
+            loadtrace.append(TraceItem(value, type_, annotation))
             setattr(e, 'loadtrace', loadtrace)
             raise e
 

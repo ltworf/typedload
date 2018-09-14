@@ -20,14 +20,22 @@
 
 
 from enum import Enum
-from typing import NamedTuple, Union
+from typing import Any, NamedTuple, Optional, Type, Union
 
 
 class AnnotationType(Enum):
     FIELD = 'field'
     INDEX = 'index'
 
+
 Annotation = NamedTuple('Annotation', [
     ('annotation_type', AnnotationType),
     ('value', Union[str, int]),
+])
+
+
+TraceItem = NamedTuple('TraceItem', [
+    ('value', Any),
+    ('type', Type),
+    ('annotation', Optional[Annotation]),
 ])
