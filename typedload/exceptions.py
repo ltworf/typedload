@@ -24,6 +24,12 @@ from typing import Any, List, NamedTuple, Optional, Type, Union
 
 
 class AnnotationType(Enum):
+    """
+    The types of annotation, used by different loaders.
+
+    FIELD is the name of a field
+    INDEX is the numerical index of a value, in subscriptable objects-
+    """
     FIELD = 'field'
     INDEX = 'index'
 
@@ -42,6 +48,30 @@ TraceItem = NamedTuple('TraceItem', [
 
 
 class TypedloadException(Exception):
+    """
+    Exception which exposes some extra fields.
+
+    trace:
+        It is a list of all the recursive invocations of load(), with the
+        parameters used.
+        Very useful to locate the issue.
+        The annotation is used by complex loaders that call load() more than
+        once, to indicate in which step the error occurred.
+        For example a list loader will use it to indicate the index which had
+        the exception, and a NamedTuple loader will use it to indicate the name
+        of the field which generated the exception.
+
+    value:
+        contains the value that could not be loaded.
+
+    type_:
+        contains the type in which the value could not be loaded.
+
+    exceptions:
+        A list of exceptions that happened during the loading.
+        This is for now only used by the Union loader, to list all the
+        exceptions that occurred during the various attempts.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args)
         self.trace = []  # type: List[TraceItem]
@@ -51,15 +81,27 @@ class TypedloadException(Exception):
 
 
 class TypedloadValueError(TypedloadException, ValueError):
+    """
+    Exception class, subclass of ValueError.
+    See the documentation of TypedloadException for more details.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
 class TypedloadTypeError(TypedloadException, TypeError):
+    """
+    Exception class, subclass of TypeError.
+    See the documentation of TypedloadException for more details.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
 class TypedloadAttributeError(TypedloadException, AttributeError):
+    """
+    Exception class, subclass of AttributeError.
+    See the documentation of TypedloadException for more details.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
