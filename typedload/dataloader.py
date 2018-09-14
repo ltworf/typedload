@@ -359,7 +359,7 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
         params[k] = l.load(
             v,
             type_hints[k],
-            annotation=(AnnotationType.FIELD, k),
+            annotation=Annotation(AnnotationType.FIELD, k),
         )
     return type_(**params)
 
