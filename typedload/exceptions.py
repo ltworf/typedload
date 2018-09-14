@@ -20,7 +20,7 @@
 
 
 from enum import Enum
-from typing import Any, NamedTuple, Optional, Type, Union
+from typing import Any, List, NamedTuple, Optional, Type, Union
 
 
 class AnnotationType(Enum):
@@ -39,3 +39,27 @@ TraceItem = NamedTuple('TraceItem', [
     ('type', Type),
     ('annotation', Optional[Annotation]),
 ])
+
+
+class TypedloadException(Exception):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.trace = []  # type: List[TraceItem]
+        self.value = kwargs.get('value')  # type: Any
+        self.type_ = kwargs.get('type_')  # type: Optional[Type]
+        self.exceptions = kwargs.get('exceptions', [])  # type: List[Exception]
+
+
+class TypedloadValueError(TypedloadException, ValueError):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class TypedloadTypeError(TypedloadException, TypeError):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class TypedloadAttributeError(TypedloadException, AttributeError):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
