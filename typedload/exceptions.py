@@ -76,12 +76,18 @@ class TypedloadException(Exception):
         This is for now only used by the Union loader, to list all the
         exceptions that occurred during the various attempts.
     """
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args)
-        self.trace = []  # type: List[TraceItem]
-        self.value = kwargs.get('value')  # type: Any
-        self.type_ = kwargs.get('type_')  # type: Optional[Type]
-        self.exceptions = kwargs.get('exceptions', [])  # type: List[Exception]
+    def __init__(
+            self,
+            description: str,
+            trace: Optional[List[TraceItem]] = None,
+            value=None,
+            type_: Optional[Type] = None,
+            exceptions: Optional[List[Exception]] = None) -> None:
+        super().__init__(description)
+        self.trace = trace if trace else []
+        self.value = value
+        self.type_ = type_
+        self.exceptions = exceptions if exceptions else []
 
     def __str__(self) -> str:
         def compress_value(v: Any) -> str:
