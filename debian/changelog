@@ -1,6 +1,7 @@
 typedload (1.9-1) unstable; urgency=low
 
   * New upstream release
+  * Bump standards-version to 4.2.1
 
  -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Tue, 18 Sep 2018 00:14:17 +0200
 
