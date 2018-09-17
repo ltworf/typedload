@@ -241,16 +241,10 @@ class Loader:
         func = self.handlers[index][1]
         try:
             return func(self, value, type_)
-        except TypedloadException as e:
+        except Exception as e:
+            assert isinstance(e, TypedloadException)
             e.trace.insert(0, TraceItem(value, type_, annotation))
             raise e
-        except Exception as e:
-            # This is a bug.
-            raise TypedloadException(
-                '==== SOFTWARE BUG ====: %s. Non TypedloadException encountered' % e,
-                type_=type_,
-                value=value,
-            )
 
 
 def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
