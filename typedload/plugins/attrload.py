@@ -32,6 +32,7 @@
 
 
 from ..dataloader import _namedtupleload
+from ..exceptions import *
 
 class _FakeNamedTuple(tuple):
     """
@@ -60,7 +61,12 @@ class _FakeNamedTuple(tuple):
         return self[2]
 
     def __call__(self, **kwargs):
-        return self[3](**kwargs)
+        try:
+            return self[3](**kwargs)
+        except TypeError as e:
+            raise TypedloadTypeError(str(e), type_=self[3], value=kwargs)
+        except Exception as e:
+            raise TypedloadException(str(e), type_=self[3], value=kwargs)
 
 
 def _attrload(l, value, type_):

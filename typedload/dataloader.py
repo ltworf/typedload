@@ -22,6 +22,8 @@
 from enum import Enum
 from typing import *
 
+from .exceptions import *
+
 
 __all__ = [
     'Loader',
@@ -214,7 +216,7 @@ class Loader:
                 return i
         raise ValueError('No matching condition found')
 
-    def load(self, value: Any, type_: Type[T]) -> T:
+    def load(self, value: Any, type_: Type[T], *, annotation: Optional[Annotation] = None) -> T:
         """
         Loads value into the typed data structure.
 
@@ -224,7 +226,11 @@ class Loader:
         try:
             index = self.index(type_)
         except ValueError:
-            raise TypeError('Cannot deal with value %s of type %s' % (value, type_))
+            raise TypedloadTypeError(
+                'Cannot deal with value of type %s' % type_,
+                value=value,
+                type_=type_
+            )
 
         # Add type to known types, to resolve ForwardRef later on
         if self.frefs is not None and hasattr(type_, '__name__'):
@@ -233,7 +239,12 @@ class Loader:
                 self.frefs[tname] = type_
 
         func = self.handlers[index][1]
-        return func(self, value, type_)
+        try:
+            return func(self, value, type_)
+        except Exception as e:
+            assert isinstance(e, TypedloadException)
+            e.trace.insert(0, TraceItem(value, type_, annotation))
+            raise e
 
 
 def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
@@ -244,11 +255,16 @@ def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
     and loads the value using that.
     """
     if l.frefs is None:
-        raise Exception('ForwardRef resolving is disabled for the loader')
-    t = l.frefs.get(type_.__forward_arg__)  # type: ignore
+        raise TypedloadException('ForwardRef resolving is disabled for the loader', value=value, type_=type_)
+    tname = type_.__forward_arg__  # type: ignore
+    t = l.frefs.get(tname)
     if t is None:
-        raise ValueError("ForwardRef '%s' unknown" % type_.__forward_arg__)  # type: ignore
-    return l.load(value, t)
+        raise TypedloadValueError(
+            "ForwardRef '%s' unknown" % tname,
+            value=value,
+            type_=type_
+        )
+    return l.load(value, t, annotation=Annotation(AnnotationType.FORWARDREF, tname))
 
 
 def _basicload(l: Loader, value: Any, type_: type) -> Any:
@@ -263,9 +279,16 @@ def _basicload(l: Loader, value: Any, type_: type) -> Any:
 
     if type(value) != type_:
         if l.basiccast:
-            return type_(value)
+            try:
+                return type_(value)
+            except ValueError as e:
+                raise TypedloadValueError(str(e), value=value, type_=type_)
+            except TypeError as e:
+                raise TypedloadTypeError(str(e), value=value, type_=type_)
+            except Exception as e:
+                raise TypedloadException(str(e), value=value, type_=type_)
         else:
-            raise ValueError('%s is not of type %s' % (value, type_))
+            raise TypedloadValueError('Not of type %s' % type_, value=value, type_=type_)
     return value
 
 
@@ -274,7 +297,7 @@ def _listload(l: Loader, value, type_) -> List:
     This loads into something like List[int]
     """
     t = type_.__args__[0]
-    return [l.load(v, t) for v in value]
+    return [l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value)]
 
 
 def _dictload(l: Loader, value, type_) -> Dict:
@@ -284,7 +307,13 @@ def _dictload(l: Loader, value, type_) -> Dict:
     Recursively loads both keys and values.
     """
     key_type, value_type = type_.__args__
-    return {l.load(k, key_type): l.load(v, value_type) for k, v in value.items()}
+    try:
+        return {
+            l.load(k, key_type, annotation=Annotation(AnnotationType.KEY, k)): l.load(v, value_type, annotation=Annotation(AnnotationType.VALUE, v))
+            for k, v in value.items()}
+    except AttributeError as e:
+        raise TypedloadAttributeError(str(e), type_=type_, value=value)
+
 
 
 def _setload(l: Loader, value, type_) -> Set:
@@ -304,11 +333,11 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
     else:
         args = type_.__tuple_params__
     if l.failonextra and len(value) > len(args):
-        raise ValueError('Value %s is too long for type %s' % (value, type_))
+        raise TypedloadValueError('Value is too long for type %s' % type_, value=value, type_=type_)
     elif len(value) < len(args):
-        raise ValueError('Value %s is too short for type %s' % (value, type_))
+        raise TypedloadValueError('Value is too short for type %s' % type_, value=value, type_=type_)
 
-    return tuple(l.load(v, t) for v, t in zip(value, args))
+    return tuple(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, (v, t) in enumerate(zip(value, args)))
 
 
 def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
@@ -326,29 +355,39 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
         optional_fields ={k for k,v in type_.__dataclass_fields__.items() if not isinstance (getattr(v, 'default', dataclasses._MISSING_TYPE()), dataclasses._MISSING_TYPE)}
         type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
     necessary_fields = fields.difference(optional_fields)
-    vfields = set(value.keys())
+    try:
+        vfields = set(value.keys())
+    except AttributeError as e:
+        raise TypedloadAttributeError(str(e), value=value, type_=type_)
 
     if necessary_fields.intersection(vfields) != necessary_fields:
-        raise ValueError(
-            'Value %s does not contain fields: %s which are necessary for type %s' % (
-                value,
+        raise TypedloadValueError(
+            'Value does not contain fields: %s which are necessary for type %s' % (
                 necessary_fields.difference(vfields),
                 type_
-            )
+            ),
+            value=value,
+            type_=type_,
         )
 
     fieldsdiff = vfields.difference(fields)
     if l.failonextra and len(fieldsdiff):
         extra = ', '.join(fieldsdiff)
-        raise ValueError(
-            'Dictionary %s has unrecognized fields: %s and cannot be loaded into %s' % (value, extra, type_)
+        raise TypedloadValueError(
+            'Dictionary has unrecognized fields: %s and cannot be loaded into %s' % (extra, type_),
+            value=value,
+            type_=type_,
         )
 
     params = {}
     for k, v in value.items():
         if k not in fields:
             continue
-        params[k] = l.load(v, type_hints[k])
+        params[k] = l.load(
+            v,
+            type_hints[k],
+            annotation=Annotation(AnnotationType.FIELD, k),
+        )
     return type_(**params)
 
 
@@ -368,7 +407,7 @@ def _unionload(l: Loader, value, type_) -> Any:
     elif hasattr(type_, '__union_params__'):
         args = type_.__union_params__
     else:
-        raise AttributeError('The typing API for this Python version is unknown')
+        raise TypedloadAttributeError('The typing API for this Python version is unknown')
 
     # Do not convert basic types, if possible
     if type(value) in set(args).intersection(l.basictypes):
@@ -379,15 +418,14 @@ def _unionload(l: Loader, value, type_) -> Any:
     # Try all types
     for t in args:
         try:
-            return l.load(value, t)
+            return l.load(value, t, annotation=Annotation(AnnotationType.UNION, t))
         except Exception as e:
-            exceptions.append(str(e))
-    raise ValueError(
-        'Value %s could not be loaded into %s\n\nConversion exceptions were:\n%s' % (
-            value,
-            type_,
-            '\n'.join(exceptions)
-        )
+            exceptions.append(e)
+    raise TypedloadValueError(
+        'Value could not be loaded into %s' % type_,
+            value=value,
+            type_=type_,
+            exceptions=exceptions
     )
 
 
@@ -415,7 +453,11 @@ def _enumload(l: Loader, value, type_) -> Enum:
             return type_(l.load(value, t))
         except:
             pass
-    raise ValueError('Value %s could not be loaded into %s' % (value, type_))
+    raise TypedloadValueError(
+        'Value could not be loaded into %s' % type_,
+        value=value,
+        type_=type_
+    )
 
 
 def _noneload(l: Loader, value, type_) -> None:
@@ -425,4 +467,4 @@ def _noneload(l: Loader, value, type_) -> None:
     """
     if value is None:
         return None
-    raise ValueError('%s is not None' % value)
+    raise TypedloadValueError('Not None', value=value, type_=type_)
