@@ -1,3 +1,6 @@
+1.10
+* Make mypy happy again
+
 1.9
 * Support ForwardRef
 * Add a new Exception type with more details on the error (no breaking API changes)
