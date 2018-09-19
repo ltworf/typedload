@@ -1,6 +1,7 @@
 typedload (1.10-1) unstable; urgency=low
 
-  * New upstream release 
+  * New upstream release
+  * Build-depend on a precise mypy version
 
  -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Tue, 18 Sep 2018 00:26:54 +0200
 
