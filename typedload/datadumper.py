@@ -137,7 +137,7 @@ def _namedtupledump(l, value):
 
 
 def _dataclassdump(l, value):
-    import dataclasses  # type: ignore
+    import dataclasses
     fields = set(value.__dataclass_fields__.keys())
     field_defaults = {k: v.default for k,v in value.__dataclass_fields__.items() if not isinstance (v.default, dataclasses._MISSING_TYPE)}
     return {
