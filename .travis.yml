@@ -6,7 +6,7 @@ python:
   - "3.7-dev"
 
 install:
-  - pip install mypy==0.620
+  - pip install mypy
 
 script:
   - make test
