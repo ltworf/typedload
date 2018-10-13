@@ -40,7 +40,7 @@ class AnnotationType(Enum):
 
 Annotation = NamedTuple('Annotation', [
     ('annotation_type', AnnotationType),
-    ('value', Union[str, int, Type]),
+    ('value', Union[str, int, Type[Any]]),
 ])
 
 
