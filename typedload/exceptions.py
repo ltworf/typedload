@@ -40,7 +40,7 @@ class AnnotationType(Enum):
 
 Annotation = NamedTuple('Annotation', [
     ('annotation_type', AnnotationType),
-    ('value', Union[str, int]),
+    ('value', Any),  # Actually Union[str, int, Type], but python 3.5.2 is idiotic
 ])
 
 
@@ -107,7 +107,7 @@ class TypedloadException(Exception):
             e += 'Type: %s ' % i.type_
             if i.annotation:
                 e += 'Annotation: (%s %s) ' % (i.annotation[0], i.annotation[1])
-                path.append(i.annotation[1] if type(i.annotation[1]) != int else '[%d]' % i.annotation[1])  # type: ignore
+                path.append(str(i.annotation[1]) if type(i.annotation[1]) != int else '[%d]' % i.annotation[1])
             else:
                 path.append(str(None))
             e += 'Value: %s\n' % compress_value(i.value)
