@@ -1,7 +1,8 @@
-# typedload
-# This module is the inverse of dataloader. It converts typed
-# data structures to things that json can treat.
-
+"""
+typedload
+This module is the inverse of dataloader. It converts typed
+data structures to things that json can serialize.
+"""
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
@@ -43,8 +44,9 @@ class Dumper:
         A value dumped in this way from a typed data structure
         can be loaded back using dataloader.
 
-        hidedefault: When enabled, does not include fields that
-            have the same value as the default in the dump.
+        hidedefault: Enabled by default.
+            When enabled, does not include fields that have the
+            same value as the default in the dump.
 
         raiseconditionerrors: Enabled by default.
             Raises exceptions when evaluating a condition from an
@@ -60,7 +62,7 @@ class Dumper:
                     Callable[['Dumper', Any], Any]
                 ]
             ]
-            The elements are: Tuple[Condition,Dumper]
+            The elements are: Tuple[Condition, Dumper]
             Condition(value) -> Bool
             Dumper(dumper, value) -> simpler_value
 
@@ -122,6 +124,10 @@ class Dumper:
         raise TypedloadValueError('Unable to dump %s' % value, value=value)
 
     def dump(self, value: Any) -> Any:
+        """
+        Dump the typed data structure into its
+        untyped equivalent.
+        """
         index = self.index(value)
         func = self.handlers[index][1]
         return func(self, value)

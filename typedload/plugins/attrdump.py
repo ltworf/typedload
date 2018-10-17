@@ -1,17 +1,19 @@
-# typedload
-# Module to load data into data structures from the "attr" module
-#
-# Name mangling is supported by having a 'name' attribute in the metadata
-#
-# @attr.s
-# class Example:
-#     attribute = attr.ib(type=int, metadata={'name': 'att.rib.ute:name'}
-#
-# The dictionary key for 'attribute' will be 'att.rib.ute:name'.
-#
-# This is very useful for keys that use invalid or reserved characters that
-# can't be used in variable names.
-# Another common application is to convert camelCase into not_camel_case.
+"""
+typedload
+Module to load data into data structures from the "attr" module
+
+Name mangling is supported by having a 'name' attribute in the metadata
+
+@attr.s
+class Example:
+    attribute = attr.ib(type=int, metadata={'name': 'att.rib.ute:name'}
+
+The dictionary key for 'attribute' will be 'att.rib.ute:name'.
+
+This is very useful for keys that use invalid or reserved characters that
+can't be used in variable names.
+Another common application is to convert camelCase into not_camel_case.
+"""
 
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
 #
@@ -51,4 +53,7 @@ def _attrdump(d, value) -> Dict[str, Any]:
 
 
 def add2dumper(l) -> None:
+    """
+    Adds the "attr" handler to an existing dumper
+    """
     l.handlers.append((_condition, _attrdump))

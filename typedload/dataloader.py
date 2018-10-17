@@ -1,5 +1,7 @@
-# typedload
-# Module to load data into typed data structures
+"""
+typedload
+Module to load data into typed data structures
+"""
 
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
 #
@@ -70,12 +72,14 @@ class Loader:
         If you are not loading from json, you probably
         want to add bytes to the set.
 
-    failonextra: When enabled, the loader will raise
-        exceptions if there are fields in the data that
-        are not being used by the type.
+    failonextra: Disabled by default.
+        When enabled, the loader will raise exceptions if
+        there are fields in the data that are not being used
+        by the type.
 
-    basiccast: When disabled, instead of trying to perform
-        casts, exceptions will be raised.
+    basiccast: Enabled by default.
+        When disabled, instead of trying to perform casts,
+        exceptions will be raised.
         Since many json seem to encode numbers as strings,
         to avoid extra complications this functionality is
         provided.
