@@ -1,5 +1,7 @@
-# typedload
-# Module to load data into typed data structures
+"""
+typedload
+Module to load data into typed data structures
+"""
 
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
 #

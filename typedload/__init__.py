@@ -1,38 +1,40 @@
-# typedload
-#
-# This library loads Python data structures into
-# more strict data structures.
-#
-# The main purpose is to load things that come from
-# json, bson or similar into NamedTuple.
-#
-# For example this Json:
-#    {
-#        'users': [
-#            {
-#                'username': 'salvo',
-#                'shell': 'bash',
-#                'sessions': ['pts/4', 'tty7', 'pts/6']
-#            },
-#            {
-#                'username': 'lop'
-#            }
-#        ],
-#    }
-#
-# Can be treated more easily if loaded into this:
-#
-#class User(NamedTuple):
-#    username: str
-#    shell: str = 'bash'
-#    sessions: List[str] = []
-#
-#class Logins(NamedTuple):
-#    users: List[User]
-#
-# And can then be loaded with
-#
-# typedload.load(data, Logins)
+"""
+typedload
+
+This library loads Python data structures into
+more strict data structures.
+
+The main purpose is to load things that come from
+json, bson or similar into NamedTuple.
+
+For example this Json:
+   {
+       'users': [
+           {
+               'username': 'salvo',
+               'shell': 'bash',
+               'sessions': ['pts/4', 'tty7', 'pts/6']
+           },
+           {
+               'username': 'lop'
+           }
+       ],
+   }
+
+Can be treated more easily if loaded into this:
+
+class User(NamedTuple):
+   username: str
+   shell: str = 'bash'
+   sessions: List[str] = []
+
+class Logins(NamedTuple):
+   users: List[User]
+
+And can then be loaded with
+
+typedload.load(data, Logins)
+"""
 
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
 #

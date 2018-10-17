@@ -1,5 +1,7 @@
-# typedload
-# Exceptions
+"""
+typedload
+Exceptions
+"""
 
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
 #
