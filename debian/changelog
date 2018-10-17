@@ -1,8 +1,8 @@
-typedload (1.11-1) UNRELEASED; urgency=medium
+typedload (1.10-2) unstable; urgency=medium
 
-  * New upstream release
+  * Bump build-dep version on mypy
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Sat, 13 Oct 2018 03:21:54 +0200
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Wed, 17 Oct 2018 20:05:53 +0200
 
 typedload (1.10-1) unstable; urgency=low
 
