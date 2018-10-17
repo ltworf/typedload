@@ -51,4 +51,7 @@ def _attrdump(d, value) -> Dict[str, Any]:
 
 
 def add2dumper(l) -> None:
+    """
+    Adds the "attr" handler to an existing dumper
+    """
     l.handlers.append((_condition, _attrdump))

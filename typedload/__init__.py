@@ -94,7 +94,7 @@ def dump(value: Any, **kwargs) -> Any:
 
 def attrload(value: Any, type_: Type[T], **kwargs) -> T:
     """
-    Quick function call to load data supporting the attr module
+    Quick function call to load data supporting the "attr" module
     in addition to the default ones.
     """
     from . import dataloader
@@ -106,7 +106,7 @@ def attrload(value: Any, type_: Type[T], **kwargs) -> T:
 
 def attrdump(value: Any, **kwargs) -> Any:
     """
-    Quick function to do a dump that supports the attr
+    Quick function to do a dump that supports the "attr"
     module.
     """
     from . import datadumper

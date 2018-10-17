@@ -105,4 +105,7 @@ def _condition(t) -> bool:
 
 
 def add2loader(l) -> None:
+    """
+    Adds the "attr" handler to an existing loader
+    """
     l.handlers.append((_condition, _attrload))
