@@ -92,5 +92,3 @@ See the file `example.py` to see a basic usecase for this module.
 
 The tests are harder to read but provide more in depth examples of
 the capabilities of this module.
-
-
