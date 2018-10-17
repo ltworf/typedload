@@ -17,6 +17,7 @@ pypi: setup.py typedload
 
 clean:
 	$(RM) -r pypi
+	$(RM) -r docs
 	$(RM) -r .mypy_cache
 	$(RM) MANIFEST
 	$(RM) -r `find . -name __pycache__`
@@ -52,3 +53,15 @@ deb-pkg: dist
 	mkdir deb-pkg
 	mv /tmp/typedload_* /tmp/python3-typedload_*.deb deb-pkg
 	$(RM) -r /tmp/typedload
+
+docs:
+	install -d docs
+	pydoc3 -w typedload
+	pydoc3 -w typedload.datadumper
+	pydoc3 -w typedload.dataloader
+	pydoc3 -w typedload.exceptions
+	pydoc3 -w typedload.plugins
+	pydoc3 -w typedload.plugins.attrload
+	pydoc3 -w typedload.plugins.attrdump
+	mv *.html docs
+	ln -s typedload.html docs/index.html
