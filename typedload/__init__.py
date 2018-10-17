@@ -102,6 +102,9 @@ In [16]: l.load(42, str)
 Out[16]: 'quarantadue'
 
 This can of course be used also for use cases that make sense.
+
+The handlers must generate exceptions from the typedload.exceptions
+module.
 """
 
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
