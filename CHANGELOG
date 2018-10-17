@@ -1,5 +1,6 @@
 1.11
 * Fixed problem when printing sub-exceptions of failed unions
+* Improve documentation
 
 1.10
 * Make mypy happy again
