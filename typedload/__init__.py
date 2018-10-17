@@ -1,5 +1,6 @@
 """
 typedload
+=========
 
 This library loads Python data structures into
 more strict data structures.
@@ -34,6 +35,73 @@ class Logins(NamedTuple):
 And can then be loaded with
 
 typedload.load(data, Logins)
+
+Simple API
+==========
+
+typedload.load() and typedload.dump() are functions to quickly load and dump
+data using the default objects.
+
+They create a new loader/dumper object with default parameters, and
+discard it after.
+
+The functions typedload.attrload() and typedload.attrdump() are similar, but
+import the optional "attr" module and use an handler to deal with the
+classes provided by that module.
+
+Classes
+=======
+
+The loader and dumper classes expose a number of attributes that can be
+customised to tweak their behaviour.
+
+Handlers
+========
+
+An important way to tweak the behaviour of a loader or dumper object is
+to modify the handlers list.
+
+The handlers' list items are tuples for two functions. The signatures are
+different for loader or dumper.
+
+The first function returns a boolean, and if the value is true, the object
+will call the second function and return its result.
+
+Basically a loader and a dumper class have no functionality (but come with
+a default list of handlers).
+
+So, to add support for a new type, it is sufficient to write a function that
+outputs the desired value, and a function that decides when to call that.
+
+The index() function returns the position of handlers in the list, so that
+it is possible to remove them or add new handlers before or after a given
+handler.
+
+The pointer to the loader or dumper object is passed, so that the attributes
+in use for that particular object are available.
+
+For example, if we want to add a special loader that when loading the int 42
+into a string returns 'quarantadue', we can do this:
+
+from typedload.dataloader import Loader
+l = Loader()
+l.handlers.insert(
+    l.index(str), # This will place this entry before the string handler
+    (
+        lambda x: x == str,
+        lambda loader, value, type_: str(value) if value != 42 else 'quarantadue'
+    )
+)
+
+Then this will happen:
+
+In [15]: l.load(12, str)
+Out[15]: '12'
+
+In [16]: l.load(42, str)
+Out[16]: 'quarantadue'
+
+This can of course be used also for use cases that make sense.
 """
 
 # Copyright (C) 2018 Salvo "LtWorf" Tomaselli
