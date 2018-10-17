@@ -8,3 +8,4 @@ typedload.kdev4
 deb-pkg/
 *.swp
 docs/
+dist/
