@@ -6,7 +6,7 @@ python:
   - "3.7-dev"
 
 install:
-  - pip install mypy
+  - pip install mypy setuptools
 
 script:
   - make test
