@@ -1,8 +1,9 @@
 typedload (1.11-1) UNRELEASED; urgency=medium
 
   * New upstream release
+  * Relax mypy dependency version (Closes: #916280)
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Wed, 17 Oct 2018 20:12:39 +0200
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Sat, 15 Dec 2018 15:12:39 +0100
 
 typedload (1.10-2) unstable; urgency=medium
 
