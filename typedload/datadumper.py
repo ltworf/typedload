@@ -146,7 +146,10 @@ def _dataclassdump(l, value):
     import dataclasses
     fields = set(value.__dataclass_fields__.keys())
     field_defaults = {k: v.default for k,v in value.__dataclass_fields__.items() if not isinstance (v.default, dataclasses._MISSING_TYPE)}
+    field_factories = {k: v.default_factory() for k,v in value.__dataclass_fields__.items() if not isinstance (v.default_factory, dataclasses._MISSING_TYPE)}
+    defaults = {**field_defaults, **field_factories} # Merge the two dictionaries
+
     return {
         f: l.dump(getattr(value, f)) for f in fields
-        if not l.hidedefault or f not in field_defaults or field_defaults[f] != getattr(value, f)
+        if not l.hidedefault or f not in defaults or defaults[f] != getattr(value, f)
     }

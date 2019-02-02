@@ -17,7 +17,7 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
@@ -26,6 +26,14 @@ from typedload import dataloader, load, dump
 
 
 class TestDataclassLoad(unittest.TestCase):
+
+    def test_factory_load(self):
+        @dataclass
+        class A:
+            a: List[int] = field(default_factory=list)
+        assert load({'a': [1, 2, 3]}, A) == A([1, 2, 3])
+        assert load({'a': []}, A) == A()
+        assert load({}, A) == A()
 
     def test_load(self):
         @dataclass
@@ -86,3 +94,13 @@ class TestDataclassDump(unittest.TestCase):
 
         assert dump(A(12)) == {'a': 12}
         assert dump(A(12), hidedefault=False) == {'a': 12, 'b': 0}
+
+    def test_factory_dump(self):
+        @dataclass
+        class A:
+            a: int
+            b: List[int] = field(default_factory=list)
+
+        assert dump(A(3)) == {'a': 3}
+        assert dump(A(12), hidedefault=False) == {'a': 12, 'b': []}
+
