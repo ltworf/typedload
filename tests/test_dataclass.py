@@ -94,3 +94,13 @@ class TestDataclassDump(unittest.TestCase):
 
         assert dump(A(12)) == {'a': 12}
         assert dump(A(12), hidedefault=False) == {'a': 12, 'b': 0}
+
+    def test_factory_dump(self):
+        @dataclass
+        class A:
+            a: int
+            b: List[int] = field(default_factory=list)
+
+        assert dump(A(3)) == {'a': 3}
+        assert dump(A(12), hidedefault=False) == {'a': 12, 'b': []}
+
