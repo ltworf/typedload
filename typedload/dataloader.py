@@ -356,7 +356,7 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
         #dataclass
         import dataclasses
         fields = set(type_.__dataclass_fields__.keys())
-        optional_fields ={k for k,v in type_.__dataclass_fields__.items() if not isinstance (getattr(v, 'default', dataclasses._MISSING_TYPE()), dataclasses._MISSING_TYPE)}
+        optional_fields ={k for k,v in type_.__dataclass_fields__.items() if not (isinstance(getattr(v, 'default', dataclasses._MISSING_TYPE()), dataclasses._MISSING_TYPE) and isinstance(getattr(v, 'default_factory', dataclasses._MISSING_TYPE()), dataclasses._MISSING_TYPE))}
         type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
     necessary_fields = fields.difference(optional_fields)
     try:
