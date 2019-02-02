@@ -1,3 +1,5 @@
+1.12
+
 1.11
 * Fixed problem when printing sub-exceptions of failed unions
 * Improve documentation

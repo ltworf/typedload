@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # typedload
-# Copyright (C) 2018 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2019 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ from distutils.core import setup
 
 setup(
     name='typedload',
-    version='1.11',
+    version='1.12',
     description='Load and dump data from json-like format into typed data structures',
     long_description='''Manipulating data loaded from json is very error prone.
 
