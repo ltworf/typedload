@@ -1,4 +1,5 @@
 1.12
+* Support fields with factory for dataclass
 
 1.11
 * Fixed problem when printing sub-exceptions of failed unions
