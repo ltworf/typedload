@@ -1,3 +1,10 @@
+typedload (1.13-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+  * Bump Standards-Version to 4.3.0
+
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Sat, 02 Feb 2019 12:34:05 +0100
+
 typedload (1.12-1) unstable; urgency=medium
 
   * New upstream release

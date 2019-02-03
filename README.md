@@ -1,13 +1,17 @@
 typedload
 =========
 
-Dynamic data structures are nice, but they quickly become difficult to work
-with, when more static ones are easier to work with but are awkward to use to
-exchange data externally.
+Load and dump json-like data into typed data structures in Python3.
 
-This is a library to load untyped data (coming from example from a json string)
-and convert it into Python's NamedTuple or similar, respecting all the type
-hints and performing type checks or casts when needed.
+This module provides an API to load dictionaries and lists (usually loaded
+from json) into Python's NamedTuples, dataclass, sets, enums, and various
+other typed data structures; respecting all the type-hints and performing
+type checks or casts when needed.
+
+It can also dump from typed data structures to json-like dictionaries and lists.
+
+It is very useful for projects that use Mypy and deal with untyped data
+like json, because it guarantees that the data will have the expected format.
 
 Note that it is released with a GPL license and it cannot be used inside non
 GPL software.
@@ -17,7 +21,7 @@ Example
 
 For example this dictionary, loaded from a json:
 
-```
+```python
 data = {
     'users': [
         {
@@ -35,7 +39,7 @@ data = {
 
 Can be treated more easily if loaded into this type:
 
-```
+```python
 class User(NamedTuple):
     username: str
     shell: str = 'bash'
@@ -47,13 +51,13 @@ class Logins(NamedTuple):
 
 And the data can be loaded into the structure with this:
 
-```
+```python
 t_data = typedload.load(data, Logins)
 ```
 
 And then converted back:
 
-```
+```python
 data = typedload.dump(t_data)
 ```
 
@@ -76,6 +80,26 @@ The following things are supported:
  * dataclass (requires Python 3.7)
  * attr (Handled in a built-in plugin)
  * ForwardRef (Refer to the type in its own definition)
+
+Advantage when using Mypy
+=========================
+
+```python
+# This is treated as Any, no checks done.
+data = json.load(f)
+
+# This is treated as Dict[str, int]
+# but there will be runtime errors if the data does not
+# match the expected format
+data = json.load(f)  # type: Dict[str, int]
+
+# This is treated as Dict[str, int] and an exception is
+# raised if the actual data is not Dict[str, int]
+data = typedload.load(json.load(f), Dict[str, int])
+```
+
+So when using Mypy, it makes sense to make sure that the type is correct,
+rather than hoping the data will respect the format.
 
 Documentation
 =============

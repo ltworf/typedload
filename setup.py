@@ -22,19 +22,19 @@ from distutils.core import setup
 
 setup(
     name='typedload',
-    version='1.12',
+    version='1.13',
     description='Load and dump data from json-like format into typed data structures',
-    long_description='''Manipulating data loaded from json is very error prone.
+    long_description='''Load and dump json-like data into typed data structures.
 
-If the format changes unexpectedly, errors arise at the time of use, fields can
-disappear or change type.
+This module provides an API to load dictionaries and lists (usually loaded
+from json) into Python's NamedTuples, dataclass, sets, enums, and various
+other typed data structures; respecting all the type-hints and performing
+type checks or casts when needed.
 
-This library allows loading data using NamedTuple and similar type hints,
-to obtain a more safe to use data structure. All exceptions will be generated in
-a single point, when loading, rather than in multiple points, when using.
+It can also dump from typed data structures to json-like dictionaries and lists.
 
-It also provides a module to do the opposite and revert back to something that
-can be converted to json.
+It is very useful for projects that use Mypy and deal with untyped data
+like json, because it guarantees that the data will have the expected format.
 ''',
     url='https://github.com/ltworf/typedload',
     author='Salvo \'LtWorf\' Tomaselli',
