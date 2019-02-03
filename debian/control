@@ -12,14 +12,14 @@ Vcs-Browser: https://github.com/ltworf/typedload
 Package: python3-typedload
 Architecture: all
 Depends: ${misc:Depends}, ${python3:Depends}
-Description: Python3 module to load and dump data into typed structures
- This module provides an API to load dictionaries and list (usually loaded
- from json) into Python's NamedTuples, sets, enums, and various other typed
- data structures.
+Description: Load and dump json-like data into typed data structures in Python3
+ This module provides an API to load dictionaries and lists (usually loaded
+ from json) into Python's NamedTuples, dataclass, sets, enums, and various
+ other typed data structures; respecting all the type-hints and performing
+ type checks or casts when needed.
  .
- It also allows one to dump them from typed data structures to json-like
- dictionaries and lists.
+ It can also dump from typed data structures to json-like dictionaries and
+ lists.
  .
- This allows all the code that uses external data to have the advantages
- of using types, and causes all errors with the data to be noticed when it
- is loaded, rather than when it is used.
+ It is very useful for projects that use Mypy and deal with untyped data like
+ json, because it guarantees that the data will have the expected format.
