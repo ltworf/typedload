@@ -25,6 +25,7 @@ from enum import Enum
 from typing import *
 
 from .exceptions import *
+from .checks import *
 
 
 __all__ = [
@@ -34,32 +35,6 @@ __all__ = [
 
 NONETYPE = type(None)  # type: Type[Any]
 T = TypeVar('T')
-
-try:
-    # Since 3.7
-    from typing import ForwardRef  # type: ignore
-except ImportError:
-    from typing import _ForwardRef as ForwardRef  # type: ignore
-
-
-def _issubclass(t1, t2) -> bool:
-    """
-    Wrapper around _issubclass to circumvent python 3.7 changing API
-    """
-    try:
-        return issubclass(t1, t2)
-    except TypeError:
-        return False
-
-
-# This is a workaround for an incompatibility between 3.5.2 and previous, and 3.5.3 and later
-try:
-    issubclass(Union[int,str], Union)  # type: ignore
-    HAS_UNIONSUBCLASS = True
-except:
-    HAS_UNIONSUBCLASS = False
-HAS_TUPLEARGS = hasattr(Tuple[int, int], '__args__')
-
 
 class Loader:
     """
@@ -170,17 +145,7 @@ class Loader:
         # Forward refs dictionary
         self.frefs = {}  # type: Optional[Dict[str, Type]]
 
-        if HAS_UNIONSUBCLASS:
-            # Old python
-            union_check = lambda type_: _issubclass(type_, Union)
-        else:
-            union_check = lambda type_: getattr(type_, '__origin__', None) == Union
 
-        if HAS_TUPLEARGS:
-            tuple_check = lambda type_: getattr(type_, '__origin__', None) in {tuple, Tuple}
-        else:
-            # Old python
-            tuple_check = lambda type_: _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
 
         # The list of handlers to use to load the data.
         # It gets iterated in order, and the first condition
@@ -189,14 +154,14 @@ class Loader:
             (lambda type_: type_ == NONETYPE, _noneload),
             (union_check, _unionload),
             (lambda type_: type_ in self.basictypes, _basicload),
-            (lambda type_: _issubclass(type_, Enum), _enumload),
+            (enum_check, _enumload),
             (tuple_check, _tupleload),
-            (lambda type_: getattr(type_, '__origin__', None) in {list, List}, _listload),
-            (lambda type_: getattr(type_, '__origin__', None) in {dict, Dict}, _dictload),
-            (lambda type_: getattr(type_, '__origin__', None) in {set, Set}, _setload),
-            (lambda type_: _issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'}), _namedtupleload),
-            (lambda type_: '__dataclass_fields__' in dir(type_), _namedtupleload),
-            (lambda type_: type(type_) == ForwardRef, _forwardrefload),
+            (list_check, _listload),
+            (dict_check, _dictload),
+            (set_check, _setload),
+            (namedtuple_check, _namedtupleload),
+            (dataclass_check, _namedtupleload),
+            (forwardref_check, _forwardrefload),
         ]  # type: List[Tuple[Callable[[Type[T]], bool], Callable[['Loader', Any, Type[T]], T]]]
 
         for k, v in kwargs.items():
