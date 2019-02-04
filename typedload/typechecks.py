@@ -1,6 +1,6 @@
 """
 typedload
-Module to check types from the typing module.
+Module to check types, mostly from the typing module.
 
 For example is_list(List) and is_list(List[int])
 return True.
@@ -58,6 +58,10 @@ NONETYPE = type(None)  # type: Type[Any]
 
 
 def is_tuple(type_: Type[Any]) -> bool:
+    '''
+    Tuple[int, str]
+    Tuple
+    '''
     if HAS_TUPLEARGS:
         # The tuple, Tuple thing is a difference between 3.6 and 3.7
         # In 3.6 and before, Tuple had an __extra__ field, while Tuple[something]
@@ -79,6 +83,11 @@ except:
 
 
 def is_union(type_: Type[Any]) -> bool:
+    '''
+    Union[A, B]
+    Union
+    Optional[A]
+    '''
     if HAS_UNIONSUBCLASS:
         # Old python
         return _issubclass(type_, Union)
@@ -87,6 +96,9 @@ def is_union(type_: Type[Any]) -> bool:
 
 
 def is_nonetype(type_: Type[Any]) -> bool:
+    '''
+    type_ == type(None)
+    '''
     return type_ == NONETYPE
 
 
@@ -95,30 +107,57 @@ def _generic_type_check(type_: Type[Any], native, from_typing):
 
 
 def is_list(type_: Type[Any]) -> bool:
+    '''
+    List[A]
+    List
+    '''
     return _generic_type_check(type_, list, List)
 
 
 def is_dict(type_: Type[Any]) -> bool:
+    '''
+    Dict[A, B]
+    Dict
+    '''
     return _generic_type_check(type_, dict, Dict)
 
 
 def is_set(type_: Type[Any]) -> bool:
+    '''
+    Set[A]
+    Set
+    '''
     return _generic_type_check(type_, set, Set)
 
 
 def is_enum(type_: Type[Any]) -> bool:
+    '''
+    Check if the class is a subclass of Enum
+    '''
     return _issubclass(type_, Enum)
 
 
 def is_namedtuple(type_: Type[Any]) -> bool:
+    '''
+    Generated with typing.NamedTuple
+    '''
     return _issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'})
 
 
 def is_dataclass(type_: Type[Any]) -> bool:
+    '''
+    dataclass (Introduced in Python3.7
+    '''
     return '__dataclass_fields__' in dir(type_)
 
 
 def is_forwardref(type_: Type[Any]) -> bool:
+    '''
+    Check if it's a ForwardRef.
+
+    They are unresolved types passed as strings, supposed to
+    be resolved into types at a later moment
+    '''
     return type(type_) == ForwardRef
 
 
