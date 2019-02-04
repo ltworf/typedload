@@ -25,7 +25,7 @@ from enum import Enum
 from typing import *
 
 from .exceptions import *
-from .checks import *
+from .typechecks import *
 
 
 __all__ = [
