@@ -15,7 +15,7 @@ can't be used in variable names.
 Another common application is to convert camelCase into not_camel_case.
 """
 
-# Copyright (C) 2018 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2019 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -72,6 +72,8 @@ class _FakeNamedTuple(tuple):
 
 
 def _attrload(l, value, type_):
+    if not isinstance(value, dict):
+        raise TypedloadTypeError('Expected dictionary, got %s' % type(value), type_=type_, value=value)
     value = value.copy()
     names = []
     defaults = {}
