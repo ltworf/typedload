@@ -33,14 +33,14 @@ different versions of Python.
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 from enum import Enum
-from typing import Tuple, Union, Set, List, Dict
+from typing import Any, Tuple, Union, Set, List, Dict, Type
+
 
 try:
     # Since 3.7
     from typing import ForwardRef  # type: ignore
 except ImportError:
     from typing import _ForwardRef as ForwardRef  # type: ignore
-
 
 
 def _issubclass(t1, t2) -> bool:
@@ -52,13 +52,17 @@ def _issubclass(t1, t2) -> bool:
     except TypeError:
         return False
 
-HAS_TUPLEARGS = hasattr(Tuple[int, int], '__args__')
 
-if HAS_TUPLEARGS:
-    is_tuple = lambda type_: getattr(type_, '__origin__', None) in {tuple, Tuple}
-else:
-    # Old python
-    is_tuple = lambda type_: _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
+HAS_TUPLEARGS = hasattr(Tuple[int, int], '__args__')
+NONETYPE = type(None)  # type: Type[Any]
+
+def is_tuple(type_):
+    if HAS_TUPLEARGS:
+        # The tuple, Tuple thing is a difference between 3.6 and 3.7
+        return getattr(type_, '__origin__', None) in {tuple, Tuple}
+    else:
+        # Old python
+        return _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
 
 
 # This is a workaround for an incompatibility between 3.5.2 and previous, and 3.5.3 and later
@@ -68,19 +72,42 @@ try:
 except:
     HAS_UNIONSUBCLASS = False
 
-if HAS_UNIONSUBCLASS:
-    # Old python
-    is_union = lambda type_: _issubclass(type_, Union)
-else:
-    is_union = lambda type_: getattr(type_, '__origin__', None) == Union
 
-NONETYPE = type(None)  # type: Type[Any]
-is_nonetype = lambda type_: type_ == NONETYPE
+def is_union(type_):
+    if HAS_UNIONSUBCLASS:
+        # Old python
+        return _issubclass(type_, Union)
+    else:
+        return getattr(type_, '__origin__', None) == Union
 
-is_list = lambda type_: getattr(type_, '__origin__', None) in {list, List}
-is_dict = lambda type_: getattr(type_, '__origin__', None) in {dict, Dict}
-is_set = lambda type_: getattr(type_, '__origin__', None) in {set, Set}
-is_enum = lambda type_: _issubclass(type_, Enum)
-is_namedtuple = lambda type_: _issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'})
-is_dataclass = lambda type_: '__dataclass_fields__' in dir(type_)
-is_forwardref = lambda type_: type(type_) == ForwardRef
+
+def is_nonetype(type_):
+    return type_ == NONETYPE
+
+
+def is_list(type_):
+    return getattr(type_, '__origin__', None) in {list, List}
+
+
+def is_dict(type_):
+    return getattr(type_, '__origin__', None) in {dict, Dict}
+
+
+def is_set(type_):
+    return getattr(type_, '__origin__', None) in {set, Set}
+
+
+def is_enum(type_):
+    return _issubclass(type_, Enum)
+
+
+def is_namedtuple(type_):
+    return _issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'})
+
+
+def is_dataclass(type_):
+    return '__dataclass_fields__' in dir(type_)
+
+
+def is_forwardref(type_):
+    return type(type_) == ForwardRef
