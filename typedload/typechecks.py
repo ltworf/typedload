@@ -60,7 +60,11 @@ NONETYPE = type(None)  # type: Type[Any]
 def is_tuple(type_: Type[Any]) -> bool:
     if HAS_TUPLEARGS:
         # The tuple, Tuple thing is a difference between 3.6 and 3.7
-        return getattr(type_, '__origin__', None) in {tuple, Tuple}
+        # In 3.6 and before, Tuple had an __extra__ field, while Tuple[something]
+        # would have the normal __origin__ field.
+        #
+        # Those apply for Dict, List, Set, Tuple
+        return _generic_type_check(type_, tuple, Tuple)
     else:
         # Old python
         return _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
@@ -86,16 +90,20 @@ def is_nonetype(type_: Type[Any]) -> bool:
     return type_ == NONETYPE
 
 
+def _generic_type_check(type_: Type[Any], native, from_typing):
+    return getattr(type_, '__origin__', None) in {native, from_typing} or getattr(type_, '__extra__', None) == native
+
+
 def is_list(type_: Type[Any]) -> bool:
-    return getattr(type_, '__origin__', None) in {list, List}
+    return _generic_type_check(type_, list, List)
 
 
 def is_dict(type_: Type[Any]) -> bool:
-    return getattr(type_, '__origin__', None) in {dict, Dict}
+    return _generic_type_check(type_, dict, Dict)
 
 
 def is_set(type_: Type[Any]) -> bool:
-    return getattr(type_, '__origin__', None) in {set, Set}
+    return _generic_type_check(type_, set, Set)
 
 
 def is_enum(type_: Type[Any]) -> bool:
