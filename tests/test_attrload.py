@@ -22,7 +22,7 @@ import unittest
 
 import attr
 
-from typedload import attrload, attrdump
+from typedload import attrload, attrdump, exceptions
 from typedload import datadumper
 from typedload.plugins import attrdump as attrplugin
 
@@ -140,6 +140,24 @@ class TestMangling(unittest.TestCase):
 
 
 class TestAttrExceptions(unittest.TestCase):
+
+    def test_wrongtype(self):
+        try:
+            attrload(3, Person)
+        except exceptions.TypedloadTypeError:
+            pass
+
+        data = {
+            'course': 'how to be a corsair',
+            'students': [
+                {'name': 'Alfio'},
+                3
+            ]
+        }
+        try:
+            attrload(data, Students)
+        except exceptions.TypedloadTypeError as e:
+            assert e.trace[-1].annotation[1] == 1
 
     def test_index(self):
         try:
