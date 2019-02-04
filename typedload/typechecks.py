@@ -56,7 +56,8 @@ def _issubclass(t1, t2) -> bool:
 HAS_TUPLEARGS = hasattr(Tuple[int, int], '__args__')
 NONETYPE = type(None)  # type: Type[Any]
 
-def is_tuple(type_):
+
+def is_tuple(type_: Type[Any]) -> bool:
     if HAS_TUPLEARGS:
         # The tuple, Tuple thing is a difference between 3.6 and 3.7
         return getattr(type_, '__origin__', None) in {tuple, Tuple}
@@ -73,7 +74,7 @@ except:
     HAS_UNIONSUBCLASS = False
 
 
-def is_union(type_):
+def is_union(type_: Type[Any]) -> bool:
     if HAS_UNIONSUBCLASS:
         # Old python
         return _issubclass(type_, Union)
@@ -81,33 +82,33 @@ def is_union(type_):
         return getattr(type_, '__origin__', None) == Union
 
 
-def is_nonetype(type_):
+def is_nonetype(type_: Type[Any]) -> bool:
     return type_ == NONETYPE
 
 
-def is_list(type_):
+def is_list(type_: Type[Any]) -> bool:
     return getattr(type_, '__origin__', None) in {list, List}
 
 
-def is_dict(type_):
+def is_dict(type_: Type[Any]) -> bool:
     return getattr(type_, '__origin__', None) in {dict, Dict}
 
 
-def is_set(type_):
+def is_set(type_: Type[Any]) -> bool:
     return getattr(type_, '__origin__', None) in {set, Set}
 
 
-def is_enum(type_):
+def is_enum(type_: Type[Any]) -> bool:
     return _issubclass(type_, Enum)
 
 
-def is_namedtuple(type_):
+def is_namedtuple(type_: Type[Any]) -> bool:
     return _issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'})
 
 
-def is_dataclass(type_):
+def is_dataclass(type_: Type[Any]) -> bool:
     return '__dataclass_fields__' in dir(type_)
 
 
-def is_forwardref(type_):
+def is_forwardref(type_: Type[Any]) -> bool:
     return type(type_) == ForwardRef
