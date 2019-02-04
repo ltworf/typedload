@@ -1,6 +1,7 @@
 1.13
 * Fix bug in loading attr classes and passing random crap.
   Now the proper exception is raised.
+* New module to expose the internal type checks functions
 
 1.12
 * Support fields with factory for dataclass
