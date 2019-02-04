@@ -120,3 +120,11 @@ def is_dataclass(type_: Type[Any]) -> bool:
 
 def is_forwardref(type_: Type[Any]) -> bool:
     return type(type_) == ForwardRef
+
+
+def is_attrs(type_: Type[Any]) -> bool:
+    '''
+    Check if the type is obtained with an
+    @attr.s decorator
+    '''
+    return hasattr(type_, '__attrs_attrs__')

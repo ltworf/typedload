@@ -35,6 +35,7 @@ Another common application is to convert camelCase into not_camel_case.
 
 from ..dataloader import _namedtupleload
 from ..exceptions import *
+from ..typechecks import is_attrs
 
 class _FakeNamedTuple(tuple):
     """
@@ -104,12 +105,8 @@ def _attrload(l, value, type_):
     return _namedtupleload(l, value, t)
 
 
-def _condition(t) -> bool:
-    return hasattr(t, '__attrs_attrs__')
-
-
 def add2loader(l) -> None:
     """
     Adds the "attr" handler to an existing loader
     """
-    l.handlers.append((_condition, _attrload))
+    l.handlers.append((is_attrs, _attrload))

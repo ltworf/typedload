@@ -22,7 +22,7 @@ import unittest
 
 import attr
 
-from typedload import attrload, attrdump, exceptions
+from typedload import attrload, attrdump, exceptions, typechecks
 from typedload import datadumper
 from typedload.plugins import attrdump as attrplugin
 
@@ -89,6 +89,16 @@ class TestAttrDump(unittest.TestCase):
 
 
 class TestAttrload(unittest.TestCase):
+
+    def test_condition(self):
+        assert typechecks.is_attrs(Person)
+        assert typechecks.is_attrs(Students)
+        assert typechecks.is_attrs(Mangle)
+        assert typechecks.is_attrs(DetailedPerson)
+        assert not typechecks.is_attrs(int)
+        assert not typechecks.is_attrs(List[int])
+        assert not typechecks.is_attrs(Union[str, int])
+        assert not typechecks.is_attrs(Tuple[str, int])
 
     def test_basicload(self):
         assert attrload({'name': 'gino'}, Person) == Person('gino')
