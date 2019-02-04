@@ -43,10 +43,10 @@ def _issubclass(t1, t2) -> bool:
 HAS_TUPLEARGS = hasattr(Tuple[int, int], '__args__')
 
 if HAS_TUPLEARGS:
-    tuple_check = lambda type_: getattr(type_, '__origin__', None) in {tuple, Tuple}
+    is_tuple = lambda type_: getattr(type_, '__origin__', None) in {tuple, Tuple}
 else:
     # Old python
-    tuple_check = lambda type_: _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
+    is_tuple = lambda type_: _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
 
 
 # This is a workaround for an incompatibility between 3.5.2 and previous, and 3.5.3 and later
@@ -58,14 +58,14 @@ except:
 
 if HAS_UNIONSUBCLASS:
     # Old python
-    union_check = lambda type_: _issubclass(type_, Union)
+    is_union = lambda type_: _issubclass(type_, Union)
 else:
-    union_check = lambda type_: getattr(type_, '__origin__', None) == Union
+    is_union = lambda type_: getattr(type_, '__origin__', None) == Union
 
-list_check = lambda type_: getattr(type_, '__origin__', None) in {list, List}
-dict_check = lambda type_: getattr(type_, '__origin__', None) in {dict, Dict}
-set_check = lambda type_: getattr(type_, '__origin__', None) in {set, Set}
-enum_check = lambda type_: _issubclass(type_, Enum)
-namedtuple_check = lambda type_: _issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'})
-dataclass_check = lambda type_: '__dataclass_fields__' in dir(type_)
-forwardref_check = lambda type_: type(type_) == ForwardRef
+is_list = lambda type_: getattr(type_, '__origin__', None) in {list, List}
+is_dict = lambda type_: getattr(type_, '__origin__', None) in {dict, Dict}
+is_set = lambda type_: getattr(type_, '__origin__', None) in {set, Set}
+is_enum = lambda type_: _issubclass(type_, Enum)
+is_namedtuple = lambda type_: _issubclass(type_, tuple) and set(dir(type_)).issuperset({'_field_types', '_fields'})
+is_dataclass = lambda type_: '__dataclass_fields__' in dir(type_)
+is_forwardref = lambda type_: type(type_) == ForwardRef

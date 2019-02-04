@@ -152,16 +152,16 @@ class Loader:
         # that matches is used to load the value.
         self.handlers = [
             (lambda type_: type_ == NONETYPE, _noneload),
-            (union_check, _unionload),
+            (is_union, _unionload),
             (lambda type_: type_ in self.basictypes, _basicload),
-            (enum_check, _enumload),
-            (tuple_check, _tupleload),
-            (list_check, _listload),
-            (dict_check, _dictload),
-            (set_check, _setload),
-            (namedtuple_check, _namedtupleload),
-            (dataclass_check, _namedtupleload),
-            (forwardref_check, _forwardrefload),
+            (is_enum, _enumload),
+            (is_tuple, _tupleload),
+            (is_list, _listload),
+            (is_dict, _dictload),
+            (is_set, _setload),
+            (is_namedtuple, _namedtupleload),
+            (is_dataclass, _namedtupleload),
+            (is_forwardref, _forwardrefload),
         ]  # type: List[Tuple[Callable[[Type[T]], bool], Callable[['Loader', Any, Type[T]], T]]]
 
         for k, v in kwargs.items():
