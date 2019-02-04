@@ -63,7 +63,7 @@ class TestChecks(unittest.TestCase):
 
     def test_is_enum(self):
         class A(Enum):
-            BB: 3
+            BB = 3
         assert typechecks.is_enum(A)
         assert not typechecks.is_enum(Set[int])
 
