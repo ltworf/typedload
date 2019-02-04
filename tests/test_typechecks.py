@@ -68,8 +68,9 @@ class TestChecks(unittest.TestCase):
         assert not typechecks.is_enum(Set[int])
 
     def test_is_namedtuple(self):
-        class A(NamedTuple):
-            pass
+        A = NamedTuple('A', [
+            ('val', int),
+        ])
         assert typechecks.is_namedtuple(A)
         assert not typechecks.is_namedtuple(Tuple)
         assert not typechecks.is_namedtuple(tuple)
