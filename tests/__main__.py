@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2018 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2019 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ if sys.version_info.minor > 5:
 if sys.version_info.minor >= 7:
     from .test_dataclass import *
 from .test_legacytuples_dataloader import *
+from .test_typechecks import *
 
 # Run tests for the attr plugin only if it is loaded
 try:

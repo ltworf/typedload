@@ -22,10 +22,21 @@ from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
-from typedload import dataloader, load, dump
+from typedload import dataloader, load, dump, typechecks
 
 
 class TestDataclassLoad(unittest.TestCase):
+
+    def test_is_dataclass(self):
+        @dataclass
+        class A:
+            pass
+        class B(NamedTuple):
+            pass
+        assert typechecks.is_dataclass(A)
+        assert not typechecks.is_dataclass(List[int])
+        assert not typechecks.is_dataclass(Tuple[int, int])
+        assert not typechecks.is_dataclass(B)
 
     def test_factory_load(self):
         @dataclass
