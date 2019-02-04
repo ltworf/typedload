@@ -62,6 +62,9 @@ if HAS_UNIONSUBCLASS:
 else:
     is_union = lambda type_: getattr(type_, '__origin__', None) == Union
 
+NONETYPE = type(None)  # type: Type[Any]
+is_nonetype = lambda type_: type_ == NONETYPE
+
 is_list = lambda type_: getattr(type_, '__origin__', None) in {list, List}
 is_dict = lambda type_: getattr(type_, '__origin__', None) in {dict, Dict}
 is_set = lambda type_: getattr(type_, '__origin__', None) in {set, Set}

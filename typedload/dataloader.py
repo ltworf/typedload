@@ -33,7 +33,6 @@ __all__ = [
 ]
 
 
-NONETYPE = type(None)  # type: Type[Any]
 T = TypeVar('T')
 
 class Loader:
@@ -151,7 +150,7 @@ class Loader:
         # It gets iterated in order, and the first condition
         # that matches is used to load the value.
         self.handlers = [
-            (lambda type_: type_ == NONETYPE, _noneload),
+            (is_nonetype, _noneload),
             (is_union, _unionload),
             (lambda type_: type_ in self.basictypes, _basicload),
             (is_enum, _enumload),
