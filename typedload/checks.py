@@ -21,7 +21,7 @@ Module to check types
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 from enum import Enum
-from typing import *
+from typing import Tuple, Union, Set, List, Dict
 
 try:
     # Since 3.7
