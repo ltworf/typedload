@@ -16,6 +16,7 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
+from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
@@ -31,6 +32,7 @@ class TestChecks(unittest.TestCase):
         assert not typechecks.is_list(list)
         assert not typechecks.is_list(Tuple[int, str])
         assert not typechecks.is_list(Dict[int, str])
+        assert not typechecks.is_list([])
 
     def test_is_dict(self):
         assert typechecks.is_dict(Dict[int, int])
@@ -46,9 +48,37 @@ class TestChecks(unittest.TestCase):
     def test_is_tuple(self):
         assert typechecks.is_tuple(Tuple[str, int, int])
         assert typechecks.is_tuple(Tuple)
+        assert not typechecks.is_tuple(tuple)
+        assert not typechecks.is_tuple((1,2))
 
     def test_is_union(self):
         assert typechecks.is_union(Optional[int])
         assert typechecks.is_union(Optional[str])
         assert typechecks.is_union(Union[bytes, str])
         assert typechecks.is_union(Union[str, int, float])
+
+    def test_is_nonetype(self):
+        assert typechecks.is_nonetype(type(None))
+        assert not typechecks.is_nonetype(List[int])
+
+    def test_is_enum(self):
+        class A(Enum):
+            BB: 3
+        assert typechecks.is_enum(A)
+        assert not typechecks.is_enum(Set[int])
+
+    def test_is_namedtuple(self):
+        class A(NamedTuple):
+            pass
+        assert typechecks.is_namedtuple(A)
+        assert not typechecks.is_namedtuple(Tuple)
+        assert not typechecks.is_namedtuple(tuple)
+        assert not typechecks.is_namedtuple(Tuple[int, int])
+
+    def test_is_forwardref(self):
+        try:
+            # Since 3.7
+            from typing import ForwardRef  # type: ignore
+        except ImportError:
+            from typing import _ForwardRef as ForwardRef  # type: ignore
+        assert typechecks.is_forwardref(ForwardRef('SomeType'))
