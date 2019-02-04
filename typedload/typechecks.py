@@ -1,6 +1,18 @@
 """
 typedload
-Module to check types
+Module to check types from the typing module.
+
+For example is_list(List) and is_list(List[int])
+return True.
+
+It is not the same as isinstance(), it wants types, not instances.
+
+It is expected that is_list(list) returns False, since it shouldn't be used for
+type hints.
+
+The module is useful because there is no public API to do those checks, and it
+protects the user from the ever changing internal representation used in
+different versions of Python.
 """
 
 # Copyright (C) 2019 Salvo "LtWorf" Tomaselli
