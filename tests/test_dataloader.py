@@ -94,7 +94,6 @@ class TestUnion(unittest.TestCase):
         assert type(loader.load({'val': {'a': 1}}, C).val) == A
         assert type(loader.load({'val': {'a': '1'}}, C).val) == B
 
-
     def test_optional(self):
         loader = dataloader.Loader()
         assert loader.load(1, Optional[int]) == 1
@@ -120,6 +119,31 @@ class TestUnion(unittest.TestCase):
         assert type(loader.load(1, Optional[Union[int, float]])) == int
         assert type(loader.load(1.0, Optional[Union[int, float]])) == float
         assert loader.load(None, Optional[str]) is None
+
+
+class TestTupleLoad(unittest.TestCase):
+
+    def test_ellipsis(self):
+        loader = dataloader.Loader()
+
+        l = list(range(33))
+        t = tuple(l)
+        assert loader.load(l, Tuple[int, ...]) == t
+        assert loader.load('abc', Tuple[str, ...]) == ('a', 'b', 'c')
+        assert loader.load('a', Tuple[str, ...]) == ('a', )
+
+    def test_tuple(self):
+        loader = dataloader.Loader()
+
+        with self.assertRaises(ValueError):
+            assert loader.load([1], Tuple[int, int]) == (1, 2)
+
+        assert loader.load([1, 2, 3], Tuple[int, int]) == (1, 2)
+        loader.failonextra = True
+        # Now the same will fail
+        with self.assertRaises(ValueError):
+            loader.load([1, 2, 3], Tuple[int, int]) == (1, 2)
+
 
 
 class TestNamedTuple(unittest.TestCase):
