@@ -300,12 +300,15 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
         args = type_.__args__
     else:
         args = type_.__tuple_params__
-    if l.failonextra and len(value) > len(args):
-        raise TypedloadValueError('Value is too long for type %s' % type_, value=value, type_=type_)
-    elif len(value) < len(args):
-        raise TypedloadValueError('Value is too short for type %s' % type_, value=value, type_=type_)
 
-    return tuple(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, (v, t) in enumerate(zip(value, args)))
+    if len(args) == 2 and args[1] == ...: # Tuple[something, ...]
+        return tuple(l.load(i, args[0]) for i in value)
+    else: # Tuple[something, something, somethingelse]
+        if l.failonextra and len(value) > len(args):
+            raise TypedloadValueError('Value is too long for type %s' % type_, value=value, type_=type_)
+        elif len(value) < len(args):
+            raise TypedloadValueError('Value is too short for type %s' % type_, value=value, type_=type_)
+        return tuple(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, (v, t) in enumerate(zip(value, args)))
 
 
 def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:

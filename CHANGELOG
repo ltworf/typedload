@@ -1,4 +1,5 @@
 1.14
+* Add support for Tuple[t, ...]
 
 1.13
 * Fix bug in loading attr classes and passing random crap.
