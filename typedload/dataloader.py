@@ -158,6 +158,7 @@ class Loader:
             (is_list, _listload),
             (is_dict, _dictload),
             (is_set, _setload),
+            (is_frozenset, _frozensetload),
             (is_namedtuple, _namedtupleload),
             (is_dataclass, _namedtupleload),
             (is_forwardref, _forwardrefload),
@@ -290,6 +291,14 @@ def _setload(l: Loader, value, type_) -> Set:
     """
     t = type_.__args__[0]
     return {l.load(i, t) for i in value}
+
+
+def _frozensetload(l: Loader, value, type_) -> FrozenSet:
+    """
+    This loads into something like FrozenSet[int]
+    """
+    t = type_.__args__[0]
+    return frozenset(l.load(i, t) for i in value)
 
 
 def _tupleload(l: Loader, value, type_) -> Tuple:
