@@ -18,7 +18,7 @@
 
 
 from enum import Enum
-from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
+from typing import Dict, FrozenSet, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
 from typedload import dataloader, load
@@ -117,6 +117,10 @@ class TestSet(unittest.TestCase):
         r = {(1, 1), (2, 2), (0, 0)}
         assert loader.load(zip(range(3), range(3)), Set[Tuple[int,int]]) == r
         assert loader.load([1, '2', 2], Set[int]) == {1, 2}
+
+    def test_load_frozen_set(self):
+        loader = dataloader.Loader()
+        assert loader.load(range(4), FrozenSet[float]) == frozenset((0.0, 1.0, 2.0, 3.0))
 
 
 class TestDict(unittest.TestCase):
