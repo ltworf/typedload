@@ -23,6 +23,8 @@ Module to load data into typed data structures
 
 from enum import Enum
 from typing import *
+# It is for some reason not imported with * on Python 3.5.2
+from typing import FrozenSet
 
 from .exceptions import *
 from .typechecks import *
