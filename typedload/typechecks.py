@@ -33,7 +33,7 @@ different versions of Python.
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 from enum import Enum
-from typing import Any, Tuple, Union, Set, List, Dict, Type
+from typing import Any, Tuple, Union, Set, List, Dict, Type, FrozenSet
 
 
 try:
@@ -128,6 +128,14 @@ def is_set(type_: Type[Any]) -> bool:
     Set
     '''
     return _generic_type_check(type_, set, Set)
+
+
+def is_frozenset(type_: Type[Any]) -> bool:
+    '''
+    FrozenSet[A]
+    FrozenSet
+    '''
+    return _generic_type_check(type_, frozenset, FrozenSet)
 
 
 def is_enum(type_: Type[Any]) -> bool:
