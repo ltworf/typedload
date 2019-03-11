@@ -23,6 +23,7 @@ Module to load data into typed data structures
 
 from enum import Enum
 from typing import *
+from typing import FrozenSet
 
 from .exceptions import *
 from .typechecks import *
