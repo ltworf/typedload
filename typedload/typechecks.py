@@ -36,6 +36,25 @@ from enum import Enum
 from typing import Any, Tuple, Union, Set, List, Dict, Type, FrozenSet
 
 
+__all__ = [
+    'is_attrs',
+    'is_dataclass',
+    'is_dict',
+    'is_enum',
+    'is_forwardref',
+    'is_frozenset',
+    'is_list',
+    'is_namedtuple',
+    'is_nonetype',
+    'is_set',
+    'is_tuple',
+    'is_union',
+    'NONETYPE',
+    'HAS_TUPLEARGS',
+    'HAS_UNIONSUBCLASS',
+]
+
+
 try:
     # Since 3.7
     from typing import ForwardRef  # type: ignore
