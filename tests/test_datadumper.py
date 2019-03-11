@@ -63,6 +63,11 @@ class TestBasicDump(unittest.TestCase):
         dumper = datadumper.Dumper()
         assert dumper.dump({EnumA.B: 'ciao'}) == {'2': 'ciao'}
 
+    def test_dump_set(self):
+        dumper = datadumper.Dumper()
+        assert dumper.dump(set(range(3))) == [0, 1, 2]
+        assert dumper.dump(frozenset(range(3))) == [0, 1, 2]
+
     def test_dump_enums(self):
         dumper = datadumper.Dumper()
         assert dumper.dump(EnumA.A) == 1
