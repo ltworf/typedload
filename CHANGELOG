@@ -1,4 +1,5 @@
 1.15
+* Add support for FrozenSet[T]
 
 1.14
 * Add support for Tuple[t, ...]
