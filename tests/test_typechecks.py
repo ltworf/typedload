@@ -17,7 +17,7 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 from enum import Enum
-from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
+from typing import Dict, FrozenSet, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
 from typedload import typechecks
@@ -44,6 +44,11 @@ class TestChecks(unittest.TestCase):
     def test_is_set(self):
         assert typechecks.is_set(Set[int])
         assert typechecks.is_set(Set)
+
+    def test_is_frozenset_(self):
+        assert not typechecks.is_frozenset(Set[int])
+        assert typechecks.is_frozenset(FrozenSet[int])
+        assert typechecks.is_frozenset(FrozenSet)
 
     def test_is_tuple(self):
         assert typechecks.is_tuple(Tuple[str, int, int])
