@@ -340,7 +340,7 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
         #Name mangling
 
         # Prepare the list of the needed name changes
-        transforms = []  # type: Tuple[str, str]
+        transforms = []  # type: List[Tuple[str, str]]
         for field in fields:
             if type_.__dataclass_fields__[field].metadata:
                 name = type_.__dataclass_fields__[field].metadata.get('name')

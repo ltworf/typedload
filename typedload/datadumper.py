@@ -157,7 +157,7 @@ def _dataclassdump(l, value):
     #Name mangling
 
     # Prepare the list of the needed name changes
-    transforms = []  # type: Tuple[str, str]
+    transforms = []  # type: List[Tuple[str, str]]
     for field in fields:
         if value.__dataclass_fields__[field].metadata:
             name = value.__dataclass_fields__[field].metadata.get('name')
