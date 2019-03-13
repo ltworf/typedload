@@ -149,7 +149,25 @@ def _dataclassdump(l, value):
     field_factories = {k: v.default_factory() for k,v in value.__dataclass_fields__.items() if not isinstance (v.default_factory, dataclasses._MISSING_TYPE)}
     defaults = {**field_defaults, **field_factories} # Merge the two dictionaries
 
-    return {
+    r = {
         f: l.dump(getattr(value, f)) for f in fields
         if not l.hidedefault or f not in defaults or defaults[f] != getattr(value, f)
     }
+
+    #Name mangling
+
+    # Prepare the list of the needed name changes
+    transforms = []  # type: Tuple[str, str]
+    for field in fields:
+        if value.__dataclass_fields__[field].metadata:
+            name = value.__dataclass_fields__[field].metadata.get('name')
+            if name:
+                transforms.append((field, name))
+    # Do the needed name changes
+    if transforms:
+        for pyname, dataname in transforms:
+            if pyname in r:
+                tmp = r[pyname]
+                del r[pyname]
+                r[dataname] = tmp
+    return r
