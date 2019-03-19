@@ -2,6 +2,7 @@
 * Add support for FrozenSet[T].
 * Define __all__ for typechecks.
 * Add name mangling support in dataclass, to match attrs.
+* Add support for datetime.date, datetime.time, datetime.datetime
 
 1.14
 * Add support for Tuple[t, ...]
