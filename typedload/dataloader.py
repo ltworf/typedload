@@ -21,6 +21,7 @@ Module to load data into typed data structures
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
+import datetime
 from enum import Enum
 from typing import *
 # It is for some reason not imported with * on Python 3.5.2
@@ -164,6 +165,7 @@ class Loader:
             (is_namedtuple, _namedtupleload),
             (is_dataclass, _namedtupleload),
             (is_forwardref, _forwardrefload),
+            (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
         ]  # type: List[Tuple[Callable[[Type[T]], bool], Callable[['Loader', Any, Type[T]], T]]]
 
         for k, v in kwargs.items():
@@ -469,3 +471,7 @@ def _noneload(l: Loader, value, type_) -> None:
     if value is None:
         return None
     raise TypedloadValueError('Not None', value=value, type_=type_)
+
+
+def _datetimeload(l: Loader, value, type_) -> Union[datetime.date, datetime.time, datetime.datetime]:
+    return type_(*value)
