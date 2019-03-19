@@ -1,6 +1,7 @@
 1.15
 * Add support for FrozenSet[T].
 * Define __all__ for typechecks.
+* Add name mangling support in dataclass, to match attrs.
 
 1.14
 * Add support for Tuple[t, ...]

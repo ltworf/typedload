@@ -115,3 +115,12 @@ class TestDataclassDump(unittest.TestCase):
         assert dump(A(3)) == {'a': 3}
         assert dump(A(12), hidedefault=False) == {'a': 12, 'b': []}
 
+
+class TestDataclassMangle(unittest.TestCase):
+
+    def test_mangle_load(self):
+        @dataclass
+        class Mangle:
+            value: int = field(metadata={'name': 'va.lue'})
+        assert load({'va.lue': 1}, Mangle) == Mangle(1)
+        assert dump(Mangle(1)) == {'va.lue': 1}
