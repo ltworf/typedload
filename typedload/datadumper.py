@@ -20,6 +20,7 @@ data structures to things that json can serialize.
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
+import datetime
 from enum import Enum
 from typing import *
 
@@ -99,6 +100,8 @@ class Dumper:
             (lambda value: isinstance(value, (list, tuple, set, frozenset)), lambda l, value: [l.dump(i) for i in value]),
             (lambda value: isinstance(value, Enum), lambda l, value: l.dump(value.value)),
             (lambda value: isinstance(value, Dict), lambda l, value: {l.dump(k): l.dump(v) for k, v in value.items()}),
+            (lambda value: isinstance(value, (datetime.date, datetime.time)), _datetimedump),
+
         ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
 
         for k, v in kwargs.items():
@@ -131,6 +134,18 @@ class Dumper:
         index = self.index(value)
         func = self.handlers[index][1]
         return func(self, value)
+
+
+def _datetimedump(l, value: Union[datetime.time, datetime.date, datetime.datetime]):
+    # datetime is subclass of date
+    if isinstance(value, datetime.date) and not isinstance(value, datetime.datetime):
+        return [value.year, value.month, value.day]
+    if value.tzinfo is not None:
+        raise NotImplemented('Dumping of tzdata object is not supported')
+    if isinstance(value, datetime.time):
+        return [value.hour, value.minute, value.second, value.microsecond]
+    # datetime.datetime
+    return [value.year, value.month, value.day, value.hour, value.minute, value.second, value.microsecond]
 
 
 def _namedtupledump(l, value):

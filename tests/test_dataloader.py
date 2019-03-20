@@ -17,6 +17,7 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
+import datetime
 from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
@@ -306,3 +307,14 @@ class TestExceptions(unittest.TestCase):
         except Exception as e:
             assert e.value == 'q'
             assert e.type_ == int
+
+
+class TestDatetime(unittest.TestCase):
+
+    def test_date(self):
+        loader = dataloader.Loader()
+        assert loader.load((2011, 1, 1), datetime.date) == datetime.date(2011, 1, 1)
+        assert loader.load((15, 33), datetime.time) == datetime.time(15, 33)
+        assert loader.load((15, 33, 0), datetime.time) == datetime.time(15, 33)
+        assert loader.load((2011, 1, 1), datetime.datetime) == datetime.datetime(2011, 1, 1)
+        assert loader.load((2011, 1, 1, 22), datetime.datetime) == datetime.datetime(2011, 1, 1, 22)
