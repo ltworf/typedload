@@ -1,6 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Author: Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 Source: https://github.com/ltworf/typedload
+Upstream-Name: typedload
 
 Files: *
 Copyright: 2018 Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
