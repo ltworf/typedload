@@ -1,8 +1,9 @@
 typedload (1.15-1) UNRELEASED; urgency=medium
 
   * New upstream release
+  * Added Upstream-Name to d/copyright
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Thu, 07 Mar 2019 07:24:10 +0100
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Thu, 21 Mar 2019 11:24:10 +0100
 
 typedload (1.14-1) unstable; urgency=medium
 
