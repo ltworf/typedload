@@ -9,3 +9,4 @@ deb-pkg/
 *.swp
 docs/
 dist/
+tests/test_fa_*.py
