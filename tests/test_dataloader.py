@@ -25,16 +25,16 @@ import unittest
 from typedload import dataloader, load
 
 
+class VehicleType(Enum):
+    ST = 'ST'
+    TRAM = 'TRAM'
+    BUS = 'BUS'
+    WALK = 'WALK'
+    BOAT = 'BOAT'
+
 class TestRealCase(unittest.TestCase):
 
     def test_stopboard(self):
-
-        class VehicleType(Enum):
-            ST = 'ST'
-            TRAM = 'TRAM'
-            BUS = 'BUS'
-            WALK = 'WALK'
-            BOAT = 'BOAT'
 
         class BoardItem(NamedTuple):
             name: str
