@@ -331,13 +331,13 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
     if not hasattr(type_, '__dataclass_fields__'):
         fields = set(type_._fields)
         optional_fields = set(getattr(type_, '_field_defaults', {}).keys())
-        type_hints = type_._field_types
+        type_hints = get_type_hints(type_, globalns=None, localns=None)
     else:
         #dataclass
         import dataclasses
         fields = set(type_.__dataclass_fields__.keys())
         optional_fields = {k for k,v in type_.__dataclass_fields__.items() if not (isinstance(getattr(v, 'default', dataclasses._MISSING_TYPE()), dataclasses._MISSING_TYPE) and isinstance(getattr(v, 'default_factory', dataclasses._MISSING_TYPE()), dataclasses._MISSING_TYPE))}
-        type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
+        type_hints = get_type_hints(type_, globalns=None, localns=None)
 
         #Name mangling
 
@@ -451,7 +451,7 @@ def _enumload(l: Loader, value, type_) -> Enum:
         pass
 
     # Try with the typing hints
-    for _, t in get_type_hints(type_).items():
+    for _, t in get_type_hints(type_, globalns=None, localns=None).items():
         try:
             return type_(l.load(value, t))
         except:
