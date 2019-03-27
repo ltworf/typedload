@@ -43,5 +43,15 @@ except ImportError:
 if attr_module:
     from .test_attrload import *
 
+if sys.version_info.minor >= 7:
+    from .test_fa_dataloader import *
+    from .test_fa_datadumper import *
+    from .test_fa_dumpload import *
+    from .test_fa_dataclass import *
+    from .test_fa_legacytuples_dataloader import *
+    from .test_fa_typechecks import *
+    if attr_module:
+        from .test_fa_attrload import *
+
 if __name__ == '__main__':
     unittest.main()

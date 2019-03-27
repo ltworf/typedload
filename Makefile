@@ -1,7 +1,12 @@
 all: pypi
 
+tests/test_fa_attrload.py tests/test_fa_datadumper.py tests/test_fa_dumpload.py tests/test_fa_typechecks.py tests/test_fa_dataclass.py tests/test_fa_dataloader.py tests/test_fa_legacytuples_dataloader.py:
+	echo "from __future__ import annotations" > $@
+	cat `echo  $@ | sed s/_fa//` >> $@
+
+
 .PHONY: test
-test:
+test: tests/test_fa_attrload.py tests/test_fa_datadumper.py tests/test_fa_dumpload.py tests/test_fa_typechecks.py tests/test_fa_dataclass.py tests/test_fa_dataloader.py tests/test_fa_legacytuples_dataloader.py
 	python3 -m tests
 
 .PHONY: mypy
@@ -24,6 +29,7 @@ clean:
 	$(RM) typedload_`./setup.py --version`.orig.tar.gz
 	$(RM) typedload_`./setup.py --version`.orig.tar.gz.asc
 	$(RM) -r deb-pkg
+	$(RM) tests/test_fa_*.py
 
 .PHONY: dist
 dist: clean
