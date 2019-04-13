@@ -1,4 +1,5 @@
 1.16
+* New uniontypes() function.
 
 1.15
 * Add support for FrozenSet[T].
