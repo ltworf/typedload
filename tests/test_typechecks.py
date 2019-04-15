@@ -92,8 +92,8 @@ class TestChecks(unittest.TestCase):
     def test_uniontypes(self):
         assert typechecks.uniontypes(Optional[bool]) == {typechecks.NONETYPE, bool}
         assert typechecks.uniontypes(Optional[int]) == {typechecks.NONETYPE, int}
-        assert typechecks.uniontypes(Optional[Union[int, bool]]) == {typechecks.NONETYPE, bool, int}
-        assert typechecks.uniontypes(Optional[Union[int, bool, Optional[float]]]) == {typechecks.NONETYPE, bool, int, float}
+        assert typechecks.uniontypes(Optional[Union[int, float]]) == {typechecks.NONETYPE, float, int}
+        assert typechecks.uniontypes(Optional[Union[int, str, Optional[float]]]) == {typechecks.NONETYPE, str, int, float}
 
         with self.assertRaises(ValueError):
             typechecks.uniontypes(Union[int])
