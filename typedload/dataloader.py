@@ -404,16 +404,13 @@ def _unionload(l: Loader, value, type_) -> Any:
 
     If no suitable type is found, an exception is raised.
     """
-
-    if hasattr(type_, '__args__'):
-        args = type_.__args__
-    elif hasattr(type_, '__union_params__'):
-        args = type_.__union_params__
-    else:
+    try:
+        args = uniontypes(type_)
+    except AttributeError:
         raise TypedloadAttributeError('The typing API for this Python version is unknown')
 
     # Do not convert basic types, if possible
-    if type(value) in set(args).intersection(l.basictypes):
+    if type(value) in args.intersection(l.basictypes):
         return value
 
     exceptions = []

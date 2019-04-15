@@ -88,3 +88,12 @@ class TestChecks(unittest.TestCase):
         except ImportError:
             from typing import _ForwardRef as ForwardRef  # type: ignore
         assert typechecks.is_forwardref(ForwardRef('SomeType'))
+
+    def test_uniontypes(self):
+        assert typechecks.uniontypes(Optional[bool]) == {typechecks.NONETYPE, bool}
+        assert typechecks.uniontypes(Optional[int]) == {typechecks.NONETYPE, int}
+        assert typechecks.uniontypes(Optional[Union[int, float]]) == {typechecks.NONETYPE, float, int}
+        assert typechecks.uniontypes(Optional[Union[int, str, Optional[float]]]) == {typechecks.NONETYPE, str, int, float}
+
+        with self.assertRaises(ValueError):
+            typechecks.uniontypes(Union[int])

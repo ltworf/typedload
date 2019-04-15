@@ -49,6 +49,7 @@ __all__ = [
     'is_set',
     'is_tuple',
     'is_union',
+    'uniontypes',
     'NONETYPE',
     'HAS_TUPLEARGS',
     'HAS_UNIONSUBCLASS',
@@ -194,3 +195,21 @@ def is_attrs(type_: Type[Any]) -> bool:
     @attr.s decorator
     '''
     return hasattr(type_, '__attrs_attrs__')
+
+
+def uniontypes(type_: Type[Any]) -> Set[Type[Any]]:
+    '''
+    Returns the types of a Union.
+
+    Raises ValueError if the argument is not a Union
+    and AttributeError when running on an unsupported
+    Python version.
+    '''
+    if not is_union(type_):
+        raise ValueError('Not a Union: ' + str(type_))
+
+    if hasattr(type_, '__args__'):
+        return set(type_.__args__)
+    elif hasattr(type_, '__union_params__'):
+        return set(type_.__union_params__)
+    raise AttributeError('The typing API for this Python version is unknown')
