@@ -1,5 +1,6 @@
 1.16
 * New uniontypes() function.
+* Make list and dictionary loaders raise the correct exceptions
 
 1.15
 * Add support for FrozenSet[T].
