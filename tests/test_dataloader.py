@@ -22,7 +22,7 @@ from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
-from typedload import dataloader, load
+from typedload import dataloader, load, exceptions
 
 
 class TestRealCase(unittest.TestCase):
@@ -259,6 +259,11 @@ class TestLoaderIndex(unittest.TestCase):
 
 
 class TestExceptions(unittest.TestCase):
+
+    def test_list_exception(self):
+        loader = dataloader.Loader()
+        with self.assertRaises(exceptions.TypedloadTypeError):
+            loader.load(None, List[int])
 
     def test_index(self):
         loader = dataloader.Loader()
