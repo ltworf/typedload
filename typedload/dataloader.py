@@ -270,8 +270,12 @@ def _listload(l: Loader, value, type_) -> List:
     This loads into something like List[int]
     """
     t = type_.__args__[0]
-    return [l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value)]
-
+    try:
+        return [l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value)]
+    except TypeError as e:
+        if isinstance(e, TypedloadException):
+            raise
+        raise TypedloadTypeError(str(e), value=value, type_=type_)
 
 def _dictload(l: Loader, value, type_) -> Dict:
     """
