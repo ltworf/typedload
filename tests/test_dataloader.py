@@ -17,6 +17,7 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
+import argparse
 import datetime
 from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
@@ -328,3 +329,22 @@ class TestDatetime(unittest.TestCase):
         assert loader.load((15, 33, 0), datetime.time) == datetime.time(15, 33)
         assert loader.load((2011, 1, 1), datetime.datetime) == datetime.datetime(2011, 1, 1)
         assert loader.load((2011, 1, 1, 22), datetime.datetime) == datetime.datetime(2011, 1, 1, 22)
+
+
+class TestDictEquivalence(unittest.TestCase):
+
+    def test_namespace(self):
+        loader = dataloader.Loader()
+        data = argparse.Namespace(a=12, b='33')
+        class A(NamedTuple):
+            a: int
+            b: int
+            c: int = 1
+        assert loader.load(data, A) == A(12, 33, 1)
+        assert loader.load(data, Dict[str, int]) == {'a': 12, 'b': 33}
+
+    def test_nonamespace(self):
+        loader = dataloader.Loader(dictequivalence=False)
+        data = argparse.Namespace(a=1)
+        with self.assertRaises(AttributeError):
+            loader.load(data, Dict[str, int])
