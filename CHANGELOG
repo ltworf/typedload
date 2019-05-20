@@ -1,6 +1,7 @@
 1.16
 * New uniontypes() function.
 * Make list and dictionary loaders raise the correct exceptions
+* Able to load from argparse.Namespace
 
 1.15
 * Add support for FrozenSet[T].
