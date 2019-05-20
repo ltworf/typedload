@@ -277,6 +277,7 @@ def _listload(l: Loader, value, type_) -> List:
             raise
         raise TypedloadTypeError(str(e), value=value, type_=type_)
 
+
 def _dictload(l: Loader, value, type_) -> Dict:
     """
     This loads into something like Dict[str,str]
@@ -290,7 +291,6 @@ def _dictload(l: Loader, value, type_) -> Dict:
             for k, v in value.items()}
     except AttributeError as e:
         raise TypedloadAttributeError(str(e), type_=type_, value=value)
-
 
 
 def _setload(l: Loader, value, type_) -> Set:
