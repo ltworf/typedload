@@ -1,9 +1,9 @@
-typedload (1.16-1) UNRELEASED; urgency=medium
+typedload (1.16-1) unstable; urgency=low
 
   * New upstream release
   * Add upstram changelog in debian package
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Fri, 22 Mar 2019 08:17:24 +0100
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Wed, 22 May 2019 07:50:24 +0200
 
 typedload (1.15-1) unstable; urgency=low
 
