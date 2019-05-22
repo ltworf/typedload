@@ -63,6 +63,13 @@ class Loader:
         If you know that your original data is encoded
         properly, it is better to disable this.
 
+    dictequivalence: Enabled by default.
+        Automatically convert dict-like classes to dictionary
+        when loading. This enables them to be loaded into other
+        classes.
+        At the moment it supports:
+            argparse.Namespace
+
     raiseconditionerrors: Enabled by default.
         Raises exceptions when evaluating a condition from an
         handler. When disabled, the exceptions are not raised
@@ -147,7 +154,8 @@ class Loader:
         # Forward refs dictionary
         self.frefs = {}  # type: Optional[Dict[str, Type]]
 
-
+        # Enable conversion of dict-like things to dicts, before loading
+        self.dictequivalence = True
 
         # The list of handlers to use to load the data.
         # It gets iterated in order, and the first condition
@@ -212,6 +220,12 @@ class Loader:
                 self.frefs[tname] = type_
 
         func = self.handlers[index][1]
+
+        if self.dictequivalence:
+            # Convert argparse.Namespace to dictionary
+            if hasattr(value, '_get_kwargs'):
+                value = {k: v for k,v in value._get_kwargs()}
+
         try:
             return func(self, value, type_)
         except Exception as e:
@@ -277,6 +291,7 @@ def _listload(l: Loader, value, type_) -> List:
             raise
         raise TypedloadTypeError(str(e), value=value, type_=type_)
 
+
 def _dictload(l: Loader, value, type_) -> Dict:
     """
     This loads into something like Dict[str,str]
@@ -290,7 +305,6 @@ def _dictload(l: Loader, value, type_) -> Dict:
             for k, v in value.items()}
     except AttributeError as e:
         raise TypedloadAttributeError(str(e), type_=type_, value=value)
-
 
 
 def _setload(l: Loader, value, type_) -> Set:
