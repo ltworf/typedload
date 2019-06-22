@@ -5,6 +5,8 @@
 
 override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	make test
 	make mypy
+	for pyversion in `py3versions -s`; do \
+		$$pyversion -m tests; \
+	done
 endif
