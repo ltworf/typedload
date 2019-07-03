@@ -433,8 +433,21 @@ def _unionload(l: Loader, value, type_) -> Any:
 
     exceptions = []
 
-    # Try all types
+    # Give a score to the types, [ (score, type), ... ]
+    scored: List[Tuple[int, Type]] = []
     for t in args:
+        if (type(value) == list and is_list(t)) or \
+           (type(value) == dict and is_dict(t)) or \
+           (type(value) == frozenset and is_frozenset(t)) or \
+           (type(value) == set and is_set(t)) or \
+           (type(value) == tuple and is_tuple(t)):
+            score = 1
+        else:
+            score = 0
+        scored.append((score, t))
+
+    # Try all types
+    for _, t in sorted(scored, key= lambda x: x[0], reverse=True):
         try:
             return l.load(value, t, annotation=Annotation(AnnotationType.UNION, t))
         except Exception as e:
