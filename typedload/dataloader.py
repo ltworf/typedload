@@ -434,7 +434,7 @@ def _unionload(l: Loader, value, type_) -> Any:
     exceptions = []
 
     # Give a score to the types, [ (score, type), ... ]
-    scored: List[Tuple[int, Type]] = []
+    scored = []  # type: List[Tuple[int, Type]]
     for t in args:
         if (type(value) == list and is_list(t)) or \
            (type(value) == dict and is_dict(t)) or \
