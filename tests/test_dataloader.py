@@ -80,6 +80,19 @@ class TestRealCase(unittest.TestCase):
 
 
 class TestUnion(unittest.TestCase):
+    def test_json(self):
+        '''
+        This test would normally be flaky, but with the scoring of
+        types in union, it should always work.
+        '''
+        Json = Union[int, float, str, bool, None, List['Json'], Dict[str, 'Json']]
+        data = [{},[]]
+
+        loader = dataloader.Loader()
+        loader.basiccast = False
+        loader.frefs = {'Json' : Json}
+
+        assert loader.load(data, Json) == data
 
     def test_ComplicatedUnion(self):
         class A(NamedTuple):
