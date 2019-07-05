@@ -427,14 +427,28 @@ def _unionload(l: Loader, value, type_) -> Any:
     except AttributeError:
         raise TypedloadAttributeError('The typing API for this Python version is unknown')
 
+    value_type = type(value)
+
     # Do not convert basic types, if possible
-    if type(value) in args.intersection(l.basictypes):
+    if value_type in args.intersection(l.basictypes):
         return value
 
     exceptions = []
 
-    # Try all types
+    # Give a score to the types
+    sorted_args = []  # type: List[Type]
     for t in args:
+        if (value_type == list and is_list(t)) or \
+           (value_type == dict and is_dict(t)) or \
+           (value_type == frozenset and is_frozenset(t)) or \
+           (value_type == set and is_set(t)) or \
+           (value_type == tuple and is_tuple(t)):
+            sorted_args.insert(0, t)
+        else:
+            sorted_args.append(t)
+
+    # Try all types
+    for t in sorted_args:
         try:
             return l.load(value, t, annotation=Annotation(AnnotationType.UNION, t))
         except Exception as e:
