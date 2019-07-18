@@ -1,21 +1,9 @@
 """
 typedload
 Module to load data into data structures from the "attr" module
-
-Name mangling is supported by having a 'name' attribute in the metadata
-
-@attr.s
-class Example:
-    attribute = attr.ib(type=int, metadata={'name': 'att.rib.ute:name'}
-
-The dictionary key for 'attribute' will be 'att.rib.ute:name'.
-
-This is very useful for keys that use invalid or reserved characters that
-can't be used in variable names.
-Another common application is to convert camelCase into not_camel_case.
 """
 
-# Copyright (C) 2018 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2019 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
