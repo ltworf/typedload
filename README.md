@@ -1,7 +1,8 @@
 typedload
 =========
 
-Load and dump json-like data into typed data structures in Python3.
+Load and dump json-like data into typed data structures in Python3, enforcing
+a schema on the data.
 
 This module provides an API to load dictionaries and lists (usually loaded
 from json) into Python's NamedTuples, dataclass, sets, enums, and various
@@ -11,7 +12,7 @@ type checks or casts when needed.
 It can also dump from typed data structures to json-like dictionaries and lists.
 
 It is very useful for projects that use Mypy and deal with untyped data
-like json, because it guarantees that the data will have the expected format.
+like json, because it guarantees that the data will follow the specified schema.
 
 Note that it is released with a GPL license and it cannot be used inside non
 GPL software.

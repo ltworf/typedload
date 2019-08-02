@@ -3,10 +3,10 @@ typedload
 =========
 
 This library loads Python data structures into
-more strict data structures.
+typed data structures, enforcing a schema.
 
 The main purpose is to load things that come from
-json, bson or similar into NamedTuple.
+json, bson or similar into NamedTuple or Dataclass.
 
 For example this Json:
    {
