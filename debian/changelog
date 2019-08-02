@@ -1,8 +1,9 @@
 typedload (1.18-1) UNRELEASED; urgency=medium
 
   * New upstream release
+  * Mention the schema enforcing in the long description
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Mon, 08 Jul 2019 09:37:16 +0200
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Mon, 02 Aug 2019 12:37:16 +0200
 
 typedload (1.17-1) unstable; urgency=low
 
