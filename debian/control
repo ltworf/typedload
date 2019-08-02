@@ -22,4 +22,4 @@ Description: Load and dump json-like data into typed data structures in Python3
  lists.
  .
  It is very useful for projects that use Mypy and deal with untyped data like
- json, because it guarantees that the data will have the expected format.
+ json, because it guarantees that the data will follow the desired schema.
