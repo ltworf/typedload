@@ -1,9 +1,10 @@
-typedload (1.18-1) UNRELEASED; urgency=medium
+typedload (1.18-1) unstable; urgency=low
 
   * New upstream release
   * Mention the schema enforcing in the long description
+  * Move to source only upload
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Mon, 02 Aug 2019 12:37:16 +0200
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Sun, 15 Sep 2019 13:23:16 +0200
 
 typedload (1.17-1) unstable; urgency=low
 
