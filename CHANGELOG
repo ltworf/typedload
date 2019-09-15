@@ -1,5 +1,6 @@
 1.18
 * Improved documentation
+* Debian builds are now done source only
 
 1.17
 * Prefer the same type in union loading

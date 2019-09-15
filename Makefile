@@ -49,7 +49,7 @@ deb-pkg: dist
 	mv typedload_`./setup.py --version`.orig.tar.gz* /tmp
 	cd /tmp; tar -xf typedload_*.orig.tar.gz
 	cp -r debian /tmp/typedload/
-	cd /tmp/typedload/; dpkg-buildpackage
+	cd /tmp/typedload/; dpkg-buildpackage --changes-option=-S
 	mkdir deb-pkg
 	mv /tmp/typedload_* /tmp/python3-typedload_*.deb deb-pkg
 	$(RM) -r /tmp/typedload
