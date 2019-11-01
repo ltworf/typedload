@@ -21,6 +21,9 @@ from typing import Dict, FrozenSet, List, NamedTuple, Optional, Set, Tuple, Unio
 import unittest
 import sys
 
+if sys.version_info.minor >= 8 :
+    from typing import Literal
+
 from typedload import typechecks
 
 
@@ -28,7 +31,6 @@ class TestChecks(unittest.TestCase):
 
     def test_is_literal(self):
         if sys.version_info.minor >= 8 :
-            from typing import Literal
             l = Literal[1, 2, 3]
             assert typechecks.is_literal(l)
 
@@ -37,6 +39,14 @@ class TestChecks(unittest.TestCase):
         assert not typechecks.is_literal(str)
         assert not typechecks.is_literal(None)
         assert not typechecks.is_literal(List[int])
+
+    # Only run this test from 3.8
+    if sys.version_info.minor >= 8 :
+        def test_literalvalues(self):
+            assert isinstance(typechecks.literalvalues(Literal[1]), set)
+            assert typechecks.literalvalues(Literal[1]) == {1}
+            assert typechecks.literalvalues(Literal[1, 1]) == {1}
+            assert typechecks.literalvalues(Literal[1, 2]) == {1, 2}
 
     def test_is_list(self):
         assert typechecks.is_list(List)

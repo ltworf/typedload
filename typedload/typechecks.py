@@ -51,6 +51,7 @@ __all__ = [
     'is_tuple',
     'is_union',
     'uniontypes',
+    'literalvalues',
     'NONETYPE',
     'HAS_TUPLEARGS',
     'HAS_UNIONSUBCLASS',
@@ -220,6 +221,17 @@ def uniontypes(type_: Type[Any]) -> Set[Type[Any]]:
     elif hasattr(type_, '__union_params__'):
         return set(type_.__union_params__)
     raise AttributeError('The typing API for this Python version is unknown')
+
+
+def literalvalues(type_: Type[Any]) -> Set[Any]:
+    '''
+    Returns the values of a Literal
+
+    Raises ValueError if the argument is not a Literal
+    '''
+    if not is_literal(type_):
+        raise ValueError('Not a Literal: ' + str(type_))
+    return set(type_.__args__)
 
 
 def is_literal(type_: Type[Any]) -> bool:
