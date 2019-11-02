@@ -40,14 +40,6 @@ class TestChecks(unittest.TestCase):
         assert not typechecks.is_literal(None)
         assert not typechecks.is_literal(List[int])
 
-    # Only run this test from 3.8
-    if sys.version_info.minor >= 8 :
-        def test_literalvalues(self):
-            assert isinstance(typechecks.literalvalues(Literal[1]), set)
-            assert typechecks.literalvalues(Literal[1]) == {1}
-            assert typechecks.literalvalues(Literal[1, 1]) == {1}
-            assert typechecks.literalvalues(Literal[1, 2]) == {1, 2}
-
     def test_is_list(self):
         assert typechecks.is_list(List)
         assert typechecks.is_list(List[int])

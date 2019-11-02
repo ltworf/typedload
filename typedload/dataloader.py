@@ -131,6 +131,7 @@ class Loader:
         * Set[SomeType]
         * Union[TypeA, TypeB]
         * ForwardRef
+        * Literal
         * Dataclass
 
     Using unions is complicated. If the types in the union are too
@@ -175,6 +176,7 @@ class Loader:
             (is_namedtuple, _namedtupleload),
             (is_dataclass, _namedtupleload),
             (is_forwardref, _forwardrefload),
+            (is_literal, _literalload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
         ]
 
@@ -254,6 +256,16 @@ def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
             type_=type_
         )
     return l.load(value, t, annotation=Annotation(AnnotationType.FORWARDREF, tname))
+
+
+def _literalload(l: Loader, value: Any, type_: type) -> Any:
+    """
+    Checks if the value is within the allowed literals and
+    returns it.
+    """
+    if value in literalvalues(type_):
+        return value
+    raise TypedloadValueError('Not one of the allowed values in %s' % type_, value=value, type_=type_)
 
 
 def _basicload(l: Loader, value: Any, type_: type) -> Any:
