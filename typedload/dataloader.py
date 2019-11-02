@@ -174,7 +174,7 @@ class Loader:
             (is_dataclass, _namedtupleload),
             (is_forwardref, _forwardrefload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
-        ]  # type: List[Tuple[Callable[[Type[T]], bool], Callable[['Loader', Any, Type[T]], T]]]
+        ]
 
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -227,7 +227,7 @@ class Loader:
                 value = {k: v for k,v in value._get_kwargs()}
 
         try:
-            return func(self, value, type_)
+            return cast(T, func(self, value, type_))
         except Exception as e:
             assert isinstance(e, TypedloadException)
             e.trace.insert(0, TraceItem(value, type_, annotation))

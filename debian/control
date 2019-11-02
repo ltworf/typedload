@@ -3,7 +3,7 @@ Section: python
 Priority: optional
 Maintainer: Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>
 Build-Depends: debhelper (>= 12), python3, dh-python, python3-distutils,
- mypy (>= 0.641)
+ mypy (>= 0.740)
 Standards-Version: 4.4.0
 Homepage: https://github.com/ltworf/typedload#typedload
 Vcs-Browser: https://github.com/ltworf/typedload
