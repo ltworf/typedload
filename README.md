@@ -81,6 +81,7 @@ The following things are supported:
  * dataclass (requires Python 3.7)
  * attr (Handled in a built-in plugin)
  * ForwardRef (Refer to the type in its own definition)
+ * Literal (requires Python 3.8)
  * datetime.date, datetime.time, datetime.datetime
 
 Advantage when using Mypy

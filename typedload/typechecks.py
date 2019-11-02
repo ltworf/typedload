@@ -44,12 +44,14 @@ __all__ = [
     'is_forwardref',
     'is_frozenset',
     'is_list',
+    'is_literal',
     'is_namedtuple',
     'is_nonetype',
     'is_set',
     'is_tuple',
     'is_union',
     'uniontypes',
+    'literalvalues',
     'NONETYPE',
     'HAS_TUPLEARGS',
     'HAS_UNIONSUBCLASS',
@@ -62,6 +64,12 @@ try:
 except ImportError:
     from typing import _ForwardRef as ForwardRef  # type: ignore
 
+
+try:
+    # Since 3.8
+    from typing import Literal  # type: ignore
+except ImportError:
+    Literal = None
 
 def _issubclass(t1, t2) -> bool:
     """
@@ -213,3 +221,21 @@ def uniontypes(type_: Type[Any]) -> Set[Type[Any]]:
     elif hasattr(type_, '__union_params__'):
         return set(type_.__union_params__)
     raise AttributeError('The typing API for this Python version is unknown')
+
+
+def literalvalues(type_: Type[Any]) -> Set[Any]:
+    '''
+    Returns the values of a Literal
+
+    Raises ValueError if the argument is not a Literal
+    '''
+    if not is_literal(type_):
+        raise ValueError('Not a Literal: ' + str(type_))
+    return set(type_.__args__)
+
+
+def is_literal(type_: Type[Any]) -> bool:
+    '''
+    Check if the type is a typing.Literal
+    '''
+    return getattr(type_, '__origin__', None) == Literal and Literal != None
