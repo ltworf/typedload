@@ -127,9 +127,11 @@ class Loader:
         * List[SomeType]
         * Dict[TypeA, TypeB]
         * Tuple[TypeA, TypeB, TypeC]
+        * Tuple[SomeType, ...]
         * Set[SomeType]
         * Union[TypeA, TypeB]
         * ForwardRef
+        * Dataclass
 
     Using unions is complicated. If the types in the union are too
     similar to each other, it is easy to obtain an unexpected type.
