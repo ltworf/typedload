@@ -1,10 +1,10 @@
-typedload (1.19-1) UNRELEASED; urgency=medium
+typedload (1.19-1) unstable; urgency=high
 
   * New upstream release
   * Bump compat to 12
   * Bump mypy minimum version
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Sun, 15 Sep 2019 14:07:18 +0200
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Sun, 03 Nov 2019 19:50:18 +0100
 
 typedload (1.18-1) unstable; urgency=low
 
