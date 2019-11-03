@@ -177,7 +177,7 @@ def is_namedtuple(type_: Type[Any]) -> bool:
     '''
     Generated with typing.NamedTuple
     '''
-    return _issubclass(type_, tuple) and hasattr(type_, '_field_types') and hasattr(type_, '_fields')
+    return _issubclass(type_, tuple) and hasattr(type_, '__annotations__') and hasattr(type_, '_fields')
 
 
 def is_dataclass(type_: Type[Any]) -> bool:
