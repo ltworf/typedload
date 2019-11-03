@@ -7,6 +7,7 @@ Build-Depends: debhelper (>= 12), python3, dh-python, python3-distutils,
 Standards-Version: 4.4.1
 Homepage: https://github.com/ltworf/typedload#typedload
 Vcs-Browser: https://github.com/ltworf/typedload
+Rules-Requires-Root: no
 
 Package: python3-typedload
 Architecture: all
