@@ -44,7 +44,7 @@ class _FakeNamedTuple(tuple):
         return self[0]
 
     @property
-    def _field_types(self):
+    def __annotations__(self):
         return self[1]
 
     @property

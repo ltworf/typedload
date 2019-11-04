@@ -363,7 +363,7 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
     if not hasattr(type_, '__dataclass_fields__'):
         fields = set(type_._fields)
         optional_fields = set(getattr(type_, '_field_defaults', {}).keys())
-        type_hints = type_._field_types
+        type_hints = type_.__annotations__
     else:
         #dataclass
         import dataclasses
