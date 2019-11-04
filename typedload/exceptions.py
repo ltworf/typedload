@@ -83,7 +83,7 @@ class TypedloadException(Exception):
             description: str,
             trace: Optional[List[TraceItem]] = None,
             value=None,
-            type_: Optional[Any] = None,  # Any should be Type, but that raises an exception in python 3.5.2
+            type_: Optional[Type] = None,
             exceptions: Optional[List[Exception]] = None) -> None:
         super().__init__(description)
         self.trace = trace if trace else []
