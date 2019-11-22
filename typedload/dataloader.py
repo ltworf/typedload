@@ -177,6 +177,7 @@ class Loader:
             (is_dataclass, _namedtupleload),
             (is_forwardref, _forwardrefload),
             (is_literal, _literalload),
+            (is_typeddict, _namedtupleload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
         ]
 
