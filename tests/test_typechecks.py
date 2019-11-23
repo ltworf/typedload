@@ -40,6 +40,16 @@ class TestChecks(unittest.TestCase):
         assert not typechecks.is_literal(None)
         assert not typechecks.is_literal(List[int])
 
+    def test_is_not_typeddict(self):
+        assert not typechecks.is_typeddict(int)
+        assert not typechecks.is_typeddict(3)
+        assert not typechecks.is_typeddict(str)
+        assert not typechecks.is_typeddict({})
+        assert not typechecks.is_typeddict(dict)
+        assert not typechecks.is_typeddict(set)
+        assert not typechecks.is_typeddict(None)
+        assert not typechecks.is_typeddict(List[str])
+
     def test_is_list(self):
         assert typechecks.is_list(List)
         assert typechecks.is_list(List[int])

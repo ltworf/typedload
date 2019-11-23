@@ -50,6 +50,7 @@ __all__ = [
     'is_set',
     'is_tuple',
     'is_union',
+    'is_typeddict',
     'uniontypes',
     'literalvalues',
     'NONETYPE',
@@ -67,9 +68,10 @@ except ImportError:
 
 try:
     # Since 3.8
-    from typing import Literal  # type: ignore
+    from typing import Literal, _TypedDictMeta  # type: ignore
 except ImportError:
     Literal = None
+    _TypedDictMeta = None
 
 def _issubclass(t1, t2) -> bool:
     """
@@ -239,3 +241,12 @@ def is_literal(type_: Type[Any]) -> bool:
     Check if the type is a typing.Literal
     '''
     return getattr(type_, '__origin__', None) == Literal and Literal != None
+
+
+def is_typeddict(type_: Type[Any]) -> bool:
+    '''
+    Check if it is a typing.TypedDict
+    '''
+    if _TypedDictMeta:
+        return isinstance(type_, _TypedDictMeta)
+    return False

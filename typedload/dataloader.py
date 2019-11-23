@@ -177,6 +177,7 @@ class Loader:
             (is_dataclass, _namedtupleload),
             (is_forwardref, _forwardrefload),
             (is_literal, _literalload),
+            (is_typeddict, _namedtupleload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
         ]
 
@@ -361,7 +362,7 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
     This loads a Dict[str, Any] into a NamedTuple.
     """
     if not hasattr(type_, '__dataclass_fields__'):
-        fields = set(type_._fields)
+        fields = set(type_.__annotations__.keys())
         optional_fields = set(getattr(type_, '_field_defaults', {}).keys())
         type_hints = type_.__annotations__
     else:
