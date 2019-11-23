@@ -179,7 +179,7 @@ class Loader:
             (is_literal, _literalload),
             (is_typeddict, _namedtupleload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
-        ]
+        ]  # type: List[Tuple[Callable[[Any], bool], Callable[[Loader, Any, Type], Any]]]
 
         for k, v in kwargs.items():
             setattr(self, k, v)
