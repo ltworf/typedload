@@ -43,6 +43,6 @@ class TestTypeddictLoad(unittest.TestCase):
             o.pop('age')
             load(o, Person)
 
-    def test is_typeddict(self):
+    def test_is_typeddict(self):
         assert typechecks.is_typeddict(A)
         assert typechecks.is_typeddict(Person)
