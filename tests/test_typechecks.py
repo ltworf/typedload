@@ -22,7 +22,7 @@ import unittest
 import sys
 
 if sys.version_info.minor >= 8 :
-    from typing import Literal, TypedDict
+    from typing import Literal
 
 from typedload import typechecks
 
@@ -40,12 +40,7 @@ class TestChecks(unittest.TestCase):
         assert not typechecks.is_literal(None)
         assert not typechecks.is_literal(List[int])
 
-    def test_is_typeddict(self):
-        if sys.version_info.minor >= 8 :
-            class A(TypedDict):
-                val: str
-            assert typechecks.is_typeddict(A)
-
+    def test_is_not_typeddict(self):
         assert not typechecks.is_typeddict(int)
         assert not typechecks.is_typeddict(3)
         assert not typechecks.is_typeddict(str)

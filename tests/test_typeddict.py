@@ -28,12 +28,21 @@ class Person(TypedDict):
     age: float
 
 
+class A(TypedDict):
+    val: str
+
+
 class TestTypeddictLoad(unittest.TestCase):
 
     def test_loadperson(self):
         o = {'name': 'pino', 'age': 1.1}
         assert load(o, Person) == o
+        assert load({'val': 3}, A) == {'val': '3'}
 
         with self.assertRaises(ValueError):
             o.pop('age')
             load(o, Person)
+
+    def test is_typeddict(self):
+        assert typechecks.is_typeddict(A)
+        assert typechecks.is_typeddict(Person)
