@@ -1,6 +1,7 @@
 1.20
 * Drop support for Python 3.5.2 (3.5 series is still supported)
 * Support TypedDict
+* More precise type annotation of TypedloadException and Annotation fields
 
 1.19
 * Add support for Literal.

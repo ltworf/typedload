@@ -85,6 +85,7 @@ def _issubclass(t1, t2) -> bool:
 
 HAS_TUPLEARGS = hasattr(Tuple[int, int], '__args__')
 NONETYPE = type(None)  # type: Type[Any]
+HAS_UNIONSUBCLASS = False
 
 
 def is_tuple(type_: Type[Any]) -> bool:
@@ -104,25 +105,13 @@ def is_tuple(type_: Type[Any]) -> bool:
         return _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
 
 
-# This is a workaround for an incompatibility between 3.5.2 and previous, and 3.5.3 and later
-try:
-    issubclass(Union[int,str], Union)  # type: ignore
-    HAS_UNIONSUBCLASS = True
-except:
-    HAS_UNIONSUBCLASS = False
-
-
 def is_union(type_: Type[Any]) -> bool:
     '''
     Union[A, B]
     Union
     Optional[A]
     '''
-    if HAS_UNIONSUBCLASS:
-        # Old python
-        return _issubclass(type_, Union)
-    else:
-        return getattr(type_, '__origin__', None) == Union
+    return getattr(type_, '__origin__', None) == Union
 
 
 def is_nonetype(type_: Type[Any]) -> bool:
