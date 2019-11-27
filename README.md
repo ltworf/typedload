@@ -79,7 +79,7 @@ The following things are supported:
  * Set[SomeType]
  * Union[TypeA, TypeB]
  * dataclass (requires Python 3.7)
- * attr (Handled in a built-in plugin)
+ * attr.s
  * ForwardRef (Refer to the type in its own definition)
  * Literal (requires Python 3.8)
  * datetime.date, datetime.time, datetime.datetime
