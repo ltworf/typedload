@@ -82,6 +82,7 @@ The following things are supported:
  * attr.s
  * ForwardRef (Refer to the type in its own definition)
  * Literal (requires Python 3.8)
+ * TypedDict (requires Python 3.8)
  * datetime.date, datetime.time, datetime.datetime
 
 Advantage when using Mypy
