@@ -2,6 +2,8 @@
 * Drop support for Python 3.5.2 (3.5 series is still supported)
 * Support TypedDict
 * More precise type annotation of TypedloadException and Annotation fields
+* Deprecate the plugin to handle attr.s and make it always supported.
+  This means that there will be no need for special code.
 
 1.19
 * Add support for Literal.

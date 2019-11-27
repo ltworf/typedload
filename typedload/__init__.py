@@ -45,10 +45,6 @@ data using the default objects.
 They create a new loader/dumper object with default parameters, and
 discard it after.
 
-The functions typedload.attrload() and typedload.attrdump() are similar, but
-import the optional "attr" module and use an handler to deal with the
-classes provided by that module.
-
 Classes
 =======
 
@@ -189,25 +185,7 @@ def dump(value: Any, **kwargs) -> Any:
     return dumper.dump(value)
 
 
-def attrload(value: Any, type_: Type[T], **kwargs) -> T:
-    """
-    Quick function call to load data supporting the "attr" module
-    in addition to the default ones.
-    """
-    from . import dataloader
-    from .plugins import attrload as loadplugin
-    loader = dataloader.Loader(**kwargs)
-    loadplugin.add2loader(loader)
-    return loader.load(value, type_)
+attrload = load  # DEPRECATED
 
 
-def attrdump(value: Any, **kwargs) -> Any:
-    """
-    Quick function to do a dump that supports the "attr"
-    module.
-    """
-    from . import datadumper
-    from .plugins import attrdump as dumpplugin
-    dumper = datadumper.Dumper(**kwargs)
-    dumpplugin.add2dumper(dumper)
-    return dumper.dump(value)
+attrdump = dump  # DEPRECATED

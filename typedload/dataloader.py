@@ -36,6 +36,42 @@ __all__ = [
 
 T = TypeVar('T')
 
+
+class _FakeNamedTuple(tuple):
+    """
+    This class simulates a Python3.6 NamedTuple
+    instance.
+
+    It has the same hidden fields, so the same
+    loader for the NamedTuple.
+
+    It needs to be created with fields, field_types, field_defaults
+    """
+
+    def __new__(cls, fields):
+        return super(_FakeNamedTuple, cls).__new__(cls, tuple(fields))
+
+    @property
+    def _fields(self):
+        return self[0]
+
+    @property
+    def __annotations__(self):
+        return self[1]
+
+    @property
+    def _field_defaults(self):
+        return self[2]
+
+    def __call__(self, **kwargs):
+        try:
+            return self[3](**kwargs)
+        except TypeError as e:
+            raise TypedloadTypeError(str(e), type_=self[3], value=kwargs)
+        except Exception as e:
+            raise TypedloadException(str(e), type_=self[3], value=kwargs)
+
+
 class Loader:
     """
     A loader object that recursively loads data into
@@ -177,6 +213,7 @@ class Loader:
             (is_literal, _literalload),
             (is_typeddict, _namedtupleload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
+            (is_attrs, _attrload),
         ]  # type: List[Tuple[Callable[[Any], bool], Callable[[Loader, Any, Type], Any]]]
 
         for k, v in kwargs.items():
@@ -517,3 +554,36 @@ def _noneload(l: Loader, value, type_) -> None:
 
 def _datetimeload(l: Loader, value, type_) -> Union[datetime.date, datetime.time, datetime.datetime]:
     return type_(*value)
+
+
+def _attrload(l, value, type_):
+    if not isinstance(value, dict):
+        raise TypedloadTypeError('Expected dictionary, got %s' % type(value), type_=type_, value=value)
+    value = value.copy()
+    names = []
+    defaults = {}
+    types = {}
+
+    for attribute in type_.__attrs_attrs__:
+        names.append(attribute.name)
+        types[attribute.name] = attribute.type
+        defaults[attribute.name] = attribute.default
+
+        # Manage name mangling
+        if 'name' in attribute.metadata:
+            dataname = attribute.metadata['name']
+            pyname = attribute.name
+
+            if dataname in value:
+                tmp = value[dataname]
+                del value[dataname]
+                value[pyname] = tmp
+
+    t = _FakeNamedTuple((
+        tuple(names),
+        types,
+        defaults,
+        type_,
+    ))
+
+    return _namedtupleload(l, value, t)

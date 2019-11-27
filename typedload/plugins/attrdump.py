@@ -1,6 +1,5 @@
 """
-typedload
-Module to load data into data structures from the "attr" module
+DEPRECATED: This module does nothing.
 """
 
 # Copyright (C) 2018-2019 Salvo "LtWorf" Tomaselli
@@ -21,27 +20,8 @@ Module to load data into data structures from the "attr" module
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
-from typing import Any, Dict
-
-
-def _condition(value: Any) -> bool:
-    return hasattr(value, '__attrs_attrs__')
-
-
-def _attrdump(d, value) -> Dict[str, Any]:
-    r = {}
-    for attr in value.__attrs_attrs__:
-        attrval = getattr(value, attr.name)
-        if not attr.repr:
-            continue
-        if not (d.hidedefault and attrval == attr.default):
-            name = attr.metadata.get('name', attr.name)
-            r[name] = d.dump(attrval)
-    return r
-
-
 def add2dumper(l) -> None:
     """
-    Adds the "attr" handler to an existing dumper
+    DEPRECATED: Calls to this can be safely removed.
     """
-    l.handlers.append((_condition, _attrdump))
+    pass

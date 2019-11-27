@@ -25,6 +25,7 @@ from enum import Enum
 from typing import *
 
 from .exceptions import TypedloadValueError
+from .typechecks import is_attrs
 
 
 __all__ = [
@@ -101,7 +102,7 @@ class Dumper:
             (lambda value: isinstance(value, Enum), lambda l, value: l.dump(value.value)),
             (lambda value: isinstance(value, Dict), lambda l, value: {l.dump(k): l.dump(v) for k, v in value.items()}),
             (lambda value: isinstance(value, (datetime.date, datetime.time)), _datetimedump),
-
+            (is_attrs, _attrdump),
         ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
 
         for k, v in kwargs.items():
@@ -134,6 +135,18 @@ class Dumper:
         index = self.index(value)
         func = self.handlers[index][1]
         return func(self, value)
+
+
+def _attrdump(d, value) -> Dict[str, Any]:
+    r = {}
+    for attr in value.__attrs_attrs__:
+        attrval = getattr(value, attr.name)
+        if not attr.repr:
+            continue
+        if not (d.hidedefault and attrval == attr.default):
+            name = attr.metadata.get('name', attr.name)
+            r[name] = d.dump(attrval)
+    return r
 
 
 def _datetimedump(l, value: Union[datetime.time, datetime.date, datetime.datetime]):
