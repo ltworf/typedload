@@ -4,6 +4,7 @@
 * More precise type annotation of TypedloadException and Annotation fields
 * Deprecate the plugin to handle attr.s and make it always supported.
   This means that there will be no need for special code.
+* Fix datetime loader raising exceptions with the wrong type
 
 1.19
 * Add support for Literal.

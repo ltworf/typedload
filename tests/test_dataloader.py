@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2018-2019 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2020 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -342,6 +342,19 @@ class TestDatetime(unittest.TestCase):
         assert loader.load((15, 33, 0), datetime.time) == datetime.time(15, 33)
         assert loader.load((2011, 1, 1), datetime.datetime) == datetime.datetime(2011, 1, 1)
         assert loader.load((2011, 1, 1, 22), datetime.datetime) == datetime.datetime(2011, 1, 1, 22)
+
+        # Same but with lists
+        assert loader.load([2011, 1, 1], datetime.date) == datetime.date(2011, 1, 1)
+        assert loader.load([15, 33], datetime.time) == datetime.time(15, 33)
+        assert loader.load([15, 33, 0], datetime.time) == datetime.time(15, 33)
+        assert loader.load([2011, 1, 1], datetime.datetime) == datetime.datetime(2011, 1, 1)
+        assert loader.load([2011, 1, 1, 22], datetime.datetime) == datetime.datetime(2011, 1, 1, 22)
+
+    def test_exception(self):
+        loader = dataloader.Loader()
+        with self.assertRaises(TypeError):
+            loader.load((2011, ), datetime.datetime)
+            loader.load(33, datetime.datetime)
 
 
 class TestDictEquivalence(unittest.TestCase):
