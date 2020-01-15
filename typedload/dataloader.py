@@ -3,7 +3,7 @@ typedload
 Module to load data into typed data structures
 """
 
-# Copyright (C) 2018-2019 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2020 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -553,7 +553,10 @@ def _noneload(l: Loader, value, type_) -> None:
 
 
 def _datetimeload(l: Loader, value, type_) -> Union[datetime.date, datetime.time, datetime.datetime]:
-    return type_(*value)
+    try:
+        return type_(*value)
+    except TypeError as e:
+        raise TypedloadTypeError(str(e))
 
 
 def _attrload(l, value, type_):
