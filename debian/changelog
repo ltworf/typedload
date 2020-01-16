@@ -1,8 +1,8 @@
-typedload (1.20-1) UNRELEASED; urgency=medium
+typedload (1.20-1) unstable; urgency=low
 
   * New upstream release
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Sun, 03 Nov 2019 20:12:36 +0100
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Thu, 16 Jan 2020 16:33:36 +0100
 
 typedload (1.19-1) unstable; urgency=high
 
