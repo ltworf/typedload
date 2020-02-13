@@ -1,5 +1,6 @@
 1.21
 * Exceptions contain more information
+* Greatly improve performances with iterables types
 
 1.20
 * Drop support for Python 3.5.2 (3.5 series is still supported)
