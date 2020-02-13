@@ -219,6 +219,8 @@ class Loader:
         for k, v in kwargs.items():
             setattr(self, k, v)
 
+        self._indexcache = {}
+
     def index(self, type_: Type[T]) -> int:
         """
         Returns the index in the handlers list
@@ -244,14 +246,20 @@ class Loader:
         TypeError is raised if there is no known way to treat type_,
         otherwise all errors raise a ValueError.
         """
-        try:
-            index = self.index(type_)
-        except ValueError:
-            raise TypedloadTypeError(
-                'Cannot deal with value of type %s' % type_,
-                value=value,
-                type_=type_
-            )
+        p_index = self._indexcache.get(type_)
+
+        if p_index is not None:
+            index = p_index
+        else:
+            try:
+                index = self.index(type_)
+                self._indexcache[type_] = index
+            except ValueError:
+                raise TypedloadTypeError(
+                    'Cannot deal with value of type %s' % type_,
+                    value=value,
+                    type_=type_
+                )
 
         # Add type to known types, to resolve ForwardRef later on
         if self.frefs is not None and hasattr(type_, '__name__'):
