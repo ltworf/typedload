@@ -49,6 +49,6 @@ like json, because it guarantees that the data will have the expected format.
         'Programming Language :: Python :: 3.8',
     ],
     keywords='typing types mypy json',
-    packages=['typedload', 'typedload.plugins'],
+    packages=['typedload'],
     package_data={"typedload": ["py.typed"]},
 )
