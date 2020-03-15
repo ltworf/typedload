@@ -362,7 +362,7 @@ def _setload(l: Loader, value, type_) -> Set:
     This loads into something like Set[int]
     """
     t = type_.__args__[0]
-    return {l.load(i, t) for i in value}
+    return {l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value)}
 
 
 def _frozensetload(l: Loader, value, type_) -> FrozenSet:
@@ -370,7 +370,7 @@ def _frozensetload(l: Loader, value, type_) -> FrozenSet:
     This loads into something like FrozenSet[int]
     """
     t = type_.__args__[0]
-    return frozenset(l.load(i, t) for i in value)
+    return frozenset(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
 
 
 def _tupleload(l: Loader, value, type_) -> Tuple:
@@ -383,7 +383,7 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
         args = type_.__tuple_params__
 
     if len(args) == 2 and args[1] == ...: # Tuple[something, ...]
-        return tuple(l.load(i, args[0]) for i in value)
+        return tuple(l.load(v, args[0], annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
     else: # Tuple[something, something, somethingelse]
         if l.failonextra and len(value) > len(args):
             raise TypedloadValueError('Value is too long for type %s' % type_, value=value, type_=type_)
@@ -475,7 +475,7 @@ def _unionload(l: Loader, value, type_) -> Any:
     try:
         args = uniontypes(type_)
     except AttributeError:
-        raise TypedloadAttributeError('The typing API for this Python version is unknown')
+        raise TypedloadAttributeError('The typing API for this Python version is unknown', type_=type_, value=value)
 
     value_type = type(value)
 
@@ -530,15 +530,17 @@ def _enumload(l: Loader, value, type_) -> Enum:
         pass
 
     # Try with the typing hints
+    exceptions = []
     for _, t in get_type_hints(type_).items():
         try:
-            return type_(l.load(value, t))
-        except:
-            pass
+            return type_(l.load(value, t, annotation=Annotation(AnnotationType.UNION, t)))
+        except Exception as e:
+            exceptions.append(e)
     raise TypedloadValueError(
         'Value could not be loaded into %s' % type_,
         value=value,
-        type_=type_
+        type_=type_,
+        exceptions=exceptions
     )
 
 
@@ -556,7 +558,7 @@ def _datetimeload(l: Loader, value, type_) -> Union[datetime.date, datetime.time
     try:
         return type_(*value)
     except TypeError as e:
-        raise TypedloadTypeError(str(e))
+        raise TypedloadTypeError(str(e), type_=type_, value=value)
 
 
 def _attrload(l, value, type_):
