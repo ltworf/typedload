@@ -102,6 +102,9 @@ This can of course be used also for use cases that make sense.
 The handlers must generate exceptions from the typedload.exceptions
 module.
 
+Due to internal cache, it is not supported to modify the list of the
+handlers after the first call to dump/load.
+
 
 Name mangling
 =============
