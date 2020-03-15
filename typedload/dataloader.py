@@ -475,7 +475,7 @@ def _unionload(l: Loader, value, type_) -> Any:
     try:
         args = uniontypes(type_)
     except AttributeError:
-        raise TypedloadAttributeError('The typing API for this Python version is unknown')
+        raise TypedloadAttributeError('The typing API for this Python version is unknown', type_=type_, value=value)
 
     value_type = type(value)
 
@@ -556,7 +556,7 @@ def _datetimeload(l: Loader, value, type_) -> Union[datetime.date, datetime.time
     try:
         return type_(*value)
     except TypeError as e:
-        raise TypedloadTypeError(str(e))
+        raise TypedloadTypeError(str(e), type_=type_, value=value)
 
 
 def _attrload(l, value, type_):
