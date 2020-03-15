@@ -362,7 +362,7 @@ def _setload(l: Loader, value, type_) -> Set:
     This loads into something like Set[int]
     """
     t = type_.__args__[0]
-    return {l.load(i, t) for i in value}
+    return {l.load(i, t) for i in value}#FIXME
 
 
 def _frozensetload(l: Loader, value, type_) -> FrozenSet:
@@ -370,7 +370,7 @@ def _frozensetload(l: Loader, value, type_) -> FrozenSet:
     This loads into something like FrozenSet[int]
     """
     t = type_.__args__[0]
-    return frozenset(l.load(i, t) for i in value)
+    return frozenset(l.load(i, t) for i in value)#FIXME
 
 
 def _tupleload(l: Loader, value, type_) -> Tuple:
@@ -383,7 +383,7 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
         args = type_.__tuple_params__
 
     if len(args) == 2 and args[1] == ...: # Tuple[something, ...]
-        return tuple(l.load(i, args[0]) for i in value)
+        return tuple(l.load(i, args[0]) for i in value)#FIXME
     else: # Tuple[something, something, somethingelse]
         if l.failonextra and len(value) > len(args):
             raise TypedloadValueError('Value is too long for type %s' % type_, value=value, type_=type_)
@@ -532,7 +532,7 @@ def _enumload(l: Loader, value, type_) -> Enum:
     # Try with the typing hints
     for _, t in get_type_hints(type_).items():
         try:
-            return type_(l.load(value, t))
+            return type_(l.load(value, t))#FIXME
         except:
             pass
     raise TypedloadValueError(
