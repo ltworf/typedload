@@ -1,4 +1,5 @@
-1.21
+2.0
+* Breaking API change: handlers can only be modified before the first load
 * Exceptions contain more information
 * Greatly improve performances with iterables types
 
