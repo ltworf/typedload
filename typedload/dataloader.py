@@ -219,7 +219,7 @@ class Loader:
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-        self._indexcache = {}
+        self._indexcache = {}  # type: Dict[Type, int]
 
     def index(self, type_: Type[T]) -> int:
         """
