@@ -267,6 +267,7 @@ class TestLoaderIndex(unittest.TestCase):
 
         loader = dataloader.Loader()
         assert loader.load(3, int) == 3
+        loader = dataloader.Loader()
         loader.handlers.pop(loader.index(int))
         with self.assertRaises(TypeError):
             loader.load(3, int)
