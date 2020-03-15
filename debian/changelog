@@ -1,6 +1,8 @@
 typedload (1.21-1) UNRELEASED; urgency=medium
 
   * New upstream release
+  * Build depend on python3-attr.
+    Not strictly needed but this will cause the tests for the optional attr module to run as well.
 
  -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Thu, 16 Jan 2020 17:09:04 +0100
 
