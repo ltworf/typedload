@@ -61,8 +61,5 @@ docs:
 	pydoc3 -w typedload.dataloader
 	pydoc3 -w typedload.exceptions
 	pydoc3 -w typedload.typechecks
-	pydoc3 -w typedload.plugins
-	pydoc3 -w typedload.plugins.attrload
-	pydoc3 -w typedload.plugins.attrdump
 	mv *.html docs
 	ln -s typedload.html docs/index.html

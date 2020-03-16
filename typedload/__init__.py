@@ -186,9 +186,3 @@ def dump(value: Any, **kwargs) -> Any:
     from . import datadumper
     dumper = datadumper.Dumper(**kwargs)
     return dumper.dump(value)
-
-
-attrload = load  # DEPRECATED
-
-
-attrdump = dump  # DEPRECATED

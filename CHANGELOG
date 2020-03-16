@@ -1,5 +1,6 @@
 2.0
 * Breaking API change: handlers can only be modified before the first load
+* Breaking API change: plugins removed (attr support is by default)
 * Exceptions contain more information
 * Greatly improve performances with iterables types
 

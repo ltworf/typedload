@@ -22,9 +22,8 @@ import unittest
 
 import attr
 
-from typedload import attrload, attrdump, exceptions, typechecks
+from typedload import load, dump, exceptions, typechecks
 from typedload import datadumper
-from typedload.plugins import attrdump as attrplugin
 
 
 class Hair(Enum):
@@ -57,25 +56,24 @@ class Mangle:
 class TestAttrDump(unittest.TestCase):
 
     def test_basicdump(self):
-        assert attrdump(Person()) == {}
-        assert attrdump(Person('Alfio')) == {'name': 'Alfio'}
-        assert attrdump(Person('Alfio', '33')) == {'name': 'Alfio', 'address': '33'}
+        assert dump(Person()) == {}
+        assert dump(Person('Alfio')) == {'name': 'Alfio'}
+        assert dump(Person('Alfio', '33')) == {'name': 'Alfio', 'address': '33'}
 
     def test_norepr(self):
         @attr.s
         class A:
             i = attr.ib(type=int)
             j = attr.ib(type=int, repr=False)
-        assert attrdump(A(1,1)) == {'i': 1}
+        assert dump(A(1,1)) == {'i': 1}
 
     def test_dumpdefault(self):
         dumper = datadumper.Dumper()
-        attrplugin.add2dumper(dumper)
         dumper.hidedefault = False
         assert dumper.dump(Person()) == {'name': 'Turiddu', 'address': None}
 
     def test_nesteddump(self):
-        assert attrdump(
+        assert dump(
             Students('advanced coursing', [
             Person('Alfio'),
             Person('Carmelo', 'via mulino'),
@@ -101,14 +99,14 @@ class TestAttrload(unittest.TestCase):
         assert not typechecks.is_attrs(Tuple[str, int])
 
     def test_basicload(self):
-        assert attrload({'name': 'gino'}, Person) == Person('gino')
-        assert attrload({}, Person) == Person('Turiddu')
+        assert load({'name': 'gino'}, Person) == Person('gino')
+        assert load({}, Person) == Person('Turiddu')
 
     def test_nestenum(self):
-        assert attrload({'hair': 'white'}, DetailedPerson) == DetailedPerson(hair=Hair.WHITE)
+        assert load({'hair': 'white'}, DetailedPerson) == DetailedPerson(hair=Hair.WHITE)
 
     def test_nested(self):
-        assert attrload(
+        assert load(
             {
                 'course': 'advanced coursing',
                 'students': [
@@ -133,8 +131,8 @@ class TestAttrload(unittest.TestCase):
             def __attrs_post_init__(self):
                 self.uuid_value = str(uuid.uuid4())
 
-        assert type(attrload({'a': 1}, A).uuid_value) == str
-        assert attrload({'a': 1}, A) != attrload({'a': 1}, A)
+        assert type(load({'a': 1}, A).uuid_value) == str
+        assert load({'a': 1}, A) != load({'a': 1}, A)
 
 
 class TestMangling(unittest.TestCase):
@@ -142,18 +140,18 @@ class TestMangling(unittest.TestCase):
     def test_load_metanames(self):
         a = {'va.lue': 12}
         b = a.copy()
-        assert attrload(a, Mangle) == Mangle(12)
+        assert load(a, Mangle) == Mangle(12)
         assert a == b
 
     def test_dump_metanames(self):
-        assert attrdump(Mangle(12)) == {'va.lue': 12}
+        assert dump(Mangle(12)) == {'va.lue': 12}
 
 
 class TestAttrExceptions(unittest.TestCase):
 
     def test_wrongtype(self):
         try:
-            attrload(3, Person)
+            load(3, Person)
         except exceptions.TypedloadTypeError:
             pass
 
@@ -165,13 +163,13 @@ class TestAttrExceptions(unittest.TestCase):
             ]
         }
         try:
-            attrload(data, Students)
+            load(data, Students)
         except exceptions.TypedloadTypeError as e:
             assert e.trace[-1].annotation[1] == 1
 
     def test_index(self):
         try:
-            attrload(
+            load(
                 {
                     'course': 'advanced coursing',
                     'students': [
