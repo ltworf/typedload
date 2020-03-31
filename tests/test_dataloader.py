@@ -20,6 +20,7 @@
 import argparse
 import datetime
 from enum import Enum
+from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
@@ -375,3 +376,10 @@ class TestDictEquivalence(unittest.TestCase):
         data = argparse.Namespace(a=1)
         with self.assertRaises(AttributeError):
             loader.load(data, Dict[str, int])
+
+
+class TestCommonTypes(unittest.TestCase):
+
+    def test_path(self):
+        loader = dataloader.Loader()
+        assert loader.load('/', Path) == Path('/')

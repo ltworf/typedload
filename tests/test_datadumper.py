@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2018 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2020 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 import datetime
 from enum import Enum
+from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
@@ -137,3 +138,9 @@ class TestDumper(unittest.TestCase):
     def test_kwargs(self):
         with self.assertRaises(ValueError):
             dump(1, handlers=[])
+
+
+class TestDumpCommonTypes(unittest.TestCase):
+
+    def test_path(self):
+        assert dump(Path('/')) == '/'
