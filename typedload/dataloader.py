@@ -23,6 +23,7 @@ Module to load data into typed data structures
 
 import datetime
 from enum import Enum
+from pathlib import Path
 from typing import *
 
 from .exceptions import *
@@ -213,6 +214,7 @@ class Loader:
             (is_literal, _literalload),
             (is_typeddict, _namedtupleload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
+            (lambda type_: type_ == Path, _pathload),
             (is_attrs, _attrload),
         ]  # type: List[Tuple[Callable[[Any], bool], Callable[[Loader, Any, Type], Any]]]
 
@@ -600,3 +602,10 @@ def _attrload(l, value, type_):
     ))
 
     return _namedtupleload(l, value, t)
+
+
+def _pathload(l: Loader, value, type_) -> Path:
+    try:
+        return Path(value)
+    except TypeError as e:
+        raise TypedloadTypeError(str(e), type_=type_, value=value)
