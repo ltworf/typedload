@@ -3,7 +3,7 @@ typedload
 Exceptions
 """
 
-# Copyright (C) 2018 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2020 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@ class TypedloadException(Exception):
 
     def __str__(self) -> str:
         def compress_value(v: Any) -> str:
-            v = str(v)
+            v = repr(v)
             if len(v) > 80:
                 return v[:77] + '...'
             return v
