@@ -3,6 +3,7 @@
 * Breaking API change: plugins removed (attr support is by default)
 * Exceptions contain more information
 * Greatly improve performances with iterables types
+* Support for pathlib.Path
 
 1.20
 * Drop support for Python 3.5.2 (3.5 series is still supported)

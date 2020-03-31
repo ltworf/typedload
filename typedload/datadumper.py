@@ -22,6 +22,7 @@ data structures to things that json can serialize.
 
 import datetime
 from enum import Enum
+from pathlib import Path
 from typing import *
 
 from .exceptions import TypedloadValueError
@@ -102,6 +103,7 @@ class Dumper:
             (lambda value: isinstance(value, Enum), lambda l, value: l.dump(value.value)),
             (lambda value: isinstance(value, Dict), lambda l, value: {l.dump(k): l.dump(v) for k, v in value.items()}),
             (lambda value: isinstance(value, (datetime.date, datetime.time)), _datetimedump),
+            (lambda value: isinstance(value, Path), lambda l, value: str(value)),
             (is_attrs, _attrdump),
         ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
 
