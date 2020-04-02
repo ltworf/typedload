@@ -82,7 +82,7 @@ class TypedloadException(Exception):
             self,
             description: str,
             trace: Optional[List[TraceItem]] = None,
-            value=None,
+            value: Any=None,
             type_: Optional[Type] = None,
             exceptions: Optional[List[Exception]] = None) -> None:
         super().__init__(description)
@@ -126,7 +126,7 @@ class TypedloadValueError(TypedloadException, ValueError):
     Exception class, subclass of ValueError.
     See the documentation of TypedloadException for more details.
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
 
@@ -135,7 +135,7 @@ class TypedloadTypeError(TypedloadException, TypeError):
     Exception class, subclass of TypeError.
     See the documentation of TypedloadException for more details.
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
 
@@ -144,5 +144,5 @@ class TypedloadAttributeError(TypedloadException, AttributeError):
     Exception class, subclass of AttributeError.
     See the documentation of TypedloadException for more details.
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)

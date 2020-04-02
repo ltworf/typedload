@@ -173,7 +173,7 @@ class Loader:
     similar to each other, it is easy to obtain an unexpected type.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Types that do not need conversion
         self.basictypes = {int, bool, float, str, NONETYPE}
 
