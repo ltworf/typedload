@@ -121,7 +121,7 @@ def is_nonetype(type_: Type[Any]) -> bool:
     return type_ == NONETYPE
 
 
-def _generic_type_check(type_: Type[Any], native, from_typing):
+def _generic_type_check(type_: Type[Any], native, from_typing) -> bool:
     return getattr(type_, '__origin__', None) in {native, from_typing} or getattr(type_, '__extra__', None) == native
 
 
