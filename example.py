@@ -18,7 +18,10 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
+
 # This is a practical example on how to use the typedload library.
+# It is a somewhat simple use case so most capabilities are not
+# shown here.
 
 # Json data is downloaded from the internet and then loaded into
 # Python data structures (dictionaries, lists, strings, and so on).
