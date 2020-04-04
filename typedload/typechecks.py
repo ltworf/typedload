@@ -15,7 +15,7 @@ protects the user from the ever changing internal representation used in
 different versions of Python.
 """
 
-# Copyright (C) 2019 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2019-2020 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -66,12 +66,14 @@ except ImportError:
     from typing import _ForwardRef as ForwardRef  # type: ignore
 
 
+Literal = None  # type: Any
+_TypedDictMeta = None  # type: Any
 try:
     # Since 3.8
     from typing import Literal, _TypedDictMeta  # type: ignore
 except ImportError:
-    Literal = None
-    _TypedDictMeta = None
+    pass
+
 
 def _issubclass(t1, t2) -> bool:
     """
