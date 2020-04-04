@@ -66,12 +66,14 @@ except ImportError:
     from typing import _ForwardRef as ForwardRef  # type: ignore
 
 
+Literal = None  # type: Any
+_TypedDictMeta = None  # type: Any
 try:
     # Since 3.8
     from typing import Literal, _TypedDictMeta  # type: ignore
 except ImportError:
-    Literal = None
-    _TypedDictMeta = None
+    pass
+
 
 def _issubclass(t1, t2) -> bool:
     """
