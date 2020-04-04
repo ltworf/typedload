@@ -7,7 +7,7 @@ test:
 .PHONY: mypy
 mypy:
 	mypy --config-file mypy.conf typedload
-	mypy example.py
+	mypy --python-version=3.6 example.py
 
 pypi: setup.py typedload
 	mkdir -p dist pypi
