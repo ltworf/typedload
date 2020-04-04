@@ -7,6 +7,7 @@ test:
 .PHONY: mypy
 mypy:
 	mypy --config-file mypy.conf typedload
+	mypy example.py
 
 pypi: setup.py typedload
 	mkdir -p dist pypi
