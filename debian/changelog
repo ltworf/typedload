@@ -1,4 +1,4 @@
-typedload (2.1-1) UNRELEASED; urgency=medium
+typedload (2.1-1) unstable; urgency=high
 
   * New upstream release
   * Bump Standards-Version: 4.5.0
