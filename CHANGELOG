@@ -1,6 +1,7 @@
 2.1
 * Written new usage example
 * typechecks internals now pass with more mypy configurations
+* Fix import *
 
 2.0
 * Breaking API change: handlers can only be modified before the first load

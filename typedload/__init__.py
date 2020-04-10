@@ -153,8 +153,6 @@ __all__ = [
     'load',
     'datadumper',
     'dump',
-    'attrload',
-    'attrdump',
     'typechecks',
 ]
 
