@@ -84,6 +84,7 @@ The following things are supported:
  * Literal (requires Python 3.8)
  * TypedDict (requires Python 3.8)
  * datetime.date, datetime.time, datetime.datetime
+ * Path
 
 Advantage when using Mypy
 =========================
