@@ -30,7 +30,7 @@ from typedload import typechecks
 class TestChecks(unittest.TestCase):
 
     def test_is_literal(self):
-        if sys.version_info.minor >= 8 :
+        if sys.version_info.minor >= 8:
             l = Literal[1, 2, 3]
             assert typechecks.is_literal(l)
 
@@ -58,6 +58,9 @@ class TestChecks(unittest.TestCase):
         assert not typechecks.is_list(Tuple[int, str])
         assert not typechecks.is_list(Dict[int, str])
         assert not typechecks.is_list([])
+        if sys.version_info.minor >= 9:
+            assert typechecks.is_list(list[str])
+            assert not typechecks.is_list(tuple[str])
 
     def test_is_dict(self):
         assert typechecks.is_dict(Dict[int, int])
@@ -65,21 +68,33 @@ class TestChecks(unittest.TestCase):
         assert typechecks.is_dict(Dict[str, str])
         assert not typechecks.is_dict(Tuple[str, str])
         assert not typechecks.is_dict(Set[str])
+        if sys.version_info.minor >= 9:
+            assert typechecks.is_dict(dict[str, str])
+            assert not typechecks.is_dict(tuple[str])
 
     def test_is_set(self):
         assert typechecks.is_set(Set[int])
         assert typechecks.is_set(Set)
+        if sys.version_info.minor >= 9:
+            assert typechecks.is_set(set[str])
+            assert not typechecks.is_set(tuple[str])
 
     def test_is_frozenset_(self):
         assert not typechecks.is_frozenset(Set[int])
         assert typechecks.is_frozenset(FrozenSet[int])
         assert typechecks.is_frozenset(FrozenSet)
+        if sys.version_info.minor >= 9:
+            assert typechecks.is_frozenset(frozenset[str])
+            assert not typechecks.is_frozenset(tuple[str])
 
     def test_is_tuple(self):
         assert typechecks.is_tuple(Tuple[str, int, int])
         assert typechecks.is_tuple(Tuple)
         assert not typechecks.is_tuple(tuple)
         assert not typechecks.is_tuple((1,2))
+        if sys.version_info.minor >= 9:
+            assert typechecks.is_tuple(tuple[str])
+            assert not typechecks.is_tuple(list[str])
 
     def test_is_union(self):
         assert typechecks.is_union(Optional[int])
