@@ -1,3 +1,5 @@
+2.3
+
 2.2
 * Add Python3.9 to the supported versions
 * Prevent loading dict as List,Tuple,Set
