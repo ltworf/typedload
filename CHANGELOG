@@ -1,5 +1,8 @@
 2.2
 * Add Python3.9 to the supported versions
+* Prevent loading dict as List,Tuple,Set
+  This helps when using Union[Dict, List] to take the correct
+  type.
 
 2.1
 * Written new usage example
