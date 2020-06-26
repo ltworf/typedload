@@ -3,6 +3,7 @@ typedload (2.3-1) UNRELEASED; urgency=medium
   * New upstream release
   * Use new style compat in build-deps
   * Bump compat to 13
+  * Add autopkgtest
 
  -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Fri, 26 Jun 2020 15:39:14 +0200
 

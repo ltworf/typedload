@@ -1,0 +1,5 @@
+Test-Command: make mypy
+
+Test-Command: make test 2>&1
+
+Test-Command: ./example.py
