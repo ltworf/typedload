@@ -343,6 +343,8 @@ def _listload(l: Loader, value, type_) -> List:
     """
     This loads into something like List[int]
     """
+    if isinstance(value, dict):
+        raise TypedloadTypeError('Unable to load dictionary as a list', value=value, type_=type_)
     t = type_.__args__[0]
     try:
         return [l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value)]
@@ -371,6 +373,8 @@ def _setload(l: Loader, value, type_) -> Set:
     """
     This loads into something like Set[int]
     """
+    if isinstance(value, dict):
+        raise TypedloadTypeError('Unable to load dictionary as a set', value=value, type_=type_)
     t = type_.__args__[0]
     return {l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value)}
 
@@ -387,6 +391,8 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
     """
     This loads into something like Tuple[int,str]
     """
+    if isinstance(value, dict):
+        raise TypedloadTypeError('Unable to load dictionary as a tuple', value=value, type_=type_)
     if HAS_TUPLEARGS:
         args = type_.__args__
     else:

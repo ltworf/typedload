@@ -275,6 +275,14 @@ class TestLoaderIndex(unittest.TestCase):
 
 
 class TestExceptions(unittest.TestCase):
+    def test_dict_is_not_list(self):
+        loader = dataloader.Loader()
+        with self.assertRaises(exceptions.TypedloadTypeError):
+            loader.load({1: 1}, List[int])
+        with self.assertRaises(exceptions.TypedloadTypeError):
+            loader.load({1: 1}, Tuple[int, ...])
+        with self.assertRaises(exceptions.TypedloadTypeError):
+            loader.load({1: 1}, Set[int])
 
     def test_list_exception(self):
         loader = dataloader.Loader()
