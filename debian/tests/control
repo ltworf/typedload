@@ -1,0 +1,11 @@
+Test-Command: make mypy
+
+Test-Command: make test
+Restrictions: allow-stderr
+
+Test-Command: ./example.py
+Restrictions: needs-internet
+
+Test-Command: localslackirc --help
+Depends: localslackirc
+Restrictions: superficial
