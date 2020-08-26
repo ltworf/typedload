@@ -1,4 +1,6 @@
 2.3
+* Better type sorting in Union
+  This helps when using Union[dataclass, str]
 
 2.2
 * Add Python3.9 to the supported versions

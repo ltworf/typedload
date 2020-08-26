@@ -95,6 +95,22 @@ class TestUnion(unittest.TestCase):
 
         assert loader.load(data, Json) == data
 
+    def test_str_obj(self):
+        '''
+        Possibly flaky test. Testing automatic type sorting in Union
+
+        It depends on python internal magic of sorting the union types
+        '''
+        loader = dataloader.Loader()
+
+        class Q(NamedTuple):
+            a: int
+        expected = Q(12)
+        for _ in range(5000):
+            t = eval('Union[str, Q]')
+            assert loader.load({'a': 12}, t) == expected
+
+
     def test_ComplicatedUnion(self):
         class A(NamedTuple):
             a: int
