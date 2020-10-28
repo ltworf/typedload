@@ -1,3 +1,5 @@
+2.4
+
 2.3
 * Better type sorting in Union
   This helps when using Union[dataclass, str]
