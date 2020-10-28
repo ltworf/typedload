@@ -156,7 +156,7 @@ def _datetimedump(l, value: Union[datetime.time, datetime.date, datetime.datetim
     if isinstance(value, datetime.date) and not isinstance(value, datetime.datetime):
         return [value.year, value.month, value.day]
     if value.tzinfo is not None:
-        raise NotImplemented('Dumping of tzdata object is not supported')
+        raise NotImplementedError('Dumping of tzdata object is not supported')
     if isinstance(value, datetime.time):
         return [value.hour, value.minute, value.second, value.microsecond]
     # datetime.datetime
