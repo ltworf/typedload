@@ -1,11 +1,12 @@
-typedload (2.3-1) UNRELEASED; urgency=medium
+typedload (2.3-1) unstable; urgency=high
 
   * New upstream release
   * Use new style compat in build-deps
   * Bump compat to 13
   * Add autopkgtest
+  * Fix mypy issue (Closes: #973238)
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Fri, 26 Jun 2020 15:39:14 +0200
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Wed, 28 Oct 2020 15:30:14 +0100
 
 typedload (2.2-1) unstable; urgency=low
 
