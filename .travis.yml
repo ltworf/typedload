@@ -7,9 +7,15 @@ python:
   - "3.8"
   - "3.9-dev"
 
+addons:
+  apt:
+    packages:
+    - debhelper
+    - python3-all
+    - mypy
+
 install:
   - pip install mypy
-  - apt-get -y install debhelper python3-all mypy
 
 script:
   - make test
