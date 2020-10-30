@@ -1,3 +1,4 @@
+GPG := gpg
 all: pypi
 
 .PHONY: test
@@ -14,7 +15,7 @@ pypi: setup.py typedload
 	./setup.py sdist
 	mv dist/typedload-`./setup.py --version`.tar.gz pypi
 	rmdir dist
-	gpg --detach-sign -a pypi/typedload-`./setup.py --version`.tar.gz
+	$(GPG) --detach-sign -a pypi/typedload-`./setup.py --version`.tar.gz
 
 clean:
 	$(RM) -r pypi
@@ -41,7 +42,7 @@ dist: clean
 		typedload/mypy.conf \
 		typedload/typedload
 	mv ../typedload.tar.gz typedload_`./setup.py --version`.orig.tar.gz
-	gpg --detach-sign -a *.orig.tar.gz
+	$(GPG) --detach-sign -a *.orig.tar.gz
 
 .PHONY: upload
 upload: pypi
