@@ -9,6 +9,7 @@ python:
 
 install:
   - pip install mypy
+  - apt-get -y install debhelper python3-all mypy
 
 script:
   - make test
