@@ -1,4 +1,5 @@
 Test-Command: make mypy
+Depends: mypy
 
 Test-Command: make test
 Restrictions: allow-stderr
