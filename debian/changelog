@@ -1,3 +1,10 @@
+typedload (2.3-2) unstable; urgency=high
+
+  * Add mypy to test dependencies
+  * Remove test that uses the internet
+
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Thu, 05 Nov 2020 09:14:56 +0100
+
 typedload (2.3-1) unstable; urgency=high
 
   * New upstream release
