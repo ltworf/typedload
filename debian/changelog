@@ -1,3 +1,9 @@
+typedload (2.3-3) unstable; urgency=high
+
+  * Forgot to pass --changes-option=-S to dpkg-buildpackage
+
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Sat, 07 Nov 2020 21:51:34 +0100
+
 typedload (2.3-2) unstable; urgency=high
 
   * Add mypy to test dependencies
