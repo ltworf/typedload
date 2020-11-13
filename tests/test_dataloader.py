@@ -20,6 +20,7 @@
 import argparse
 import datetime
 from enum import Enum
+from ipaddress import IPv4Address, IPv6Address, IPv6Network, IPv4Network, IPv4Interface, IPv6Interface
 from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
@@ -407,3 +408,34 @@ class TestCommonTypes(unittest.TestCase):
     def test_path(self):
         loader = dataloader.Loader()
         assert loader.load('/', Path) == Path('/')
+
+    def test_ipaddress(self):
+        loader = dataloader.Loader()
+        assert loader.load('10.10.10.1', IPv4Address) == IPv4Address('10.10.10.1')
+        assert loader.load('10.10.10.1', IPv4Network) == IPv4Network('10.10.10.1/32')
+        assert loader.load('10.10.10.1', IPv4Interface) == IPv4Interface('10.10.10.1/32')
+        assert loader.load('fe80::123', IPv6Address) == IPv6Address('fe80::123')
+        assert loader.load('10.10.10.0/24', IPv4Network) == IPv4Network('10.10.10.0/24')
+        assert loader.load('fe80::/64', IPv6Network) == IPv6Network('fe80::/64')
+        assert loader.load('10.10.10.1/24', IPv4Interface) == IPv4Interface('10.10.10.1/24')
+        assert loader.load('fe80::123/64', IPv6Interface) == IPv6Interface('fe80::123/64')
+
+        # Wrong IP version
+        with self.assertRaises(TypeError):
+            loader.load('10.10.10.1', IPv6Address)
+        with self.assertRaises(TypeError):
+            loader.load('fe80::123', IPv4Address)
+        with self.assertRaises(TypeError):
+            loader.load('10.10.10.0/24', IPv6Network)
+        with self.assertRaises(TypeError):
+            loader.load('fe80::123', IPv4Network)
+        with self.assertRaises(TypeError):
+            loader.load('10.10.10.1/24', IPv6Interface)
+        with self.assertRaises(TypeError):
+            loader.load('fe80::123/64', IPv4Interface)
+
+        # Wrong ipaddress type
+        with self.assertRaises(TypeError):
+            loader.load('10.10.10.1/24', IPv4Address)
+        with self.assertRaises(TypeError):
+            loader.load('10.10.10.1/24', IPv4Network)

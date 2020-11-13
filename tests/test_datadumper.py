@@ -19,6 +19,7 @@
 
 import datetime
 from enum import Enum
+from ipaddress import IPv4Address, IPv4Network, IPv4Interface, IPv6Address, IPv6Network, IPv6Interface
 from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
@@ -144,3 +145,11 @@ class TestDumpCommonTypes(unittest.TestCase):
 
     def test_path(self):
         assert dump(Path('/')) == '/'
+
+    def test_ipaddress(self):
+        assert dump(IPv4Address('10.10.10.1')) == '10.10.10.1'
+        assert dump(IPv4Network('10.10.10.0/24')) == '10.10.10.0/24'
+        assert dump(IPv4Interface('10.10.10.1/24')) == '10.10.10.1/24'
+        assert dump(IPv6Address('fe80::123')) == 'fe80::123'
+        assert dump(IPv6Network('fe80::/64')) == 'fe80::/64'
+        assert dump(IPv6Interface('fe80::123/64')) == 'fe80::123/64'
