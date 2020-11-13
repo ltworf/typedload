@@ -623,4 +623,4 @@ def _ipaddressload(l: Loader, value, type_):
     try:
         return type_(value)
     except ValueError as e:
-        raise TypedloadTypeError(str(e), type_=type_, value=value)
+        raise TypedloadValueError(str(e), type_=type_, value=value)

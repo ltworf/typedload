@@ -421,21 +421,21 @@ class TestCommonTypes(unittest.TestCase):
         assert loader.load('fe80::123/64', IPv6Interface) == IPv6Interface('fe80::123/64')
 
         # Wrong IP version
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             loader.load('10.10.10.1', IPv6Address)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             loader.load('fe80::123', IPv4Address)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             loader.load('10.10.10.0/24', IPv6Network)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             loader.load('fe80::123', IPv4Network)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             loader.load('10.10.10.1/24', IPv6Interface)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             loader.load('fe80::123/64', IPv4Interface)
 
         # Wrong ipaddress type
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             loader.load('10.10.10.1/24', IPv4Address)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             loader.load('10.10.10.1/24', IPv4Network)
