@@ -206,7 +206,3 @@ def _dataclassdump(l, value):
                 del r[pyname]
                 r[dataname] = tmp
     return r
-
-
-def _ipaddressdump(l, value):
-    return str(value)
