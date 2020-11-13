@@ -22,7 +22,7 @@ Module to load data into typed data structures
 
 
 import datetime
-from enum import Enum
+import ipaddress
 from pathlib import Path
 from typing import *
 
@@ -215,6 +215,9 @@ class Loader:
             (is_typeddict, _namedtupleload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
             (lambda type_: type_ == Path, _pathload),
+            (lambda type_: type_ in {ipaddress.IPv4Address, ipaddress.IPv6Address,
+                                     ipaddress.IPv4Network, ipaddress.IPv6Network,
+                                     ipaddress.IPv4Interface, ipaddress.IPv6Interface}, _ipaddressload),
             (is_attrs, _attrload),
         ]  # type: List[Tuple[Callable[[Any], bool], Callable[[Loader, Any, Type], Any]]]
 
@@ -611,3 +614,13 @@ def _pathload(l: Loader, value, type_) -> Path:
         return Path(value)
     except TypeError as e:
         raise TypedloadTypeError(str(e), type_=type_, value=value)
+
+
+def _ipaddressload(l: Loader, value, type_):
+    """
+    Loader for all the types in the stdlib ipaddress module.
+    """
+    try:
+        return type_(value)
+    except ValueError as e:
+        raise TypedloadValueError(str(e), type_=type_, value=value)

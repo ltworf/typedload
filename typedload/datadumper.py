@@ -21,6 +21,7 @@ data structures to things that json can serialize.
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 import datetime
+import ipaddress
 from enum import Enum
 from pathlib import Path
 from typing import *
@@ -104,6 +105,10 @@ class Dumper:
             (lambda value: isinstance(value, Dict), lambda l, value: {l.dump(k): l.dump(v) for k, v in value.items()}),
             (lambda value: isinstance(value, (datetime.date, datetime.time)), _datetimedump),
             (lambda value: isinstance(value, Path), lambda l, value: str(value)),
+            (lambda value: isinstance(value, (ipaddress.IPv4Address, ipaddress.IPv6Address,
+                                              ipaddress.IPv4Network, ipaddress.IPv6Network,
+                                              ipaddress.IPv4Interface, ipaddress.IPv6Interface)),
+             lambda l, value: str(value)),
             (is_attrs, _attrdump),
         ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
 
