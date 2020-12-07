@@ -127,6 +127,9 @@ class Loader:
         In most cases, it is sufficient to append new elements
         at the end, to handle more types.
 
+        There is an internal cache to speed up lookup, so after the
+        first call to load, this should no longer be modified.
+
     frefs: Dictionary to resolve ForwardRef.
         Something like
         class Node(NamedTuple):
@@ -153,21 +156,6 @@ class Loader:
     The constructor will accept any named argument, but only the documented
     ones have any effect. This is to allow custom handlers to have their
     own parameters as well.
-
-    There is support for:
-        * Basic python types (int, str, bool, float, NoneType)
-        * NamedTuple
-        * Enum
-        * Optional[SomeType]
-        * List[SomeType]
-        * Dict[TypeA, TypeB]
-        * Tuple[TypeA, TypeB, TypeC]
-        * Tuple[SomeType, ...]
-        * Set[SomeType]
-        * Union[TypeA, TypeB]
-        * ForwardRef
-        * Literal
-        * Dataclass
 
     Using unions is complicated. If the types in the union are too
     similar to each other, it is easy to obtain an unexpected type.

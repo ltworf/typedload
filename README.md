@@ -85,6 +85,7 @@ The following things are supported:
  * TypedDict (requires Python 3.8)
  * datetime.date, datetime.time, datetime.datetime
  * Path
+ * IPv4Address, IPv6Address
 
 Advantage when using Mypy
 =========================

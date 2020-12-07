@@ -51,11 +51,33 @@ Classes
 The loader and dumper classes expose a number of attributes that can be
 customised to tweak their behaviour.
 
+Supported datatypes
+===================
+
+There is support for:
+    * Basic python types (int, str, bool, float, NoneType)
+    * NamedTuple
+    * Enum
+    * Optional[SomeType]
+    * List[SomeType]
+    * Dict[TypeA, TypeB]
+    * Tuple[TypeA, TypeB, TypeC]
+    * Tuple[SomeType, ...]
+    * Set[SomeType]
+    * Union[TypeA, TypeB]
+    * ForwardRef
+    * Literal
+    * Dataclass
+    * attrs
+    * TypedDict
+    * datetime
+    * Path
+    * IPv4Address, IPv6Address
+
 Handlers
 ========
 
-An important way to tweak the behaviour of a loader or dumper object is
-to modify the handlers list.
+To work with other datatypes, handlers can be used.
 
 The handlers' list items are tuples for two functions. The signatures are
 different for loader or dumper.
