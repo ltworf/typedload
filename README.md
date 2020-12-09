@@ -110,8 +110,6 @@ rather than hoping the data will respect the format.
 Download
 ========
 
-* Ignore the bullshit github saying "No packages published" that is only there
-  to increase vendor lock in.
 * If you are using a debian derivative, you have `python3-typedload`
 * Latest and greatest .deb file is in https://github.com/ltworf/typedload/releases
 * It is in pypi so you can just add typedload to your requirements file.
