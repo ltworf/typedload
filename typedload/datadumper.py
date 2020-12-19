@@ -150,9 +150,13 @@ def _attrdump(d, value) -> Dict[str, Any]:
         attrval = getattr(value, attr.name)
         if not attr.repr:
             continue
-        if not (d.hidedefault and attrval == attr.default):
-            name = attr.metadata.get('name', attr.name)
-            r[name] = d.dump(attrval)
+        if d.hidedefault:
+            if attrval == attr.default:
+                continue
+            elif hasattr(attr.default, 'factory') and attrval == attr.default.factory():
+                continue
+        name = attr.metadata.get('name', attr.name)
+        r[name] = d.dump(attrval)
     return r
 
 
