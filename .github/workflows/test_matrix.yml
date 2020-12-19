@@ -17,6 +17,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: pip install attr
+      run: pip install attrs
     - name: Run tests
       run: make test
