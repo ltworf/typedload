@@ -72,6 +72,14 @@ class TestAttrDump(unittest.TestCase):
         dumper.hidedefault = False
         assert dumper.dump(Person()) == {'name': 'Turiddu', 'address': None}
 
+    def test_factory_dump(self):
+        @attr.s
+        class A:
+            a: List[int] = attr.ib(factory=list, metadata={'ciao': 'ciao'})
+
+        assert dump(A()) == {}
+        assert dump(A(), hidedefault=False) == {'a': []}
+
     def test_nesteddump(self):
         assert dump(
             Students('advanced coursing', [
