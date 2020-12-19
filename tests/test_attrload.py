@@ -20,7 +20,7 @@ from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
-import attr
+from attr import attrs, attrib
 
 from typedload import load, dump, exceptions, typechecks
 from typedload import datadumper
@@ -33,25 +33,25 @@ class Hair(Enum):
     WHITE = 'white'
 
 
-@attr.s
+@attrs
 class Person:
-    name = attr.ib(default='Turiddu', type=str)
-    address = attr.ib(type=Optional[str], default=None)
+    name = attrib(default='Turiddu', type=str)
+    address = attrib(type=Optional[str], default=None)
 
 
-@attr.s
+@attrs
 class DetailedPerson(Person):
-    hair = attr.ib(type=Hair, default=Hair.BLACK)
+    hair = attrib(type=Hair, default=Hair.BLACK)
 
 
-@attr.s
+@attrs
 class Students:
-    course = attr.ib(type=str)
-    students = attr.ib(type=List[Person])
+    course = attrib(type=str)
+    students = attrib(type=List[Person])
 
-@attr.s
+@attrs
 class Mangle:
-    value = attr.ib(type=int, metadata={'name': 'va.lue'})
+    value = attrib(type=int, metadata={'name': 'va.lue'})
 
 class TestAttrDump(unittest.TestCase):
 
@@ -61,10 +61,10 @@ class TestAttrDump(unittest.TestCase):
         assert dump(Person('Alfio', '33')) == {'name': 'Alfio', 'address': '33'}
 
     def test_norepr(self):
-        @attr.s
+        @attrs
         class A:
-            i = attr.ib(type=int)
-            j = attr.ib(type=int, repr=False)
+            i = attrib(type=int)
+            j = attrib(type=int, repr=False)
         assert dump(A(1,1)) == {'i': 1}
 
     def test_dumpdefault(self):
@@ -73,9 +73,9 @@ class TestAttrDump(unittest.TestCase):
         assert dumper.dump(Person()) == {'name': 'Turiddu', 'address': None}
 
     def test_factory_dump(self):
-        @attr.s
+        @attrs
         class A:
-            a: List[int] = attr.ib(factory=list, metadata={'ciao': 'ciao'})
+            a = attrib(factory=list, metadata={'ciao': 'ciao'}, type=List[int])
 
         assert dump(A()) == {}
         assert dump(A(), hidedefault=False) == {'a': []}
@@ -131,10 +131,10 @@ class TestAttrload(unittest.TestCase):
     def test_uuid(self):
         import uuid
 
-        @attr.s
+        @attrs
         class A:
-            a = attr.ib(type=int)
-            uuid_value = attr.ib(type=str, init=False)
+            a = attrib(type=int)
+            uuid_value = attrib(type=str, init=False)
 
             def __attrs_post_init__(self):
                 self.uuid_value = str(uuid.uuid4())
