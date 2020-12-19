@@ -16,5 +16,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: pip install attr
     - name: Run tests
       run: make test
