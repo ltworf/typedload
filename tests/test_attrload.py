@@ -75,7 +75,7 @@ class TestAttrDump(unittest.TestCase):
     def test_factory_dump(self):
         @attrs
         class A:
-            a: List[int] = attrib(factory=list, metadata={'ciao': 'ciao'})
+            a = attrib(factory=list, metadata={'ciao': 'ciao'}, type=List[int])
 
         assert dump(A()) == {}
         assert dump(A(), hidedefault=False) == {'a': []}
