@@ -3,7 +3,7 @@ typedload
 Module to load data into typed data structures
 """
 
-# Copyright (C) 2018-2020 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -399,6 +399,25 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
         return tuple(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, (v, t) in enumerate(zip(value, args)))
 
 
+def _mangle_names(namesmap: Dict[str, str], value: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Mangling names of a dictionary.
+
+    The dictionary is copied internally.
+
+    Namesmap is the mapping to be applied, in the format [dataname] = pyname
+    """
+    if not namesmap:
+        return value
+    r = {}
+
+    for k, v in value.items():
+        if k in namesmap:
+            k = namesmap[k]
+        r[k] = v
+    return r
+
+
 def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
     """
     This loads a Dict[str, Any] into a NamedTuple.
@@ -417,20 +436,15 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
         #Name mangling
 
         # Prepare the list of the needed name changes
-        transforms = []  # type: List[Tuple[str, str]]
-        for field in fields:
-            if type_.__dataclass_fields__[field].metadata:
-                name = type_.__dataclass_fields__[field].metadata.get('name')
+        transforms = {}  # type: Dict[str, str]
+        for pyname in fields:
+            if type_.__dataclass_fields__[pyname].metadata:
+                name = type_.__dataclass_fields__[pyname].metadata.get('name')
                 if name:
-                    transforms.append((field, name))
-        # Do the needed name changes
-        if transforms:
-            value = value.copy()
-            for pyname, dataname in transforms:
-                if dataname in value:
-                    tmp = value[dataname]
-                    del value[dataname]
-                    value[pyname] = tmp
+                    transforms[name] = pyname
+
+        value = _mangle_names(transforms, value)
+
 
     necessary_fields = fields.difference(optional_fields)
     try:
@@ -571,6 +585,7 @@ def _attrload(l, value, type_):
     names = []
     defaults = {}
     types = {}
+    namesmap = {}  # type: Dict[str, str]
 
     for attribute in type_.__attrs_attrs__:
         names.append(attribute.name)
@@ -579,13 +594,10 @@ def _attrload(l, value, type_):
 
         # Manage name mangling
         if 'name' in attribute.metadata:
-            dataname = attribute.metadata['name']
-            pyname = attribute.name
+            namesmap[attribute.metadata['name']] = attribute.name
 
-            if dataname in value:
-                tmp = value[dataname]
-                del value[dataname]
-                value[pyname] = tmp
+    value = _mangle_names(namesmap, value)
+
 
     t = _FakeNamedTuple((
         tuple(names),
