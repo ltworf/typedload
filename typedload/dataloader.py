@@ -110,6 +110,10 @@ class Loader:
         handler. When disabled, the exceptions are not raised
         and the condition is considered False.
 
+    mangle_key: Defaults to 'name'
+        Specifies which key is used into the metadata dictionaries
+        to perform name-mangling.
+
     handlers: This is the list that the loader uses to
         perform its task.
         The type is:
@@ -182,6 +186,9 @@ class Loader:
 
         # Enable conversion of dict-like things to dicts, before loading
         self.dictequivalence = True
+
+        # Which key is used in metadata to perform name mangling
+        self.mangle_key = 'name'
 
         # The list of handlers to use to load the data.
         # It gets iterated in order, and the first condition
@@ -439,7 +446,7 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
         transforms = {}  # type: Dict[str, str]
         for pyname in fields:
             if type_.__dataclass_fields__[pyname].metadata:
-                name = type_.__dataclass_fields__[pyname].metadata.get('name')
+                name = type_.__dataclass_fields__[pyname].metadata.get(l.mangle_key)
                 if name:
                     transforms[name] = pyname
 
@@ -593,8 +600,8 @@ def _attrload(l, value, type_):
         defaults[attribute.name] = attribute.default
 
         # Manage name mangling
-        if 'name' in attribute.metadata:
-            namesmap[attribute.metadata['name']] = attribute.name
+        if l.mangle_key in attribute.metadata:
+            namesmap[attribute.metadata[l.mangle_key]] = attribute.name
 
     value = _mangle_names(namesmap, value)
 

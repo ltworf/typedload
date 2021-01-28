@@ -57,6 +57,10 @@ class Dumper:
             handler. When disabled, the exceptions are not raised
             and the condition is considered False.
 
+        mangle_key: Defaults to 'name'
+            Specifies which key is used into the metadata dictionaries
+            to perform name-mangling.
+
         handlers: This is the list that the dumper uses to
             perform its task.
             The type is:
@@ -92,6 +96,9 @@ class Dumper:
         self.basictypes = {int, bool, float, str, NONETYPE}
 
         self.hidedefault = True
+
+        # Which key is used in metadata to perform name mangling
+        self.mangle_key = 'name'
 
         # Raise errors if the condition fails
         self.raiseconditionerrors = True
@@ -155,7 +162,7 @@ def _attrdump(d, value) -> Dict[str, Any]:
                 continue
             elif hasattr(attr.default, 'factory') and attrval == attr.default.factory():
                 continue
-        name = attr.metadata.get('name', attr.name)
+        name = attr.metadata.get(d.mangle_key, attr.name)
         r[name] = d.dump(attrval)
     return r
 
@@ -181,7 +188,7 @@ def _namedtupledump(l, value):
     }
 
 
-def _dataclassdump(l, value):
+def _dataclassdump(d, value):
     import dataclasses
     fields = set(value.__dataclass_fields__.keys())
     field_defaults = {k: v.default for k,v in value.__dataclass_fields__.items() if not isinstance (v.default, dataclasses._MISSING_TYPE)}
@@ -189,7 +196,7 @@ def _dataclassdump(l, value):
     defaults = {**field_defaults, **field_factories} # Merge the two dictionaries
 
     r = {
-        value.__dataclass_fields__[f].metadata['name'] if 'name' in value.__dataclass_fields__[f].metadata else f : l.dump(getattr(value, f)) for f in fields
-        if not l.hidedefault or f not in defaults or defaults[f] != getattr(value, f)
+        value.__dataclass_fields__[f].metadata.get(d.mangle_key, f) : d.dump(getattr(value, f)) for f in fields
+        if not d.hidedefault or f not in defaults or defaults[f] != getattr(value, f)
     }
     return r
