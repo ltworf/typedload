@@ -1,5 +1,6 @@
-2-5
+2.5
 * Fix dump for attr classes with factory
+* Let name mangling use arbitrary metadata fields rather than just 'name'
 
 2.4
 * Support for ipaddress.IPv4Address, ipaddress.IPv6Address,
