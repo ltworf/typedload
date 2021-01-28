@@ -154,6 +154,14 @@ class TestMangling(unittest.TestCase):
     def test_dump_metanames(self):
         assert dump(Mangle(12)) == {'va.lue': 12}
 
+    def test_mangle_rename(self):
+        @attrs
+        class Mangle:
+            a = attrib(type=int, metadata={'name': 'b'})
+            b = attrib(type=str, metadata={'name': 'a'})
+        assert load({'b': 1, 'a': 'ciao'}, Mangle) == Mangle(1, 'ciao')
+        assert dump(Mangle(1, 'ciao')) == {'b': 1, 'a': 'ciao'}
+
 
 class TestAttrExceptions(unittest.TestCase):
 

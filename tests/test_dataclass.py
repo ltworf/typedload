@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2018-2019 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -124,3 +124,11 @@ class TestDataclassMangle(unittest.TestCase):
             value: int = field(metadata={'name': 'va.lue'})
         assert load({'va.lue': 1}, Mangle) == Mangle(1)
         assert dump(Mangle(1)) == {'va.lue': 1}
+
+    def test_mangle_rename(self):
+        @dataclass
+        class Mangle:
+            a: int = field(metadata={'name': 'b'})
+            b: str = field(metadata={'name': 'a'})
+        assert load({'b': 1, 'a': 'ciao'}, Mangle) == Mangle(1, 'ciao')
+        assert dump(Mangle(1, 'ciao')) == {'b': 1, 'a': 'ciao'}
