@@ -147,9 +147,15 @@ The dictionary key for 'attribute' will be 'att.rib.ute:name'.
 This is very useful for keys that use invalid or reserved characters that
 can't be used in variable names.
 Another common application is to convert camelCase into not_camel_case.
+
+It is implemented this way to avoid doing automatic name translations,
+that might introduce surprises.
+
+To use a metadata key different than 'name', set the mangle_key parameter
+to the loader/dumper.
 """
 
-# Copyright (C) 2018-2019 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

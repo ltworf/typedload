@@ -162,6 +162,16 @@ class TestMangling(unittest.TestCase):
         assert load({'b': 1, 'a': 'ciao'}, Mangle) == Mangle(1, 'ciao')
         assert dump(Mangle(1, 'ciao')) == {'b': 1, 'a': 'ciao'}
 
+    def test_weird_mangle(self):
+        @attrs
+        class Mangle:
+            a = attrib(type=int, metadata={'name': 'b', 'alt': 'q'})
+            b = attrib(type=str, metadata={'name': 'a'})
+        assert load({'b': 1, 'a': 'ciao'}, Mangle) == Mangle(1, 'ciao')
+        assert load({'q': 1, 'b': 'ciao'}, Mangle, mangle_key='alt') == Mangle(1, 'ciao')
+        assert dump(Mangle(1, 'ciao')) == {'b': 1, 'a': 'ciao'}
+        assert dump(Mangle(1, 'ciao'), mangle_key='alt') == {'q': 1, 'b': 'ciao'}
+
 
 class TestAttrExceptions(unittest.TestCase):
 
