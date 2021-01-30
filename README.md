@@ -122,3 +122,12 @@ See the file `example.py` to see a basic usecase for this module.
 
 The tests are harder to read but provide more in depth examples of
 the capabilities of this module.
+
+Used by
+=======
+
+As dependency, typedload is used by those entities. Feel free to add to the list.
+
+* Several universities around the world
+* United States Air Force
+* Exxonmobil
