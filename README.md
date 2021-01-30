@@ -76,7 +76,7 @@ The following things are supported:
  * Optional[SomeType]
  * List[SomeType]
  * Dict[TypeA, TypeB]
- * Tuple[TypeA, TypeB, TypeC]
+ * Tuple[TypeA, TypeB, TypeC] and Tuple[SomeType, ...]
  * Set[SomeType]
  * Union[TypeA, TypeB]
  * dataclass (requires Python 3.7)
