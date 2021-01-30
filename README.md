@@ -108,12 +108,12 @@ data = typedload.load(json.load(f), Dict[str, int])
 So when using Mypy, it makes sense to make sure that the type is correct,
 rather than hoping the data will respect the format.
 
-Download
-========
+Install
+=======
 
-* If you are using a debian derivative, you have `python3-typedload`
+* `pip install typedload`
+* `apt install python3-typedload`
 * Latest and greatest .deb file is in https://github.com/ltworf/typedload/releases
-* It is in pypi so you can just add typedload to your requirements file.
 
 Documentation
 =============
