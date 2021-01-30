@@ -58,11 +58,12 @@ deb-pkg: dist
 
 site: mkdocs.yml README.md docs/examples.md docs/origin_story.md
 	mkdocs build
-	install -d site/docstring
-	pydoc3 -w typedload
-	pydoc3 -w typedload.datadumper
-	pydoc3 -w typedload.dataloader
-	pydoc3 -w typedload.exceptions
-	pydoc3 -w typedload.typechecks
-	mv *.html site/docstring
-	ln -s typedload.html site/docstring/index.html
+	#install -d site/docstring
+	#pydoc3 -w typedload
+	#pydoc3 -w typedload.datadumper
+	#pydoc3 -w typedload.dataloader
+	#pydoc3 -w typedload.exceptions
+	#pydoc3 -w typedload.typechecks
+	#mv *.html site/docstring
+	#ln -s typedload.html site/docstring/index.html
+	mkdocs gh-deploy
