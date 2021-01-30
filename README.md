@@ -41,10 +41,11 @@ data = {
 Can be treated more easily if loaded into this type:
 
 ```python
-class User(NamedTuple):
+@dataclasses.dataclass
+class User:
     username: str
     shell: str = 'bash'
-    sessions: List[str] = []
+    sessions: List[str] = dataclasses.field(default_factory=list)
 
 class Logins(NamedTuple):
     users: List[User]
