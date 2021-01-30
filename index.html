@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>typedload</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body class="homepage">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href=".">typedload</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem active">
+                                <a href="." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="examples.md" class="nav-link">Examples</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="comparisons/" class="nav-link">Comparisons</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="origin_story.md" class="nav-link">Origin story</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="docstring/index.html" class="nav-link">Docstring</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" class="nav-link disabled">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="comparisons/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-light">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#typedload" class="nav-link">typedload</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="1"><a href="#example" class="nav-link">Example</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="1"><a href="#supported-types" class="nav-link">Supported types</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="1"><a href="#using-mypy" class="nav-link">Using Mypy</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="1"><a href="#install" class="nav-link">Install</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="1"><a href="#documentation" class="nav-link">Documentation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="1"><a href="#used-by" class="nav-link">Used by</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="typedload">typedload</h1>
+<p>Load and dump json-like data into typed data structures in Python3, enforcing
+a schema on the data.</p>
+<p>This module provides an API to load dictionaries and lists (usually loaded
+from json) into Python's NamedTuples, dataclass, sets, enums, and various
+other typed data structures; respecting all the type-hints and performing
+type checks or casts when needed.</p>
+<p>It can also dump from typed data structures to json-like dictionaries and lists.</p>
+<p>It is very useful for projects that use Mypy and deal with untyped data
+like json, because it guarantees that the data will follow the specified schema.</p>
+<p>Note that it is released with a GPL license and it cannot be used inside non
+GPL software.</p>
+<h1 id="example">Example</h1>
+<p>For example this dictionary, loaded from a json:</p>
+<pre><code class="language-python">data = {
+    'users': [
+        {
+            'username': 'salvo',
+            'shell': 'bash',
+            'sessions': ['pts/4', 'tty7', 'pts/6']
+        },
+        {
+            'username': 'lop'
+        }
+    ],
+}
+</code></pre>
+<p>Can be treated more easily if loaded into this type:</p>
+<pre><code class="language-python">@dataclasses.dataclass
+class User:
+    username: str
+    shell: str = 'bash'
+    sessions: List[str] = dataclasses.field(default_factory=list)
+
+class Logins(NamedTuple):
+    users: List[User]
+</code></pre>
+<p>And the data can be loaded into the structure with this:</p>
+<pre><code class="language-python">t_data = typedload.load(data, Logins)
+</code></pre>
+<p>And then converted back:</p>
+<pre><code class="language-python">data = typedload.dump(t_data)
+</code></pre>
+<h1 id="supported-types">Supported types</h1>
+<p>Since this is not magic, not all types are supported.</p>
+<p>The following things are supported:</p>
+<ul>
+<li>Basic python types (int, str, bool, float, NoneType)</li>
+<li>NamedTuple</li>
+<li>Enum</li>
+<li>Optional[SomeType]</li>
+<li>List[SomeType]</li>
+<li>Dict[TypeA, TypeB]</li>
+<li>Tuple[TypeA, TypeB, TypeC] and Tuple[SomeType, ...]</li>
+<li>Set[SomeType]</li>
+<li>Union[TypeA, TypeB]</li>
+<li>dataclass (requires Python 3.7)</li>
+<li>attr.s</li>
+<li>ForwardRef (Refer to the type in its own definition)</li>
+<li>Literal (requires Python 3.8)</li>
+<li>TypedDict (requires Python 3.8)</li>
+<li>datetime.date, datetime.time, datetime.datetime</li>
+<li>Path</li>
+<li>IPv4Address, IPv6Address</li>
+</ul>
+<h1 id="using-mypy">Using Mypy</h1>
+<pre><code class="language-python"># This is treated as Any, no checks done.
+data = json.load(f)
+
+# This is treated as Dict[str, int]
+# but there will be runtime errors if the data does not
+# match the expected format
+data = json.load(f)  # type: Dict[str, int]
+
+# This is treated as Dict[str, int] and an exception is
+# raised if the actual data is not Dict[str, int]
+data = typedload.load(json.load(f), Dict[str, int])
+</code></pre>
+<p>So when using Mypy, it makes sense to make sure that the type is correct,
+rather than hoping the data will respect the format.</p>
+<h1 id="install">Install</h1>
+<ul>
+<li><code>pip install typedload</code></li>
+<li><code>apt install python3-typedload</code></li>
+<li>Latest and greatest .deb file is in https://github.com/ltworf/typedload/releases</li>
+</ul>
+<h1 id="documentation">Documentation</h1>
+<p>See the file <code>example.py</code> to see a basic usecase for this module.</p>
+<p>The tests are harder to read but provide more in depth examples of
+the capabilities of this module.</p>
+<h1 id="used-by">Used by</h1>
+<p>As dependency, typedload is used by those entities. Feel free to add to the list.</p>
+<ul>
+<li>Several universities around the world</li>
+<li>United States Air Force</li>
+<li>Exxonmobil</li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.1.2
+Build Date UTC : 2021-01-30 18:56:50.179587+00:00
+-->
