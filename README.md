@@ -88,8 +88,8 @@ The following things are supported:
  * Path
  * IPv4Address, IPv6Address
 
-Advantage when using Mypy
-=========================
+Using Mypy
+==========
 
 ```python
 # This is treated as Any, no checks done.
