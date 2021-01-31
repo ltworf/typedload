@@ -1,4 +1,5 @@
 site_name: typedload
+theme: readthedocs
 nav:
     - Home: README.md
     - Examples: examples.md
