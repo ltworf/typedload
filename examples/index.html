@@ -1,122 +1,214 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-        
-        
-        <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Examples - typedload</title>
-        <link href="../css/bootstrap.min.css" rel="stylesheet">
-        <link href="../css/font-awesome.min.css" rel="stylesheet">
-        <link href="../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Examples - typedload</title>
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Examples";
+    var mkdocs_page_input_path = "examples.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
 
-        <script src="../js/jquery-1.10.2.min.js" defer></script>
-        <script src="../js/bootstrap.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
-    </head>
+<body class="wy-body-for-nav" role="document">
 
-    <body>
-        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" href="..">typedload</a>
-                <!-- Expander button -->
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <!-- Expanded navigation -->
-                <div id="navbar-collapse" class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li class="navitem">
-                                <a href=".." class="nav-link">Home</a>
-                            </li>
-                            <li class="navitem active">
-                                <a href="./" class="nav-link">Examples</a>
-                            </li>
-                            <li class="navitem">
-                                <a href="../comparisons/" class="nav-link">Comparisons</a>
-                            </li>
-                            <li class="navitem">
-                                <a href="../origin_story/" class="nav-link">Origin story</a>
-                            </li>
-                        </ul>
-
-                    <ul class="nav navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                            <li class="nav-item">
-                                <a rel="prev" href=".." class="nav-link">
-                                    <i class="fa fa-arrow-left"></i> Previous
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a rel="next" href="../comparisons/" class="nav-link">
-                                    Next <i class="fa fa-arrow-right"></i>
-                                </a>
-                            </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="row">
-                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
-            <span class="fa fa-angle-down"></span>
-        </button>
-    </div>
+  <div class="wy-grid-for-nav">
 
     
-    <div id="toc-collapse" class="navbar-collapse collapse card bg-light">
-        <ul class="nav flex-column">
-            
-            <li class="nav-item" data-level="1"><a href="#examples" class="nav-link">Examples</a>
-              <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#objects" class="nav-link">Objects</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#optional-values" class="nav-link">Optional values</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#unions" class="nav-link">Unions</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#name-mangling" class="nav-link">Name mangling</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#custom-handlers" class="nav-link">Custom handlers</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-              </ul>
-            </li>
-        </ul>
-    </div>
-</div></div>
-                    <div class="col-md-9" role="main">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> typedload</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
 
-<h1 id="examples">Examples</h1>
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Examples</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#objects">Objects</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#optional-values">Optional values</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#unions">Unions</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#disable-cast">Disable cast</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#list-or-single-object">List or single object</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#objects_1">Objects</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#object-type-in-value">Object type in value</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#name-mangling">Name mangling</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#multiple-name-mangling-schemes">Multiple name mangling schemes</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#custom-handlers">Custom handlers</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../comparisons/">Comparisons</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../origin_story/">Origin story</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">typedload</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Examples</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="examples">Examples</h1>
 <h2 id="objects">Objects</h2>
 <p>TODO</p>
 <h2 id="optional-values">Optional values</h2>
 <p>TODO</p>
 <h2 id="unions">Unions</h2>
+<h3 id="disable-cast">Disable cast</h3>
 <p>TODO</p>
+<h3 id="list-or-single-object">List or single object</h3>
+<p>Some terribly evil programmers use json in this way:</p>
+<ul>
+<li>A list in case they have multiple values</li>
+<li>A single object in case they have one value</li>
+<li>Nothing at all in case they have zero values</li>
+</ul>
+<p>Let's see how typedload can help us survive the situation without having to handle all the cases every time.</p>
+<pre><code class="language-python">import typedload
+from typing import NamedTuple, Union, List
+import dataclasses
+
+# Multiple data points, a list is used
+data0 = {
+    &quot;data_points&quot;: [{&quot;x&quot;: 1.4, &quot;y&quot;: 4.1}, {&quot;x&quot;: 5.2, &quot;y&quot;: 6.13}]
+}
+
+# A single data point. Instead of a list of 1 element, the element is passed directly
+data1 = {
+    &quot;data_points&quot;: {&quot;x&quot;: 1.4, &quot;y&quot;: 4.1}
+}
+
+# No data points. Instead of an empty list, the object is empty
+data2 = {}
+
+# Now we make our objects
+class Point(NamedTuple):
+    x: float
+    y: float
+
+@dataclasses.dataclass
+class Data:
+    # We make an hidden field to load the data_points field from the json
+    # If the value is absent it will default to an empty list
+    # The hidden field can either be a List[Point] or directly a Point object
+    _data_points: Union[Point, List[Point]] = dataclasses.field(default_factory=list, metadata={'name': 'data_points'})
+
+    @property
+    def data_points(self) -&gt; List[Point]:
+        # We make a property called data_points, that always returns a list
+        if not isinstance(self._data_points, list):
+            return [self._data_points]
+        return self._data_point
+
+# Now we can load our data, and they will all be lists of Point
+typedload.load(data0, Data).data_points
+typedload.load(data1, Data).data_points
+typedload.load(data2, Data).data_points
+</code></pre>
+<h3 id="objects_1">Objects</h3>
+<p>TODO</p>
+<h3 id="object-type-in-value">Object type in value</h3>
+<p>Let's assume that our json objects contain a <em>type</em> field that names the object itself. Slack sends events in this way for example.</p>
+<pre><code class="language-python">import typedload
+from typing import List, Literal, Union, NamedTuple
+
+events = [
+    {
+    &quot;type&quot;: &quot;message&quot;,
+    &quot;text&quot;: &quot;hello&quot;
+    },
+    {
+    &quot;type&quot;: &quot;user-joined&quot;,
+    &quot;username&quot;: &quot;giufà&quot;
+    }
+]
+
+# We have events that can be of many types
+
+class Message(NamedTuple):
+    type: Literal['message']
+    text: str
+
+class UserJoined(NamedTuple):
+    type: Literal['user-joined']
+    username: str
+
+# Now to load our event list
+typedload.load(events, List[Union[Message, UserJoined]])
+</code></pre>
 <h2 id="name-mangling">Name mangling</h2>
 <p>Name mangling is primarily used to deal with camel-case in codebases that use snake_case.</p>
 <p>It is supported using <code>dataclass</code> and <code>attrs</code>, which provide metadata for the fields.</p>
@@ -139,7 +231,7 @@ character = typedload.load(data, Character)
 </code></pre>
 <p>the names will be converted back to camel case.</p>
 <h3 id="multiple-name-mangling-schemes">Multiple name mangling schemes</h3>
-<p>If we want to load from a source and dump from another source that uses a different convention, we can use <code>mangle_key</code></p>
+<p>If we want to load from a source and dump to another source that uses a different convention, we can use <code>mangle_key</code></p>
 <pre><code class="language-python">from dataclasses import dataclass, field
 import typedload
 
@@ -154,84 +246,60 @@ character = typedload.load(data, Character)
 typedload.dump(character, mangle_key='alt_name')
 </code></pre>
 <h2 id="custom-handlers">Custom handlers</h2>
-<p>TODO</p></div>
+<p>TODO</p>
+<h2 id="exceptions">Exceptions</h2>
+<p>TODO</p>
+              
             </div>
-        </div>
-
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>
-            var base_url = "..",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="../js/base.js" defer></script>
-        <script src="../search/main.js" defer></script>
-
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="searchModalLabel">Search</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form>
-                    <div class="form-group">
-                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../comparisons/" class="btn btn-neutral float-right" title="Comparisons">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
     </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
         </div>
-    </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../comparisons/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
 </div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
 
-    </body>
+</body>
 </html>
