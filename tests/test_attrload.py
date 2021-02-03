@@ -151,6 +151,15 @@ class TestMangling(unittest.TestCase):
         assert load(a, Mangle) == Mangle(12)
         assert a == b
 
+    def test_case(self):
+        @attrs
+        class Mangle:
+            value: int = attrib(metadata={'name': 'Value'})
+        assert load({'Value': 1}, Mangle) == Mangle(1)
+        assert 'Value' in dump(Mangle(1))
+        with self.assertRaises(ValueError):
+            load({'value': 1}, Mangle)
+
     def test_dump_metanames(self):
         assert dump(Mangle(12)) == {'va.lue': 12}
 
