@@ -125,6 +125,15 @@ class TestDataclassMangle(unittest.TestCase):
         assert load({'va.lue': 1}, Mangle) == Mangle(1)
         assert dump(Mangle(1)) == {'va.lue': 1}
 
+    def test_case(self):
+        @dataclass
+        class Mangle:
+            value: int = field(metadata={'name': 'Value'})
+        assert load({'Value': 1}, Mangle) == Mangle(1)
+        assert 'Value' in dump(Mangle(1))
+        with self.assertRaises(ValueError):
+            load({'value': 1}, Mangle)
+
     def test_mangle_rename(self):
         @dataclass
         class Mangle:

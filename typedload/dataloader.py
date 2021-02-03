@@ -386,6 +386,8 @@ def _frozensetload(l: Loader, value, type_) -> FrozenSet:
     """
     This loads into something like FrozenSet[int]
     """
+    if isinstance(value, dict):
+        raise TypedloadTypeError('Unable to load dictionary as a frozenset', value=value, type_=type_)
     t = type_.__args__[0]
     return frozenset(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
 
@@ -423,7 +425,12 @@ def _mangle_names(namesmap: Dict[str, str], value: Dict[str, Any]) -> Dict[str, 
         return value
     r = {}
 
+    # Disallow the python names if they are in the map
+    skip = set(namesmap.values())
+
     for k, v in value.items():
+        if k in skip and k not in namesmap:
+            continue
         if k in namesmap:
             k = namesmap[k]
         r[k] = v
