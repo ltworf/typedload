@@ -425,7 +425,12 @@ def _mangle_names(namesmap: Dict[str, str], value: Dict[str, Any]) -> Dict[str, 
         return value
     r = {}
 
+    # Disallow the python names if they are in the map
+    skip = set(namesmap.values())
+
     for k, v in value.items():
+        if k in skip and k not in namesmap:
+            continue
         if k in namesmap:
             k = namesmap[k]
         r[k] = v
