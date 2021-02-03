@@ -38,6 +38,7 @@ class TestTypeddictLoad(unittest.TestCase):
         o = {'name': 'pino', 'age': 1.1}
         assert load(o, Person) == o
         assert load({'val': 3}, A) == {'val': '3'}
+        assert load({'val': 3, 'vil': 4}, A) == {'val': '3'}
 
         with self.assertRaises(ValueError):
             o.pop('age')
