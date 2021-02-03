@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2019 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2019-2021 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -42,6 +42,9 @@ class TestTypeddictLoad(unittest.TestCase):
         with self.assertRaises(ValueError):
             o.pop('age')
             load(o, Person)
+
+        with self.assertRaises(ValueError):
+            load({'val': 3, 'vil': 4}, A, failonextra=True)
 
     def test_is_typeddict(self):
         assert typechecks.is_typeddict(A)
