@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Supported types - typedload</title>
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Supported types";
+    var mkdocs_page_input_path = "supported_types.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> typedload</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Supported types</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#none">None</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#basic-types">Basic types</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#typingliteral">typing.Literal</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#enumenum">enum.Enum</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#typinglist">typing.List</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#typingtuple">typing.Tuple</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#finite-size-tuple">Finite size tuple</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#infinite-size-tuple">Infinite size tuple</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#typingdict">typing.Dict</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#objects">Objects</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#forward-references">Forward references</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#typingunion">typing.Union</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#optional">Optional</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#ambiguity">Ambiguity</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#typingtypeddict">typing.TypedDict</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#typingset-typingfrozenset">typing.Set, typing.Frozenset</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#typingany">typing.Any</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#pathlibpath">pathlib.Path</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ipaddressipvaddressnetworkinterface">ipaddress.IPv*Address/Network/Interface</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#argparsenamespace">argparse.Namespace</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#dates">Dates</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../examples/">Examples</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../comparisons/">Comparisons</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../origin_story/">Origin story</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">typedload</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Supported types</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="supported-types">Supported types</h1>
+<h2 id="none">None</h2>
+<pre><code class="language-python">typedload.load(obj, None)
+</code></pre>
+<p>It will either return a None or fail.</p>
+<p>This is normally used to handle unions such as <code>Optional[int]</code> rather than by itself.</p>
+<h2 id="basic-types">Basic types</h2>
+<p>By default: <code>{int, bool, float, str, NONETYPE}</code></p>
+<p>Those types are te basic building blocks and no operations are performed on them.</p>
+<p><em>NOTE</em>: If <code>basiccast=True</code> (the default) casting between them can still happen.</p>
+<pre><code class="language-python">In : typedload.load(1, float)
+Out: 1.0
+
+In : typedload.load(1, str)
+Out: '1'
+
+In : typedload.load(1, int)
+Out: 1
+
+In : typedload.load(1, float, basiccast=False)
+Exception: TypedloadValueError
+
+In : typedload.load(1, bool, basiccast=False)
+Exception: TypedloadValueError
+</code></pre>
+<p>The <code>basictypes</code> set can be tweaked.</p>
+<pre><code class="language-python">In : typedload.load(1, bytes, basictypes={bytes, int})
+Out: b'\x00'
+
+In : typedload.load(1, int, basictypes={bytes, int})
+Out: 1
+</code></pre>
+<h2 id="typingliteral">typing.Literal</h2>
+<pre><code class="language-python">typedload.load(obj, Literal[1])
+typedload.load(obj, Literal[1,2,3])
+</code></pre>
+<p>Succeeds only if obj equals one of the allowed values.</p>
+<p>This is normally used in objects, to decide the correct type in a <code>Union</code>.</p>
+<h2 id="enumenum">enum.Enum</h2>
+<pre><code class="language-python">class Flags(Enum):
+    NOVAL = 0
+    YESVAL = 1
+
+In : typedload.load(1, Flags)
+Out: &lt;Flags.YESVAL: 1&gt;
+
+
+</code></pre>
+<p>Load values from an Enum, when dumping the value is used.</p>
+<h2 id="typinglist">typing.List</h2>
+<pre><code class="language-python">In : typedload.load([1, 2, 3], List[int])
+Out: [1, 2, 3]
+
+In : typedload.load([1.1, 2, '3'], List[int])
+Out: [1, 2, 3]
+
+In : typedload.load([1.1, 2, '3'], List[int], basiccast=False)
+Exception: TypedloadValueError
+</code></pre>
+<p>Load an iterable into a list object.</p>
+<p>Always dumped as a list.</p>
+<h2 id="typingtuple">typing.Tuple</h2>
+<p>Always dumped as a list.</p>
+<h3 id="finite-size-tuple">Finite size tuple</h3>
+<pre><code class="language-python">In : typedload.load([1, 2, 3], Tuple[int, float])
+Out: (1, 2.0)
+
+# Be more strict and fail if there is more data than expected on the iterator
+In : typedload.load([1, 2, 3], Tuple[int, float], failonextra=True)
+Exception: TypedloadValueError
+</code></pre>
+<h3 id="infinite-size-tuple">Infinite size tuple</h3>
+<pre><code class="language-python">In : typedload.load([1, 2, 3], Tuple[int, ...])
+Out: (1, 2, 3)
+</code></pre>
+<p>Uses Ellipsis (<code>...</code>) to indicate that the tuple contains an indefinite amount of items of the same size.</p>
+<h2 id="typingdict">typing.Dict</h2>
+<pre><code class="language-python">In : typedload.load({1: '1'}, Dict[int, Path])
+Out: {1: PosixPath('1')}
+
+In : typedload.load({1: '1'}, Dict[int, str])
+Out: {1: '1'}
+
+In : typedload.load({'1': '1'}, Dict[int, str])
+Out: {1: '1'}
+
+In : typedload.load({'1': '1'}, Dict[int, str], basiccast=False)
+Exception: TypedloadValueError
+
+class A(NamedTuple):
+    y: str='a'
+
+In : typedload.load({1: {}}, Dict[int, A], basiccast=False)
+Out: {1: A(y='2')}
+
+</code></pre>
+<p>Loads a dictionary, making sure that the types are correct.</p>
+<h2 id="objects">Objects</h2>
+<ul>
+<li>typing.NamedTuple</li>
+<li>dataclasses.dataclass</li>
+<li>attr.s</li>
+</ul>
+<pre><code class="language-python">class Point2d(NamedTuple):
+    x: float
+    y: float
+
+class Point3d(NamedTuple):
+    x: float
+    y: float
+    z: float
+
+@attr.s
+class Polygon:
+    vertex: List[Point2d] = attr-ib(factory=list, metadata={'name': 'Vertex'})
+
+@dataclass
+class Solid:
+    vertex: List[Point3d] = field(default_factory=list)
+
+In : typedload.load({'Vertex':[{'x': 1,'y': 1}, {'x': 2,'y': 2},{'x': 3,'y': 3}]}, Polygon)
+Out: Polygon(vertex=[Point2d(x=1.0, y=1.0), Point2d(x=2.0, y=2.0), Point2d(x=3.0, y=3.0)])
+
+In : typedload.load({'vertex':[{'x': 1,'y': 1,'z': 1}, {'x': 2,'y': 2, 'z': 2},{'x': 3,'y': 3,'z': 3}]}, Solid)
+Out: Solid(vertex=[Point3d(x=1.0, y=1.0, z=1.0), Point3d(x=2.0, y=2.0, z=2.0), Point3d(x=3.0, y=3.0, z=3.0)])
+</code></pre>
+<p>They are loaded from dictionaries into those objects. <code>failonextra</code> when set can generate exceptions if more fields than expected are present.</p>
+<p>When dumping they go back to dictionaries. <code>hide_default</code> defaults to True, so all fields that were equal to the default will not be dumped.</p>
+<h2 id="forward-references">Forward references</h2>
+<p>TODO</p>
+<h2 id="typingunion">typing.Union</h2>
+<p>A union means that a value can be of more than one type.</p>
+<p>If the passed value is of a <code>basictype</code> that is also present in the Union, the value will be returned.</p>
+<p>Otherwise, basictype values are evaluated last. This is to avoid that a Union containing a <code>str</code> will catch more than it should.</p>
+<p>After this sorting of types, a Union is loaded by trying to load the value with each of the types. The first load that succeeds is returned. In general you cannot make assumptions on the order in which types are evaluated, because it is decided by the runtime.</p>
+<h3 id="optional">Optional</h3>
+<p>A typical case is when using Optional values</p>
+<pre><code class="language-python">In : typedload.load(3, Optional[int])
+Out: 3
+
+In : typedload.load(None, Optional[int])
+Out: None
+</code></pre>
+<h3 id="ambiguity">Ambiguity</h3>
+<p>Ambiguity can sometimes be fixed by enabling <code>failonextra</code> or disabling <code>basiccast</code>.</p>
+<pre><code class="language-python">Point2d = Tuple[float, float]
+Point3d = Tuple[float, float, float]
+
+# This is not what we wanted, the 3rd coordinate is lost
+In : typedload.load((1,1,1), Union[Point2d, Point3d])
+Out: (1.0, 1.0)
+
+# Make the loading more strict!
+In : typedload.load((1,1,1), Union[Point2d, Point3d], failonextra=True)
+Out: (1.0, 1.0, 1.0)
+</code></pre>
+<p>But in some cases it cannot be simply solved, when the types in the Union are too similar. In this case the only solution is to rework the codebase.</p>
+<pre><code class="language-python"># A casting must be done, str was chosen, but could have been int
+In : typedload.load(1.1, Union[str, int])
+Out: '1.1'
+
+
+class A(NamedTuple):
+    x: int=1
+
+class B(NamedTuple):
+    y: str='a'
+
+# Both A and B accept an empty constructor
+In : typedload.load({}, Union[A, B])
+Out: A(x=1)
+</code></pre>
+<h2 id="typingtypeddict">typing.TypedDict</h2>
+<pre><code class="language-python">class A(TypedDict):
+    val: str
+
+In : typedload.load({'val': 3}, A)
+Out: {'val': '3'}
+
+In : typedload.load({'val': 3,'aaa':2}, A)
+Out: {'val': '3'}
+
+In : typedload.load({'val': 3,'aaa':2}, A, failonextra=True)
+Exception: TypedloadValueError
+</code></pre>
+<p>From dict to dict, but it makes sure that the types are as expected.</p>
+<h2 id="typingset-typingfrozenset">typing.Set, typing.Frozenset</h2>
+<pre><code class="language-python">In : typedload.load([1, 4, 99], set[float])
+Out: {1.0, 4.0, 99.0}
+
+In : typedload.load(range(12), Set[int])
+Out: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
+
+In : typedload.load(range(12), frozenset[float])
+Out: frozenset({0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0})
+</code></pre>
+<p>Loads an iterable inside a <code>set</code> or a <code>frozenset</code>.</p>
+<p>Always dumped as a list.</p>
+<h2 id="typingany">typing.Any</h2>
+<pre><code class="language-python">typedload.load(obj, typing.Any)
+</code></pre>
+<p>This will just return <code>obj</code> without doing any check or transformation.</p>
+<p>To work with <code>dump()</code>, <code>obj</code> needs to be of a supported type, or an handler is needed.</p>
+<h2 id="pathlibpath">pathlib.Path</h2>
+<pre><code class="language-python">In : typedload.load('/tmp/', Path)
+Out: PosixPath('/tmp')
+
+In : typedload.load('/tmp/file.txt', Path)
+Out: PosixPath('/tmp/file.txt')
+</code></pre>
+<p>Loads a string as a <code>Path</code>; when dumping it goes back to being a string.</p>
+<h2 id="ipaddressipvaddressnetworkinterface">ipaddress.IPv*Address/Network/Interface</h2>
+<ul>
+<li>ipaddress.IPv4Address</li>
+<li>ipaddress.IPv6Address</li>
+<li>ipaddress.IPv4Network</li>
+<li>ipaddress.IPv6Network</li>
+<li>ipaddress.IPv4Interface</li>
+<li>ipaddress.IPv6Interface</li>
+</ul>
+<pre><code class="language-python">In : typedload.load('10.1.1.3', IPv4Address)
+Out: IPv4Address('10.1.1.3')
+</code></pre>
+<p>Loads a string as an one of those classes, and dumps back to string.</p>
+<h2 id="argparsenamespace">argparse.Namespace</h2>
+<p>This is converted to a dictionary and can be loaded into NamedTuple/dataclass.</p>
+<h2 id="dates">Dates</h2>
+<ul>
+<li>datetime.date</li>
+<li>datetime.time</li>
+<li>datetime.datetime</li>
+</ul>
+<p>TODO</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../examples/" class="btn btn-neutral float-right" title="Examples">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../examples/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
