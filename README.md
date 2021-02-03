@@ -118,9 +118,10 @@ Install
 Documentation
 =============
 
-See the file `example.py` to see a basic usecase for this module.
+* Here: https://ltworf.github.io/typedload/examples/
+* In the docs/ directory
 
-The tests are harder to read but provide more in depth examples of
+The tests are hard to read but provide more in depth examples of
 the capabilities of this module.
 
 Used by
