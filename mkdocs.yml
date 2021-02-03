@@ -2,6 +2,7 @@ site_name: typedload
 theme: readthedocs
 nav:
     - Home: README.md
+    - Supported types: supported_types.md
     - Examples: examples.md
     - Comparisons: comparisons.md
     - Origin story: origin_story.md

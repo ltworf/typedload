@@ -15,7 +15,7 @@ protects the user from the ever changing internal representation used in
 different versions of Python.
 """
 
-# Copyright (C) 2019-2020 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2019-2021 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ from typing import Any, Tuple, Union, Set, List, Dict, Type, FrozenSet
 
 
 __all__ = [
+    'is_any',
     'is_attrs',
     'is_dataclass',
     'is_dict',
@@ -241,3 +242,10 @@ def is_typeddict(type_: Type[Any]) -> bool:
     if _TypedDictMeta:
         return isinstance(type_, _TypedDictMeta)
     return False
+
+
+def is_any(type_: Type[Any]) -> bool:
+    '''
+    Check if it is a typing.Any
+    '''
+    return type_ == Any

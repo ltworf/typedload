@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2018-2019 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 from enum import Enum
-from typing import Dict, FrozenSet, List, NamedTuple, Optional, Set, Tuple, Union
+from typing import Dict, FrozenSet, List, NamedTuple, Optional, Set, Tuple, Union, Any
 import unittest
 import sys
 
@@ -137,3 +137,10 @@ class TestChecks(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             typechecks.uniontypes(Union[int])
+
+    def test_any(self):
+        assert typechecks.is_any(Any)
+        assert not typechecks.is_any(str)
+        assert not typechecks.is_any(Tuple[int, ...])
+        assert not typechecks.is_any(int)
+        assert not typechecks.is_any(List[float])

@@ -87,6 +87,7 @@ The following things are supported:
  * datetime.date, datetime.time, datetime.datetime
  * Path
  * IPv4Address, IPv6Address
+ * typing.Any
 
 Using Mypy
 ==========
