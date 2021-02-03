@@ -154,7 +154,7 @@ class TestMangling(unittest.TestCase):
     def test_case(self):
         @attrs
         class Mangle:
-            value: int = attrib(metadata={'name': 'Value'})
+            value = attrib(type = int, metadata={'name': 'Value'})
         assert load({'Value': 1}, Mangle) == Mangle(1)
         assert 'Value' in dump(Mangle(1))
         with self.assertRaises(TypeError):
