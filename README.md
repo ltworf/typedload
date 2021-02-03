@@ -14,8 +14,7 @@ It can also dump from typed data structures to json-like dictionaries and lists.
 It is very useful for projects that use Mypy and deal with untyped data
 like json, because it guarantees that the data will follow the specified schema.
 
-Note that it is released with a GPL license and it cannot be used inside non
-GPL software.
+Note that it is released with a GPL license.
 
 Example
 =======
