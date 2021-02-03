@@ -1,6 +1,7 @@
 typedload (2.6-1) UNRELEASED; urgency=medium
 
   * New upstream release
+  * Include docs/ directory
 
  -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Fri, 29 Jan 2021 07:55:07 +0100
 
