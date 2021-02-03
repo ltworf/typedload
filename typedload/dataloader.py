@@ -214,6 +214,7 @@ class Loader:
                                      ipaddress.IPv4Network, ipaddress.IPv6Network,
                                      ipaddress.IPv4Interface, ipaddress.IPv6Interface}, _ipaddressload),
             (is_attrs, _attrload),
+            (is_any, _anyload),
         ]  # type: List[Tuple[Callable[[Any], bool], Callable[[Loader, Any, Type], Any]]]
 
         for k, v in kwargs.items():
@@ -300,6 +301,10 @@ def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
             type_=type_
         )
     return l.load(value, t, annotation=Annotation(AnnotationType.FORWARDREF, tname))
+
+
+def _anyload(l: Loader, value: Any, type_: type) -> Any:
+    return value
 
 
 def _literalload(l: Loader, value: Any, type_: type) -> Any:

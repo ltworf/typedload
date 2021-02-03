@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2018-2020 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import datetime
 from enum import Enum
 from ipaddress import IPv4Address, IPv6Address, IPv6Network, IPv4Network, IPv4Interface, IPv6Interface
 from pathlib import Path
-from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
+from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union, Any
 import unittest
 
 from typedload import dataloader, load, exceptions
@@ -439,3 +439,11 @@ class TestCommonTypes(unittest.TestCase):
             loader.load('10.10.10.1/24', IPv4Address)
         with self.assertRaises(ValueError):
             loader.load('10.10.10.1/24', IPv4Network)
+
+
+class TestAny(unittest.TestCase):
+
+    def test_any(self):
+        loader = dataloader.Loader()
+        o = object()
+        assert loader.load(o, Any) is o
