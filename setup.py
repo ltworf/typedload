@@ -36,7 +36,7 @@ It can also dump from typed data structures to json-like dictionaries and lists.
 It is very useful for projects that use Mypy and deal with untyped data
 like json, because it guarantees that the data will have the expected format.
 ''',
-    url='https://github.com/ltworf/typedload',
+    url='https://ltworf.github.io/typedload/',
     author='Salvo \'LtWorf\' Tomaselli',
     author_email='tiposchi@tiscali.it',
     license='GPLv3',
