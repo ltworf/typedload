@@ -113,12 +113,12 @@ Install
 
 * `pip install typedload`
 * `apt install python3-typedload`
-* Latest and greatest .deb file is in https://github.com/ltworf/typedload/releases
+* Latest and greatest .deb file is in [releases](https://github.com/ltworf/typedload/releases)
 
 Documentation
 =============
 
-* Here: https://ltworf.github.io/typedload/examples/
+* [Online documentation](https://ltworf.github.io/typedload/)
 * In the docs/ directory
 
 The tests are hard to read but provide more in depth examples of
