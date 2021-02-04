@@ -9,15 +9,15 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Comparisons - typedload</title>
+  <title>CHANGELOG - typedload</title>
   <link rel="stylesheet" href="../css/theme.css" />
   <link rel="stylesheet" href="../css/theme_extra.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Comparisons";
-    var mkdocs_page_input_path = "comparisons.md";
+    var mkdocs_page_name = "CHANGELOG";
+    var mkdocs_page_input_path = "CHANGELOG.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -57,18 +57,8 @@
                     <li class="toctree-l1"><a class="reference internal" href="../examples/">Examples</a>
                     </li>
                 </ul>
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Comparisons</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#it-works-with-existing-codebase">It works with existing codebase</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#it-is-easy-to-extend">It is easy to extend</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#pydantic">pydantic</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#dataclasses-json">dataclasses-json</a>
-    </li>
-    </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../comparisons/">Comparisons</a>
                     </li>
                 </ul>
                 <ul>
@@ -108,7 +98,7 @@
     
       
     
-    <li>Comparisons</li>
+    <li>CHANGELOG</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -119,50 +109,108 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="comparisons">Comparisons</h1>
-<p>In this section we compare typedload to other similar libraries.</p>
-<p>In general, the advantages of typedload over competing libraries are:</p>
-<h3 id="it-works-with-existing-codebase">It works with existing codebase</h3>
-<p>Most libraries require your classes to extend or use decorators from the library itself.
-Instead, typedload works fine with the type annotations from the <code>typing</code> module and will work without requiring changes to the datatypes.</p>
-<h3 id="it-is-easy-to-extend">It is easy to extend</h3>
-<p>Since there can be situations that are highly domain specific, typedload allows to extend its functionality to support more types or replace the existing code to handle special cases.</p>
-<h2 id="pydantic">pydantic</h2>
-<p>Found <a href="https://pydantic-docs.helpmanual.io/">here</a></p>
-<ul>
-<li>Slower than typedload for complex data (but faster for simple non-nested data)</li>
-<li>Requires all the classes to derive from a superclass</li>
-<li>Does not work with mypy:<ul>
-<li><a href="https://pydantic-docs.helpmanual.io/usage/models/#required-optional-fields">Abuses python typing annotation to mean something different, breaking linters</a></li>
-<li><a href="https://pydantic-docs.helpmanual.io/usage/models/#recursive-models">Uses float=None without using Optional in its own documentation</a>.</li>
-</ul>
-</li>
-<li>Does not handle Union, Set, Path</li>
-</ul>
-<h2 id="dataclasses-json">dataclasses-json</h2>
-<p>Found <a href="https://github.com/lidatong/dataclasses-json">here</a></p>
-<ul>
-<li>20x slower than typedload</li>
-<li>Does not check types</li>
-<li>Requires to decorate all the classes</li>
-<li>It is not extensible</li>
-<li>Doesn't support Union (and other types)</li>
-<li>Has dependencies (marshmallow, marshmallow-enum, typing-inspect)</li>
-<li>Very complicated way for doing lists</li>
-</ul>
+                <p>2.6
+* Handle Any types as passthrough</p>
+<p>2.5
+* Fix dump for attr classes with factory
+* Let name mangling use arbitrary metadata fields rather than just 'name'</p>
+<p>2.4
+* Support for ipaddress.IPv4Address, ipaddress.IPv6Address,
+  ipaddress.IPv4Network, ipaddress.IPv6Network,
+  ipaddress.IPv4Interface, ipaddress.IPv6Interface.</p>
+<p>2.3
+* Better type sorting in Union
+  This helps when using Union[dataclass, str]</p>
+<p>2.2
+* Add Python3.9 to the supported versions
+* Prevent loading dict as List,Tuple,Set
+  This helps when using Union[Dict, List] to take the correct
+  type.</p>
+<p>2.1
+* Written new usage example
+* typechecks internals now pass with more mypy configurations
+* Fix import *</p>
+<p>2.0
+* Breaking API change: handlers can only be modified before the first load
+* Breaking API change: plugins removed (attr support is by default)
+* Exceptions contain more information
+* Greatly improve performances with iterables types
+* Support for pathlib.Path</p>
+<p>1.20
+* Drop support for Python 3.5.2 (3.5 series is still supported)
+* Support TypedDict
+* More precise type annotation of TypedloadException and Annotation fields
+* Deprecate the plugin to handle attr.s and make it always supported.
+  This means that there will be no need for special code.
+* Fix datetime loader raising exceptions with the wrong type</p>
+<p>1.19
+* Add support for Literal.</p>
+<p>1.18
+* Improved documentation
+* Debian builds are now done source only</p>
+<p>1.17
+* Prefer the same type in union loading</p>
+<p>1.16
+* New uniontypes() function.
+* Make list and dictionary loaders raise the correct exceptions
+* Able to load from argparse.Namespace</p>
+<p>1.15
+* Add support for FrozenSet[T].
+* Define <strong>all</strong> for typechecks.
+* Add name mangling support in dataclass, to match attrs.
+* Add support for datetime.date, datetime.time, datetime.datetime</p>
+<p>1.14
+* Add support for Tuple[t, ...]</p>
+<p>1.13
+* Fix bug in loading attr classes and passing random crap.
+  Now the proper exception is raised.
+* New module to expose the internal type checks functions</p>
+<p>1.12
+* Support fields with factory for dataclass</p>
+<p>1.11
+* Fixed problem when printing sub-exceptions of failed unions
+* Improve documentation</p>
+<p>1.10
+* Make mypy happy again</p>
+<p>1.9
+* Support ForwardRef
+* Add a new Exception type with more details on the error (no breaking API changes)</p>
+<p>1.8
+* Make mypy happy again</p>
+<p>1.7
+* Make mypy happy again</p>
+<p>1.6
+* Run tests on older python as well
+* Support for dataclass (Since python 3.7)
+* Added methods to find the appropriate handlers</p>
+<p>1.5
+* Improve handling of unions
+* Better continuous integration
+* Support python 3.7</p>
+<p>1.4
+* Add support for name mangling in attr plugin
+* Parameters can be passed as kwargs
+* Improved exception message for NamedTuple loading</p>
+<p>1.3
+* Add support for Python &lt; 3.5.3</p>
+<p>1.2
+* Ship the plugins in pypy</p>
+<p>1.1
+* Able to load and dump old style NamedTuple
+* Support for Python 3.5
+* Target to run mypy in makefile
+* Refactor to support plugins. The API is still compatible.
+* Plugin for the attr module, seems useful in Python 3.5</p>
+<p>1.0
+* Has a setting to hide default fields or not, in dumps
+* Better error reporting
+* Add file for PEP 561</p>
+<p>0.9
+* Initial release</p>
               
             </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../origin_story/" class="btn btn-neutral float-right" title="Origin story">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-        <a href="../examples/" class="btn btn-neutral" title="Examples"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
@@ -186,10 +234,6 @@ Instead, typedload works fine with the type annotations from the <code>typing</c
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../examples/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../origin_story/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

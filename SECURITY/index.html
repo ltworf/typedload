@@ -9,15 +9,15 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Comparisons - typedload</title>
+  <title>Security Policy - typedload</title>
   <link rel="stylesheet" href="../css/theme.css" />
   <link rel="stylesheet" href="../css/theme_extra.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Comparisons";
-    var mkdocs_page_input_path = "comparisons.md";
+    var mkdocs_page_name = "Security Policy";
+    var mkdocs_page_input_path = "SECURITY.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -57,18 +57,8 @@
                     <li class="toctree-l1"><a class="reference internal" href="../examples/">Examples</a>
                     </li>
                 </ul>
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Comparisons</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#it-works-with-existing-codebase">It works with existing codebase</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#it-is-easy-to-extend">It is easy to extend</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#pydantic">pydantic</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#dataclasses-json">dataclasses-json</a>
-    </li>
-    </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../comparisons/">Comparisons</a>
                     </li>
                 </ul>
                 <ul>
@@ -108,7 +98,7 @@
     
       
     
-    <li>Comparisons</li>
+    <li>Security Policy</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -119,50 +109,19 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="comparisons">Comparisons</h1>
-<p>In this section we compare typedload to other similar libraries.</p>
-<p>In general, the advantages of typedload over competing libraries are:</p>
-<h3 id="it-works-with-existing-codebase">It works with existing codebase</h3>
-<p>Most libraries require your classes to extend or use decorators from the library itself.
-Instead, typedload works fine with the type annotations from the <code>typing</code> module and will work without requiring changes to the datatypes.</p>
-<h3 id="it-is-easy-to-extend">It is easy to extend</h3>
-<p>Since there can be situations that are highly domain specific, typedload allows to extend its functionality to support more types or replace the existing code to handle special cases.</p>
-<h2 id="pydantic">pydantic</h2>
-<p>Found <a href="https://pydantic-docs.helpmanual.io/">here</a></p>
-<ul>
-<li>Slower than typedload for complex data (but faster for simple non-nested data)</li>
-<li>Requires all the classes to derive from a superclass</li>
-<li>Does not work with mypy:<ul>
-<li><a href="https://pydantic-docs.helpmanual.io/usage/models/#required-optional-fields">Abuses python typing annotation to mean something different, breaking linters</a></li>
-<li><a href="https://pydantic-docs.helpmanual.io/usage/models/#recursive-models">Uses float=None without using Optional in its own documentation</a>.</li>
-</ul>
-</li>
-<li>Does not handle Union, Set, Path</li>
-</ul>
-<h2 id="dataclasses-json">dataclasses-json</h2>
-<p>Found <a href="https://github.com/lidatong/dataclasses-json">here</a></p>
-<ul>
-<li>20x slower than typedload</li>
-<li>Does not check types</li>
-<li>Requires to decorate all the classes</li>
-<li>It is not extensible</li>
-<li>Doesn't support Union (and other types)</li>
-<li>Has dependencies (marshmallow, marshmallow-enum, typing-inspect)</li>
-<li>Very complicated way for doing lists</li>
-</ul>
+                <h1 id="security-policy">Security Policy</h1>
+<p>I do not expect any security issues in this package, but just to make
+github happy.</p>
+<h2 id="supported-versions">Supported Versions</h2>
+<p>Only the latest release is supported. I will not backport fixes.</p>
+<h2 id="reporting-a-vulnerability">Reporting a Vulnerability</h2>
+<p>Contact me at tiposchi@tiscali.it</p>
+<p>My PGP key is on this file, on git.
+debian/upstream/signing-key.asc</p>
               
             </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../origin_story/" class="btn btn-neutral float-right" title="Origin story">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-        <a href="../examples/" class="btn btn-neutral" title="Examples"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
@@ -186,10 +145,6 @@ Instead, typedload works fine with the type annotations from the <code>typing</c
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../examples/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../origin_story/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
