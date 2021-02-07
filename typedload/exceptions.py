@@ -91,11 +91,30 @@ class TypedloadException(Exception):
         self.type_ = type_
         self.exceptions = exceptions if exceptions else []
 
-    def __str__(self) -> str:
+    @property
+    def path(self) -> str:
+        '''
+        Compact representation of where in the data the exception happened
+        '''
+        path = []
+        for i in self.trace:
+            if i.annotation:
+                path.append('[%d]' % i.annotation[1] if isinstance(i.annotation[1], int) else str(i.annotation[1]))
+            else:
+                path.append(str(None))
+        if path and path[0] == str(None):
+            path[0] = ''
+        return '.'.join(path)
+
+    @property
+    def strtrace(self):
+        '''
+        Returns a string representation of the stacktrace where the exception happened.
+        '''
         def compress_value(v: Any) -> str:
             v = repr(v)
-            if len(v) > 80:
-                return v[:77] + '...'
+            if len(v) > 30:
+                return v[:27] + '...'
             return v
         e = '%s\nValue: %s\nType: %s\n' % (
             super().__str__(),
@@ -104,21 +123,15 @@ class TypedloadException(Exception):
         )
         if self.trace:
             e += '\nLoad trace:\n'
-        path = []  # type: List[str]
-        for i in self.trace:
+        for i in self.trace[-2:]:
             e += 'Type: %s ' % i.type_
             if i.annotation:
                 e += 'Annotation: (%s %s) ' % (i.annotation[0], i.annotation[1])
-                path.append('[%d]' % i.annotation[1] if isinstance(i.annotation[1], int) else str(i.annotation[1]))
-            else:
-                path.append(str(None))
             e += 'Value: %s\n' % compress_value(i.value)
-        if path:
-            if path[0] == str(None):
-                path[0] = ''
-            e += 'Path: ' + '.'.join(path) + '\n'
-
         return e
+
+    def __str__(self) -> str:
+        return '\n'.join(self.args) + '\nPath: ' + self.path
 
 
 class TypedloadValueError(TypedloadException, ValueError):
