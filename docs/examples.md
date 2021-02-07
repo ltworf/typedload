@@ -165,7 +165,75 @@ typedload.dump(character, mangle_key='alt_name')
 Custom handlers
 ---------------
 
-TODO
+Let's assume that our codebase uses methods `from_json()` and `to_json()` as custom methods, and we want to use those.
+
+```python
+from typing import NamedTuple
+import typedload.datadumper
+import typedload.dataloader
+import typedload.exceptions
+
+# This is a NamedTuple, but we want to give priority to the from/to json methods
+class Point(NamedTuple):
+    x: int
+    y: int
+
+    @staticmethod
+    def from_json(data):
+        # Checks on the data
+        # Typedload handlers must raise subclasses of TypedloadException to work properly
+        if not isinstance(data, list):
+            raise typedload.exceptions.TypedloadTypeError('List expected')
+        if len(data) != 2:
+            raise typedload.exceptions.TypedloadTypeError('Only 2 items')
+        if not all(isinstance(i, int) for i in data):
+            raise typedload.exceptions.TypedloadValueError('Values must be int')
+
+        # Return the data
+        return Point(*data)
+
+    def to_json(self):
+        return [self.x, self.y]
+
+# We get a loader
+l = typedload.dataloader.Loader()
+
+# We find which handler handles NamedTuple
+nt_handler = l.index(Point)
+
+# We prepare a new handler
+load_handler = (
+    lambda x: hasattr(x, 'from_json'), # Anything that has a from_json
+    lambda loader, value, type_: type_.from_json(value) # Call the from_json and return its value
+)
+
+# We add the new handler
+l.handlers.insert(nt_handler, load_handler)
+
+# Ready to try it!
+l.load([1, 2], Point)
+# Out: Point(x=1, y=2)
+
+
+# Now we do the dumper
+d = typedload.datadumper.Dumper()
+nt_handler = d.index(Point(1,2)) # We need to use a real object to find the handler
+
+dump_handler = (
+    lambda x: hasattr(x, 'from_json'), # Anything that has a from_json
+    lambda loader, value: value.to_json() # Call the from_json and return its value
+)
+d.handlers.insert(nt_handler, dump_handler)
+
+d.dump(Point(5, 5))
+# Out: [5, 5]
+```
+
+Handlers basically permit doing anything, replacing current handlers or adding more to deal with more types.
+
+You can just append them to the list if you are extending.
+
+Remember to always use typedload exceptions, implement checks, and never modify the handler list after loading or dumping something.
 
 Exceptions
 ----------
