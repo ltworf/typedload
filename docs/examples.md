@@ -162,6 +162,41 @@ character = typedload.load(data, Character)
 typedload.dump(character, mangle_key='alt_name')
 ```
 
+Load and dump types from str
+----------------------------
+
+Some classes are easy to load and dump from `str`. For example this is done for `Path`.
+
+Let's assume we want to have a class that is called `SerialNumber` that we load from a string and dump back to a string.
+
+Here's how it can be done:
+
+```python
+from typing import List
+import typedload.datadumper
+import typedload.dataloader
+
+class SerialNumber:
+    def __init__(self, sn: str) -> None:
+        # Some validation
+        if ' ' in sn:
+            raise Exception('Invalid serial number')
+
+        self.sn = sn
+
+    def __str__(self):
+        return self.sn
+
+l = typedload.dataloader.Loader()
+d = typedload.datadumper.Dumper()
+l.strconstructed.add(SerialNumber)
+d.strconstructed.add(SerialNumber)
+
+serials = l.load(['1', '2', '3'], List[SerialNumber])
+d.dump(serials)
+```
+
+
 Custom handlers
 ---------------
 

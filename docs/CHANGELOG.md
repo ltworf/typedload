@@ -1,5 +1,6 @@
 2.6
 * Handle Any types as passthrough
+* Easy way to handle types loaded from and dumped to str
 
 2.5
 * Fix dump for attr classes with factory

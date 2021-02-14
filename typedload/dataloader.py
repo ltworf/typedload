@@ -134,6 +134,8 @@ class Loader:
         There is an internal cache to speed up lookup, so after the
         first call to load, this should no longer be modified.
 
+    strconstructed: Set of types to construct from a string.
+
     frefs: Dictionary to resolve ForwardRef.
         Something like
         class Node(NamedTuple):
@@ -190,6 +192,17 @@ class Loader:
         # Which key is used in metadata to perform name mangling
         self.mangle_key = 'name'
 
+        # Objects loaded from a string
+        self.strconstructed = {
+            Path,
+            ipaddress.IPv4Address,
+            ipaddress.IPv6Address,
+            ipaddress.IPv4Network,
+            ipaddress.IPv6Network,
+            ipaddress.IPv4Interface,
+            ipaddress.IPv6Interface
+        }
+
         # The list of handlers to use to load the data.
         # It gets iterated in order, and the first condition
         # that matches is used to load the value.
@@ -209,10 +222,7 @@ class Loader:
             (is_literal, _literalload),
             (is_typeddict, _namedtupleload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
-            (lambda type_: type_ == Path, _pathload),
-            (lambda type_: type_ in {ipaddress.IPv4Address, ipaddress.IPv6Address,
-                                     ipaddress.IPv4Network, ipaddress.IPv6Network,
-                                     ipaddress.IPv4Interface, ipaddress.IPv6Interface}, _ipaddressload),
+            (lambda type_: type_ in self.strconstructed, _strconstructload),
             (is_attrs, _attrload),
             (is_any, _anyload),
         ]  # type: List[Tuple[Callable[[Any], bool], Callable[[Loader, Any, Type], Any]]]
@@ -628,14 +638,7 @@ def _attrload(l, value, type_):
     return _namedtupleload(l, value, t)
 
 
-def _pathload(l: Loader, value, type_) -> Path:
-    try:
-        return Path(value)
-    except TypeError as e:
-        raise TypedloadTypeError(str(e), type_=type_, value=value)
-
-
-def _ipaddressload(l: Loader, value, type_):
+def _strconstructload(l: Loader, value, type_):
     """
     Loader for all the types in the stdlib ipaddress module.
     """
@@ -643,3 +646,7 @@ def _ipaddressload(l: Loader, value, type_):
         return type_(value)
     except ValueError as e:
         raise TypedloadValueError(str(e), type_=type_, value=value)
+    except TypeError as e:
+        raise TypedloadTypeError(str(e), type_=type_, value=value)
+    except Exception as e:
+        raise TypedloadException(str(e), type_=type, value=value)

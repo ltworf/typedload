@@ -23,7 +23,7 @@ data structures to things that json can serialize.
 import datetime
 import ipaddress
 from enum import Enum
-from pathlib import Path
+import pathlib
 from typing import *
 
 from .exceptions import TypedloadValueError
@@ -77,6 +77,8 @@ class Dumper:
             In most cases, it is sufficient to append new elements
             at the end, to handle more types.
 
+        strconstructed: Set of types to dump to a string.
+
         These parameters can be set as named arguments in the constructor
         or they can be set later on.
 
@@ -103,6 +105,22 @@ class Dumper:
         # Raise errors if the condition fails
         self.raiseconditionerrors = True
 
+        # Things that become str. Needs to be done before handlers are created
+        if 'strconstructed' in kwargs:
+            self.strconstructed = kwargs.pop('strconstructed')
+        else:
+            self.strconstructed = {
+                pathlib.Path,
+                pathlib.PosixPath,
+                pathlib.WindowsPath,
+                ipaddress.IPv4Address,
+                ipaddress.IPv6Address,
+                ipaddress.IPv4Network,
+                ipaddress.IPv6Network,
+                ipaddress.IPv4Interface,
+                ipaddress.IPv6Interface,
+            }
+
         self.handlers = [
             (lambda value: type(value) in self.basictypes, lambda l, value: value),
             (lambda value: isinstance(value, tuple) and hasattr(value, '_fields') and hasattr(value, '_asdict'), _namedtupledump),
@@ -110,13 +128,10 @@ class Dumper:
             (lambda value: isinstance(value, (list, tuple, set, frozenset)), lambda l, value: [l.dump(i) for i in value]),
             (lambda value: isinstance(value, Enum), lambda l, value: l.dump(value.value)),
             (lambda value: isinstance(value, Dict), lambda l, value: {l.dump(k): l.dump(v) for k, v in value.items()}),
-            (lambda value: isinstance(value, (datetime.date, datetime.time)), _datetimedump),
-            (lambda value: isinstance(value, Path), lambda l, value: str(value)),
-            (lambda value: isinstance(value, (ipaddress.IPv4Address, ipaddress.IPv6Address,
-                                              ipaddress.IPv4Network, ipaddress.IPv6Network,
-                                              ipaddress.IPv4Interface, ipaddress.IPv6Interface)),
-             lambda l, value: str(value)),
             (is_attrs, _attrdump),
+            (lambda value: isinstance(value, (datetime.date, datetime.time)), _datetimedump),
+            (lambda value: type(value) in self.strconstructed, lambda l, value: str(value)),
+
         ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
 
         for k, v in kwargs.items():

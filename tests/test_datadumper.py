@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2018-2020 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -50,6 +50,18 @@ class TestLegacyDump(unittest.TestCase):
     def test_dump(self):
         A = NamedTuple('A',[('a', int), ('b', str)])
         assert dump(A(1, '12')) == {'a': 1, 'b': '12'}
+
+
+class TestStrconstructed(unittest.TestCase):
+
+    def test_dump_strconstructed(self):
+        dumper = datadumper.Dumper()
+        class Q:
+            def __str__(self):
+                return '42'
+
+        dumper.strconstructed.add(Q)
+        assert dumper.dump(Q()) == '42'
 
 
 class TestBasicDump(unittest.TestCase):
