@@ -81,6 +81,19 @@ class TestRealCase(unittest.TestCase):
         loader.load(c, BoardItem)
 
 
+class TestStrconstructed(unittest.TestCase):
+
+    def test_load_strconstructed(self):
+        loader = dataloader.Loader()
+        class Q:
+            def __init__(self, p):
+                self.param = p
+
+        loader.strconstructed.add(Q)
+        data = loader.load('42', Q)
+        assert data.param == '42'
+
+
 class TestUnion(unittest.TestCase):
     def test_json(self):
         '''
