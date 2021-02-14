@@ -295,9 +295,18 @@ This will just return `obj` without doing any check or transformation.
 
 To work with `dump()`, `obj` needs to be of a supported type, or an handler is needed.
 
+String constructed
+------------------
 
-pathlib.Path
-------------
+Loaders and dumpers have a set of `strconstructed`.
+
+Those are types that accept a single `str` parameter in their constructor and have a `__str__` method that returns that parameter.
+
+For those types, a specific handler is not needed and they can just be added to the `strconstructed` set.
+
+The preset ones are:
+
+### pathlib.Path
 
 ```python
 In : typedload.load('/tmp/', Path)
@@ -309,8 +318,7 @@ Out: PosixPath('/tmp/file.txt')
 
 Loads a string as a `Path`; when dumping it goes back to being a string.
 
-ipaddress.IPv*Address/Network/Interface
----------------------------------------
+### ipaddress.IPv*Address/Network/Interface
 
 * ipaddress.IPv4Address
 * ipaddress.IPv6Address
