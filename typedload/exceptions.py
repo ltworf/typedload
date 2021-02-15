@@ -3,7 +3,7 @@ typedload
 Exceptions
 """
 
-# Copyright (C) 2018-2020 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -130,8 +130,30 @@ class TypedloadException(Exception):
             e += 'Value: %s\n' % compress_value(i.value)
         return e
 
+    def _subexceptions(self, indent: int) -> str:
+        '''
+        Recursive list of all exceptions that happened in the unions
+        '''
+        spaces = '  ' * indent
+        msg = f'{spaces}Exceptions:\n'
+        for i in self.exceptions:
+            msg += self._firstlines(indent + 1) + '\n'
+            if i.exceptions:
+                msg += i._subexceptions(indent + 1)
+        return msg.rstrip()
+
+    def _firstlines(self, indent: int) -> str:
+        '''
+        Returns error string and the path
+        '''
+        spaces = '  ' * indent
+        return f'\n'.join(f'{spaces}{i}' for i in self.args) + f'\n{spaces}Path: ' + self.path
+
     def __str__(self) -> str:
-        return '\n'.join(self.args) + '\nPath: ' + self.path
+        msg = self._firstlines(0)
+        if self.exceptions:
+            msg += '\n' + self._subexceptions(0)
+        return msg
 
 
 class TypedloadValueError(TypedloadException, ValueError):
