@@ -36,7 +36,6 @@ dist: clean
 		typedload/CONTRIBUTING.md \
 		typedload/CHANGELOG \
 		typedload/README.md \
-		typedload/SECURITY.md \
 		typedload/example.py \
 		typedload/mypy.conf \
 		typedload/typedload
