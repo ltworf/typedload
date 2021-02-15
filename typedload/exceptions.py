@@ -137,10 +137,10 @@ class TypedloadException(Exception):
         spaces = '  ' * indent
         msg = spaces + 'Exceptions:\n'
         for i in self.exceptions:
-            msg += self._firstlines(indent + 1) + '\n'
+            msg += i._firstlines(indent + 1) + '\n'
             if i.exceptions:
                 msg += i._subexceptions(indent + 1)
-        return msg.rstrip()
+        return msg
 
     def _firstlines(self, indent: int) -> str:
         '''
@@ -152,7 +152,7 @@ class TypedloadException(Exception):
     def __str__(self) -> str:
         msg = self._firstlines(0)
         if self.exceptions:
-            msg += '\n' + self._subexceptions(0)
+            msg += '\n' + self._subexceptions(0).rstrip()
         return msg
 
 
