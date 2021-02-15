@@ -348,7 +348,7 @@ def _basicload(l: Loader, value: Any, type_: type) -> Any:
             except Exception as e:
                 raise TypedloadException(str(e), value=value, type_=type_)
         else:
-            raise TypedloadValueError('Not of type %s' % type_, value=value, type_=type_)
+            raise TypedloadValueError('Got %s of type %s, expected %s' % (repr(value), type(value), type_), value=value, type_=type_)
     return value
 
 
