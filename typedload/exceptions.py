@@ -84,7 +84,7 @@ class TypedloadException(Exception):
             trace: Optional[List[TraceItem]] = None,
             value: Any=None,
             type_: Optional[Type] = None,
-            exceptions: Optional[List[TypedloadException]] = None) -> None:
+            exceptions: Optional[List['TypedloadException']] = None) -> None:
         super().__init__(description)
         self.trace = trace if trace else []
         self.value = value
