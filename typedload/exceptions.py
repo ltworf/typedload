@@ -84,7 +84,7 @@ class TypedloadException(Exception):
             trace: Optional[List[TraceItem]] = None,
             value: Any=None,
             type_: Optional[Type] = None,
-            exceptions: Optional[List[Exception]] = None) -> None:
+            exceptions: Optional[List[TypedloadException]] = None) -> None:
         super().__init__(description)
         self.trace = trace if trace else []
         self.value = value
@@ -135,7 +135,7 @@ class TypedloadException(Exception):
         Recursive list of all exceptions that happened in the unions
         '''
         spaces = '  ' * indent
-        msg = f'{spaces}Exceptions:\n'
+        msg = spaces + 'Exceptions:\n'
         for i in self.exceptions:
             msg += self._firstlines(indent + 1) + '\n'
             if i.exceptions:
@@ -147,7 +147,7 @@ class TypedloadException(Exception):
         Returns error string and the path
         '''
         spaces = '  ' * indent
-        return f'\n'.join(f'{spaces}{i}' for i in self.args) + f'\n{spaces}Path: ' + self.path
+        return '\n'.join(spaces + str(i) for i in self.args) + '\n' + spaces + 'Path: ' + self.path
 
     def __str__(self) -> str:
         msg = self._firstlines(0)
