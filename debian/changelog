@@ -1,10 +1,10 @@
-typedload (2.6-1) UNRELEASED; urgency=medium
+typedload (2.6-1) unstable; urgency=low
 
   * New upstream release
   * Include docs/ directory
   * Point to new homepage
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Fri, 29 Jan 2021 07:55:07 +0100
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Tue, 16 Feb 2021 15:16:02 +0100
 
 typedload (2.5-1) unstable; urgency=medium
 
