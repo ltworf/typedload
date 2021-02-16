@@ -35,6 +35,7 @@ if sys.version_info.minor >= 8:
     from .test_typeddict import *
 from .test_legacytuples_dataloader import *
 from .test_typechecks import *
+from .test_exceptions import *
 
 # Run tests for the attr plugin only if it is loaded
 try:
