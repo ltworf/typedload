@@ -1,7 +1,7 @@
 2.6
 * Handle Any types as passthrough
 * Easy way to handle types loaded from and dumped to str
-* Simplify how exceptions are displayed
+* Improve how exceptions are displayed
 
 2.5
 * Fix dump for attr classes with factory
