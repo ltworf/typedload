@@ -1,3 +1,5 @@
+2.7
+
 2.6
 * Handle Any types as passthrough
 * Easy way to handle types loaded from and dumped to str
