@@ -92,7 +92,7 @@ class TypedloadException(Exception):
         self.exceptions = exceptions if exceptions else []
 
     @staticmethod
-    def _path(trace) -> str:
+    def _path(trace: List[TraceItem]) -> str:
         '''
         Compact representation of where in the data the exception happened
         '''
