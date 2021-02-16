@@ -91,13 +91,13 @@ class TypedloadException(Exception):
         self.type_ = type_
         self.exceptions = exceptions if exceptions else []
 
-    @property
-    def path(self) -> str:
+    @staticmethod
+    def _path(trace) -> str:
         '''
         Compact representation of where in the data the exception happened
         '''
         path = []
-        for i in self.trace:
+        for i in trace:
             if i.annotation:
                 path.append('[%d]' % i.annotation[1] if isinstance(i.annotation[1], int) else str(i.annotation[1]))
             else:
@@ -106,29 +106,31 @@ class TypedloadException(Exception):
             path[0] = ''
         return '.'.join(path)
 
-    def _subexceptions(self, indent: int) -> str:
+    def _subexceptions(self, indent: int, trace: List) -> str:
         '''
         Recursive list of all exceptions that happened in the unions
         '''
         spaces = '  ' * indent
         msg = spaces + 'Exceptions:\n'
         for i in self.exceptions:
-            msg += i._firstlines(indent + 1) + '\n'
+            msg += i._firstline(indent + 1) + '\n'
+            msg += spaces + '  ' 'Path: ' + self._path(trace) + '\n'
             if i.exceptions:
-                msg += i._subexceptions(indent + 1)
+                msg += i._subexceptions(indent + 1, self.trace + i.trace[1:])
         return msg
 
-    def _firstlines(self, indent: int) -> str:
+    def _firstline(self, indent: int) -> str:
         '''
         Returns error string and the path
         '''
         spaces = '  ' * indent
-        return '\n'.join(spaces + str(i) for i in self.args) + '\n' + spaces + 'Path: ' + self.path
+        return '\n'.join(spaces + str(i) for i in self.args)
 
     def __str__(self) -> str:
-        msg = self._firstlines(0)
+        msg = self._firstline(0)
+        msg += '\nPath: ' + self._path(self.trace)
         if self.exceptions:
-            msg += '\n' + self._subexceptions(0).rstrip()
+            msg += '\n' + self._subexceptions(0, self.trace).rstrip()
         return msg
 
 
