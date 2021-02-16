@@ -114,7 +114,7 @@ class TypedloadException(Exception):
         msg = spaces + 'Exceptions:\n'
         for i in self.exceptions:
             msg += i._firstline(indent + 1) + '\n'
-            msg += spaces + '  ' 'Path: ' + self._path(trace) + '\n'
+            msg += spaces + '  ' 'Path: ' + self._path(self.trace + i.trace[1:]) + '\n'
             if i.exceptions:
                 msg += i._subexceptions(indent + 1, self.trace + i.trace[1:])
         return msg
