@@ -3,7 +3,7 @@ typedload
 Exceptions
 """
 
-# Copyright (C) 2018-2020 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -84,41 +84,54 @@ class TypedloadException(Exception):
             trace: Optional[List[TraceItem]] = None,
             value: Any=None,
             type_: Optional[Type] = None,
-            exceptions: Optional[List[Exception]] = None) -> None:
+            exceptions: Optional[List['TypedloadException']] = None) -> None:
         super().__init__(description)
         self.trace = trace if trace else []
         self.value = value
         self.type_ = type_
         self.exceptions = exceptions if exceptions else []
 
-    def __str__(self) -> str:
-        def compress_value(v: Any) -> str:
-            v = repr(v)
-            if len(v) > 80:
-                return v[:77] + '...'
-            return v
-        e = '%s\nValue: %s\nType: %s\n' % (
-            super().__str__(),
-            compress_value(self.value),
-            self.type_
-        )
-        if self.trace:
-            e += '\nLoad trace:\n'
-        path = []  # type: List[str]
-        for i in self.trace:
-            e += 'Type: %s ' % i.type_
+    @staticmethod
+    def _path(trace: List[TraceItem]) -> str:
+        '''
+        Compact representation of where in the data the exception happened
+        '''
+        path = []
+        for i in trace:
             if i.annotation:
-                e += 'Annotation: (%s %s) ' % (i.annotation[0], i.annotation[1])
                 path.append('[%d]' % i.annotation[1] if isinstance(i.annotation[1], int) else str(i.annotation[1]))
             else:
                 path.append(str(None))
-            e += 'Value: %s\n' % compress_value(i.value)
-        if path:
-            if path[0] == str(None):
-                path[0] = ''
-            e += 'Path: ' + '.'.join(path) + '\n'
+        if path and path[0] == str(None):
+            path[0] = ''
+        return '.'.join(path)
 
-        return e
+    def _subexceptions(self, indent: int, trace: List) -> str:
+        '''
+        Recursive list of all exceptions that happened in the unions
+        '''
+        spaces = '  ' * indent
+        msg = spaces + 'Exceptions:\n'
+        for i in self.exceptions:
+            msg += i._firstline(indent + 1) + '\n'
+            msg += spaces + '  ' 'Path: ' + self._path(self.trace + i.trace[1:]) + '\n'
+            if i.exceptions:
+                msg += i._subexceptions(indent + 1, self.trace + i.trace[1:])
+        return msg
+
+    def _firstline(self, indent: int) -> str:
+        '''
+        Returns error string and the path
+        '''
+        spaces = '  ' * indent
+        return '\n'.join(spaces + str(i) for i in self.args)
+
+    def __str__(self) -> str:
+        msg = self._firstline(0)
+        msg += '\nPath: ' + self._path(self.trace)
+        if self.exceptions:
+            msg += '\n' + self._subexceptions(0, self.trace).rstrip()
+        return msg
 
 
 class TypedloadValueError(TypedloadException, ValueError):

@@ -348,7 +348,7 @@ def _basicload(l: Loader, value: Any, type_: type) -> Any:
             except Exception as e:
                 raise TypedloadException(str(e), value=value, type_=type_)
         else:
-            raise TypedloadValueError('Not of type %s' % type_, value=value, type_=type_)
+            raise TypedloadValueError('Got %s of type %s, expected %s' % (repr(value), type(value), type_), value=value, type_=type_)
     return value
 
 
@@ -550,7 +550,7 @@ def _unionload(l: Loader, value, type_) -> Any:
         except Exception as e:
             exceptions.append(e)
     raise TypedloadValueError(
-        'Value could not be loaded into %s' % type_,
+        'Value of %s could not be loaded into %s' % (value_type, type_),
             value=value,
             type_=type_,
             exceptions=exceptions
@@ -583,7 +583,7 @@ def _enumload(l: Loader, value, type_) -> Enum:
         except Exception as e:
             exceptions.append(e)
     raise TypedloadValueError(
-        'Value could not be loaded into %s' % type_,
+        'Value of %s could not be loaded into %s' % (type(value), type_),
         value=value,
         type_=type_,
         exceptions=exceptions
