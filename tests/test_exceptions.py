@@ -17,7 +17,8 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
-from typing import List, NamedTuple, Optional
+import enum
+from typing import List, NamedTuple, Optional, Tuple
 import unittest
 
 from typedload import dataloader, load, dump, typechecks
@@ -38,6 +39,11 @@ class Remote(NamedTuple):
 class Config(NamedTuple):
     remote: Optional[Remote]
 
+class Enumeration(enum.Enum):
+    A = 1
+    B =  '2'
+    C = 3.0
+
 class TestExceptionsStr(unittest.TestCase):
 
     def test_exceptions_str(self):
@@ -53,3 +59,31 @@ class TestExceptionsStr(unittest.TestCase):
                 load(i, Config, basiccast=False, failonextra=True)
             except Exception as e:
                 str(e)
+
+    def test_tuple_exceptions_str(self):
+        incorrect = [
+            [1, 1],
+            [1, 1, 1],
+            [1],
+            [1, 1.2],
+            [1, None],
+            [1, None, 1],
+        ]
+        for i in incorrect:
+            try:
+                load(i, Tuple[int, int], basiccast=False, failonextra=True)
+            except Exception as e:
+                str(e)
+
+    def test_enum_exceptions_str(self):
+        incorrect = [
+            [1, 1],
+            '3',
+            12,
+        ]
+        for i in incorrect:
+            try:
+                load(i, Enumeration, basiccast=False, failonextra=True)
+            except Exception as e:
+                str(e)
+
