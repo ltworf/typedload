@@ -3,6 +3,7 @@ theme: readthedocs
 nav:
     - Home: README.md
     - Supported types: supported_types.md
+    - Errors: errors.md
     - Examples: examples.md
     - Comparisons: comparisons.md
     - Origin story: origin_story.md
