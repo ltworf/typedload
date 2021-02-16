@@ -28,6 +28,7 @@ from typing import *
 
 from .exceptions import *
 from .typechecks import *
+from .helpers import tname
 
 
 __all__ = [
@@ -267,16 +268,16 @@ class Loader:
                 self._indexcache[type_] = index
             except ValueError:
                 raise TypedloadTypeError(
-                    'Cannot deal with value of type %s' % type_,
+                    'Cannot deal with value of type %s' % tname(type_),
                     value=value,
                     type_=type_
                 )
 
         # Add type to known types, to resolve ForwardRef later on
         if self.frefs is not None and hasattr(type_, '__name__'):
-            tname = type_.__name__
-            if tname not in self.frefs:
-                self.frefs[tname] = type_
+            typename = type_.__name__
+            if typename not in self.frefs:
+                self.frefs[typename] = type_
 
         func = self.handlers[index][1]
 
@@ -324,7 +325,7 @@ def _literalload(l: Loader, value: Any, type_: type) -> Any:
     """
     if value in literalvalues(type_):
         return value
-    raise TypedloadValueError('Not one of the allowed values in %s' % type_, value=value, type_=type_)
+    raise TypedloadValueError('Not one of the allowed values in %s' % tname(type_), value=value, type_=type_)
 
 
 def _basicload(l: Loader, value: Any, type_: type) -> Any:
@@ -348,7 +349,7 @@ def _basicload(l: Loader, value: Any, type_: type) -> Any:
             except Exception as e:
                 raise TypedloadException(str(e), value=value, type_=type_)
         else:
-            raise TypedloadValueError('Got %s of type %s, expected %s' % (repr(value), type(value), type_), value=value, type_=type_)
+            raise TypedloadValueError('Got %s of type %s, expected %s' % (repr(value), tname(type(value)), tname(type_)), value=value, type_=type_)
     return value
 
 
@@ -417,9 +418,9 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
         return tuple(l.load(v, args[0], annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
     else: # Tuple[something, something, somethingelse]
         if l.failonextra and len(value) > len(args):
-            raise TypedloadValueError('Value is too long for type %s' % type_, value=value, type_=type_)
+            raise TypedloadValueError('Value is too long for type %s' % tname(type_), value=value, type_=type_)
         elif len(value) < len(args):
-            raise TypedloadValueError('Value is too short for type %s' % type_, value=value, type_=type_)
+            raise TypedloadValueError('Value is too short for type %s' % tname(type_), value=value, type_=type_)
         return tuple(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, (v, t) in enumerate(zip(value, args)))
 
 
@@ -485,7 +486,7 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
         raise TypedloadValueError(
             'Value does not contain fields: %s which are necessary for type %s' % (
                 necessary_fields.difference(vfields),
-                type_
+                tname(type_)
             ),
             value=value,
             type_=type_,
@@ -495,7 +496,7 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
     if l.failonextra and len(fieldsdiff):
         extra = ', '.join(fieldsdiff)
         raise TypedloadValueError(
-            'Dictionary has unrecognized fields: %s and cannot be loaded into %s' % (extra, type_),
+            'Dictionary has unrecognized fields: %s and cannot be loaded into %s' % (extra, tname(type_)),
             value=value,
             type_=type_,
         )
@@ -550,7 +551,7 @@ def _unionload(l: Loader, value, type_) -> Any:
         except Exception as e:
             exceptions.append(e)
     raise TypedloadValueError(
-        'Value of %s could not be loaded into %s' % (value_type, type_),
+        'Value of %s could not be loaded into %s' % (tname(value_type), tname(type_)),
             value=value,
             type_=type_,
             exceptions=exceptions
@@ -583,7 +584,7 @@ def _enumload(l: Loader, value, type_) -> Enum:
         except Exception as e:
             exceptions.append(e)
     raise TypedloadValueError(
-        'Value of %s could not be loaded into %s' % (type(value), type_),
+        'Value of %s could not be loaded into %s' % (tname(type(value)), tname(type_)),
         value=value,
         type_=type_,
         exceptions=exceptions
@@ -609,7 +610,7 @@ def _datetimeload(l: Loader, value, type_) -> Union[datetime.date, datetime.time
 
 def _attrload(l, value, type_):
     if not isinstance(value, dict):
-        raise TypedloadTypeError('Expected dictionary, got %s' % type(value), type_=type_, value=value)
+        raise TypedloadTypeError('Expected dictionary, got %s' % tname(type(value)), type_=type_, value=value)
     value = value.copy()
     names = []
     defaults = {}
