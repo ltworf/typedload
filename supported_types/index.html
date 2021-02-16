@@ -90,15 +90,23 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#typingany">typing.Any</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#pathlibpath">pathlib.Path</a>
+    <li class="toctree-l2"><a class="reference internal" href="#string-constructed">String constructed</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#pathlibpath">pathlib.Path</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#ipaddressipvaddressnetworkinterface">ipaddress.IPv*Address/Network/Interface</a>
+    <li class="toctree-l3"><a class="reference internal" href="#ipaddressipvaddressnetworkinterface">ipaddress.IPv*Address/Network/Interface</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#argparsenamespace">argparse.Namespace</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#dates">Dates</a>
     </li>
     </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../errors/">Errors</a>
                     </li>
                 </ul>
                 <ul>
@@ -360,7 +368,12 @@ Out: frozenset({0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0})
 </code></pre>
 <p>This will just return <code>obj</code> without doing any check or transformation.</p>
 <p>To work with <code>dump()</code>, <code>obj</code> needs to be of a supported type, or an handler is needed.</p>
-<h2 id="pathlibpath">pathlib.Path</h2>
+<h2 id="string-constructed">String constructed</h2>
+<p>Loaders and dumpers have a set of <code>strconstructed</code>.</p>
+<p>Those are types that accept a single <code>str</code> parameter in their constructor and have a <code>__str__</code> method that returns that parameter.</p>
+<p>For those types, a specific handler is not needed and they can just be added to the <code>strconstructed</code> set.</p>
+<p>The preset ones are:</p>
+<h3 id="pathlibpath">pathlib.Path</h3>
 <pre><code class="language-python">In : typedload.load('/tmp/', Path)
 Out: PosixPath('/tmp')
 
@@ -368,7 +381,7 @@ In : typedload.load('/tmp/file.txt', Path)
 Out: PosixPath('/tmp/file.txt')
 </code></pre>
 <p>Loads a string as a <code>Path</code>; when dumping it goes back to being a string.</p>
-<h2 id="ipaddressipvaddressnetworkinterface">ipaddress.IPv*Address/Network/Interface</h2>
+<h3 id="ipaddressipvaddressnetworkinterface">ipaddress.IPv*Address/Network/Interface</h3>
 <ul>
 <li>ipaddress.IPv4Address</li>
 <li>ipaddress.IPv6Address</li>
@@ -397,7 +410,7 @@ Out: IPv4Address('10.1.1.3')
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../examples/" class="btn btn-neutral float-right" title="Examples">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../errors/" class="btn btn-neutral float-right" title="Errors">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -429,7 +442,7 @@ Out: IPv4Address('10.1.1.3')
         <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../examples/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../errors/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

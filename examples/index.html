@@ -53,6 +53,10 @@
                     <li class="toctree-l1"><a class="reference internal" href="../supported_types/">Supported types</a>
                     </li>
                 </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../errors/">Errors</a>
+                    </li>
+                </ul>
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Examples</a>
     <ul class="current">
@@ -77,6 +81,8 @@
     <li class="toctree-l3"><a class="reference internal" href="#multiple-name-mangling-schemes">Multiple name mangling schemes</a>
     </li>
         </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#load-and-dump-types-from-str">Load and dump types from str</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#custom-handlers">Custom handlers</a>
     </li>
@@ -261,6 +267,33 @@ data = {&quot;firstName&quot;: &quot;Paolino&quot;, &quot;lastName&quot;: &quot;
 character = typedload.load(data, Character)
 typedload.dump(character, mangle_key='alt_name')
 </code></pre>
+<h2 id="load-and-dump-types-from-str">Load and dump types from str</h2>
+<p>Some classes are easy to load and dump from <code>str</code>. For example this is done for <code>Path</code>.</p>
+<p>Let's assume we want to have a class that is called <code>SerialNumber</code> that we load from a string and dump back to a string.</p>
+<p>Here's how it can be done:</p>
+<pre><code class="language-python">from typing import List
+import typedload.datadumper
+import typedload.dataloader
+
+class SerialNumber:
+    def __init__(self, sn: str) -&gt; None:
+        # Some validation
+        if ' ' in sn:
+            raise Exception('Invalid serial number')
+
+        self.sn = sn
+
+    def __str__(self):
+        return self.sn
+
+l = typedload.dataloader.Loader()
+d = typedload.datadumper.Dumper()
+l.strconstructed.add(SerialNumber)
+d.strconstructed.add(SerialNumber)
+
+serials = l.load(['1', '2', '3'], List[SerialNumber])
+d.dump(serials)
+</code></pre>
 <h2 id="custom-handlers">Custom handlers</h2>
 <p>Let's assume that our codebase uses methods <code>from_json()</code> and <code>to_json()</code> as custom methods, and we want to use those.</p>
 <pre><code class="language-python">from typing import NamedTuple
@@ -338,7 +371,7 @@ d.dump(Point(5, 5))
         <a href="../comparisons/" class="btn btn-neutral float-right" title="Comparisons">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../supported_types/" class="btn btn-neutral" title="Supported types"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../errors/" class="btn btn-neutral" title="Errors"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -364,7 +397,7 @@ d.dump(Point(5, 5))
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../supported_types/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../errors/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../comparisons/" style="color: #fcfcfc">Next &raquo;</a></span>
