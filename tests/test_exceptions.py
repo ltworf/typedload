@@ -17,9 +17,7 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
+from typing import List, NamedTuple, Optional
 import unittest
 
 from typedload import dataloader, load, dump, typechecks
