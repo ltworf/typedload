@@ -106,30 +106,6 @@ class TypedloadException(Exception):
             path[0] = ''
         return '.'.join(path)
 
-    @property
-    def strtrace(self):
-        '''
-        Returns a string representation of the stacktrace where the exception happened.
-        '''
-        def compress_value(v: Any) -> str:
-            v = repr(v)
-            if len(v) > 30:
-                return v[:27] + '...'
-            return v
-        e = '%s\nValue: %s\nType: %s\n' % (
-            super().__str__(),
-            compress_value(self.value),
-            self.type_
-        )
-        if self.trace:
-            e += '\nLoad trace:\n'
-        for i in self.trace[-2:]:
-            e += 'Type: %s ' % i.type_
-            if i.annotation:
-                e += 'Annotation: (%s %s) ' % (i.annotation[0], i.annotation[1])
-            e += 'Value: %s\n' % compress_value(i.value)
-        return e
-
     def _subexceptions(self, indent: int) -> str:
         '''
         Recursive list of all exceptions that happened in the unions
