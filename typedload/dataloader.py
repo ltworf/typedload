@@ -424,7 +424,7 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
         return tuple(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, (v, t) in enumerate(zip(value, args)))
 
 
-def _mangle_names(namesmap: Dict[str, str], value: Dict[str, Any]) -> Dict[str, Any]:
+def _mangle_names(namesmap: Dict[str, str], value: Dict[str, Any], failonextra: bool) -> Dict[str, Any]:
     """
     Mangling names of a dictionary.
 
@@ -441,7 +441,10 @@ def _mangle_names(namesmap: Dict[str, str], value: Dict[str, Any]) -> Dict[str, 
 
     for k, v in value.items():
         if k in skip and k not in namesmap:
-            continue
+            if failonextra:
+                raise ValueError('Extra field: %s' % k)
+            else:
+                continue
         if k in namesmap:
             k = namesmap[k]
         r[k] = v
@@ -473,7 +476,10 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
                 if name:
                     transforms[name] = pyname
 
-        value = _mangle_names(transforms, value)
+        try:
+            value = _mangle_names(transforms, value, l.failonextra)
+        except ValueError as e:
+            raise TypedloadValueError(str(e), value=value, type_=type_)
 
 
     necessary_fields = fields.difference(optional_fields)
@@ -626,8 +632,10 @@ def _attrload(l, value, type_):
         if l.mangle_key in attribute.metadata:
             namesmap[attribute.metadata[l.mangle_key]] = attribute.name
 
-    value = _mangle_names(namesmap, value)
-
+    try:
+        value = _mangle_names(namesmap, value, l.failonextra)
+    except ValueError as e:
+        raise TypedloadValueError(str(e), value=value, type_=type_)
 
     t = _FakeNamedTuple((
         tuple(names),
