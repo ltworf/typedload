@@ -22,7 +22,7 @@ from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
-from typedload import dataloader, load, dump, typechecks
+from typedload import dataloader, load, dump, typechecks, exceptions
 
 
 class TestDataclassLoad(unittest.TestCase):
@@ -117,6 +117,14 @@ class TestDataclassDump(unittest.TestCase):
 
 
 class TestDataclassMangle(unittest.TestCase):
+
+    def test_mangle_extra(self):
+        @dataclass
+        class Mangle:
+            value: int = field(metadata={'name': 'Value'})
+        assert load({'value': 12, 'Value': 12}, Mangle) == Mangle(12)
+        with self.assertRaises(exceptions.TypedloadValueError):
+            load({'value': 12, 'Value': 12}, Mangle, failonextra=True)
 
     def test_mangle_load(self):
         @dataclass

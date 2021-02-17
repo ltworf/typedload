@@ -145,6 +145,14 @@ class TestAttrload(unittest.TestCase):
 
 class TestMangling(unittest.TestCase):
 
+    def test_mangle_extra(self):
+        @attrs
+        class Mangle:
+            value = attrib(metadata={'name': 'Value'}, type=int)
+        assert load({'value': 12, 'Value': 12}, Mangle) == Mangle(12)
+        with self.assertRaises(exceptions.TypedloadValueError):
+            load({'value': 12, 'Value': 12}, Mangle, failonextra=True)
+
     def test_load_metanames(self):
         a = {'va.lue': 12}
         b = a.copy()
