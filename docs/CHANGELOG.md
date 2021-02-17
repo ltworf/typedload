@@ -1,4 +1,5 @@
 2.7
+* failonextra triggers failure when dropping fields in mangling
 
 2.6
 * Handle Any types as passthrough
