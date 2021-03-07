@@ -451,7 +451,7 @@ def _mangle_names(namesmap: Dict[str, str], value: Dict[str, Any], failonextra: 
     return r
 
 
-def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
+def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Any:
     """
     This loads a Dict[str, Any] into a NamedTuple.
     """
