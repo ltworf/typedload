@@ -1,5 +1,6 @@
 2.7
 * failonextra triggers failure when dropping fields in mangling
+* Support for total=False in TypedDict
 
 2.6
 * Handle Any types as passthrough
