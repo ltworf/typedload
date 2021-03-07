@@ -451,7 +451,7 @@ def _mangle_names(namesmap: Dict[str, str], value: Dict[str, Any], failonextra: 
     return r
 
 
-def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
+def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Any:
     """
     This loads a Dict[str, Any] into a NamedTuple.
     """
@@ -481,8 +481,13 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Tuple:
         except ValueError as e:
             raise TypedloadValueError(str(e), value=value, type_=type_)
 
+    if getattr(type_, '__total__', True) == False:
+        # For TypedDict, total=False means that fields can be safely skipped
+        # So we set the necessary_fields to empty.
+        necessary_fields = set()
+    else:
+        necessary_fields = fields.difference(optional_fields)
 
-    necessary_fields = fields.difference(optional_fields)
     try:
         vfields = set(value.keys())
     except AttributeError as e:
