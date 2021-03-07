@@ -39,7 +39,7 @@ class TestTypeddictLoad(unittest.TestCase):
 
     def test_totality(self):
         with self.assertRaises(ValueError):
-            assert load({}, A)
+            load({}, A)
         assert load({}, B) == {}
 
     def test_loadperson(self):
