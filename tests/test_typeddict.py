@@ -32,7 +32,15 @@ class A(TypedDict):
     val: str
 
 
+class B(TypedDict, total=False):
+    val: str
+
 class TestTypeddictLoad(unittest.TestCase):
+
+    def test_totality(self):
+        with self.assertRaises(ValueError):
+            assert load({}, A)
+        assert load({}, B) == {}
 
     def test_loadperson(self):
         o = {'name': 'pino', 'age': 1.1}
