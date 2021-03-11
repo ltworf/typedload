@@ -102,7 +102,9 @@ class TypedloadException(Exception):
                 path.append('[%d]' % i.annotation[1] if isinstance(i.annotation[1], int) else str(i.annotation[1]))
             else:
                 path.append(str(None))
-        if path and path[0] == str(None):
+        if len(path) == 1 and path[0] == str(None):
+            return '.'
+        elif len(path) > 1 and path[0] == str(None):
             path[0] = ''
         return '.'.join(path)
 
