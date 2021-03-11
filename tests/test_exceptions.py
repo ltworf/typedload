@@ -21,7 +21,7 @@ import enum
 from typing import List, NamedTuple, Optional, Tuple
 import unittest
 
-from typedload import dataloader, load, dump, typechecks
+from typedload import dataloader, load, dump, typechecks, exceptions
 
 class Firewall(NamedTuple):
     open_ports: List[int]
@@ -50,15 +50,35 @@ class TestExceptionsStr(unittest.TestCase):
         incorrect = [
             {'remote': {'networking': {'nic': "eth0", "firewall": {"open_ports":[1,2,3, 'a']}}}},
             {'remote': {'networking': {'nic': "eth0", "firewall": {"closed_ports": [], "open_ports":[1,2,3]}}}},
-            {'remote': {'networking': {'nic': "eth0", "firewall": {"open_ports":[2,3]}}}},
+            {'remote': {'networking': {'noc': "eth0", "firewall": {"open_ports":[2,3]}}}},
             {'romote': {'networking': {'nic': "eth0", "firewall": {"open_ports":[2,3]}}}},
             {'remote': {'nitworking': {'nic': "eth0", "firewall": {"open_ports":[2,3]}}}},
         ]
+
+        paths = []
         for i in incorrect:
             try:
                 load(i, Config, basiccast=False, failonextra=True)
-            except Exception as e:
-                str(e)
+                assert False
+            except exceptions.TypedloadException as e:
+                for i in e.exceptions:
+                    paths.append(e._path(e.trace) + '.' + i._path(i.trace[1:]))
+        #1st object
+        assert paths[0] == '.remote.networking.firewall.open_ports.[3]'
+        assert paths[1] == '.remote.'
+        #2nd object
+        assert paths[2] == '.remote.networking.firewall'
+        assert paths[3] == '.remote.'
+        #3rd object
+        assert paths[4] == '.remote.networking'
+        assert paths[5] == '.remote.'
+        #4th object
+        # Nothing because of no sub-exceptions, fails before the union
+        #5th object
+        assert paths[6] == '.remote.'
+        assert paths[7] == '.remote.'
+        assert len(paths) == 8
+
 
     def test_tuple_exceptions_str(self):
         incorrect = [
