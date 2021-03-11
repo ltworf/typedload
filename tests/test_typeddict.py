@@ -62,3 +62,4 @@ class TestTypeddictLoad(unittest.TestCase):
     def test_is_typeddict(self):
         assert typechecks.is_typeddict(A)
         assert typechecks.is_typeddict(Person)
+        assert typechecks.is_typeddict(B)
