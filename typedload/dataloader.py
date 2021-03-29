@@ -523,7 +523,12 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Any:
             type_hints[k],
             annotation=Annotation(AnnotationType.FIELD, k),
         )
-    return type_(**params)
+    try:
+        return type_(**params)
+    except TypeError as e:
+        raise TypedloadTypeError(e)
+    except ValueError as e:
+        raise TypedloadValueError(e)
 
 
 def _unionload(l: Loader, value, type_) -> Any:
