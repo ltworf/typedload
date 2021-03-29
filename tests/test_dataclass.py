@@ -27,6 +27,24 @@ from typedload import dataloader, load, dump, typechecks, exceptions
 
 class TestDataclassLoad(unittest.TestCase):
 
+    def test_do_not_init(self):
+        @dataclass
+        class Q:
+            a: int
+            b: int
+            c: int = field(init=False)
+
+            def __post_init__(self):
+                self.c = self.a + self.b
+        assert typechecks.is_dataclass(Q)
+        assert load({'a': 1, 'b': 2}, Q).c == 3
+        a = load({'a': 12, 'b': 30}, Q)
+        assert a.c == 42
+        a.c = 1
+        assert a.c == 1
+        assert a.a == 12
+        assert a.b == 30
+
     def test_is_dataclass(self):
         @dataclass
         class A:
