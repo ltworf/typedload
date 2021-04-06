@@ -28,6 +28,11 @@ import unittest
 from typedload import dataloader, load, exceptions
 
 
+class SelfRef(NamedTuple):
+    value: int = 1
+    next: Optional['SelfRef'] = None
+
+
 class TestRealCase(unittest.TestCase):
 
     def test_stopboard(self):
@@ -267,12 +272,10 @@ class TestEnum(unittest.TestCase):
 class TestForwardRef(unittest.TestCase):
 
     def test_known_refs(self):
-        class Node(NamedTuple):
-            value: int = 1
-            next: Optional['Node'] = None
-        l = {'next': {}, 'value': 12}
+
+        l = {'next': {'value': 12}, 'value': 12}
         loader = dataloader.Loader()
-        assert loader.load(l, Node) == Node(value=12,next=Node())
+        assert loader.load(l, SelfRef) == SelfRef(value=12,next=SelfRef(value=12, next=None))
 
     def test_disable(self):
         class A(NamedTuple):
