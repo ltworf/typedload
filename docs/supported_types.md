@@ -266,6 +266,16 @@ Exception: TypedloadValueError
 
 From dict to dict, but it makes sure that the types are as expected.
 
+It also supports non-total TypedDict (since 2.7).
+
+```python
+class A(TypedDict, total=False):
+    val: str
+
+In [5]: typedload.load({}, A)
+Out[5]: {}
+```
+
 typing.Set, typing.Frozenset
 ----------------------------
 
