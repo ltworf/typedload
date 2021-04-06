@@ -25,6 +25,18 @@ import unittest
 from typedload import dataloader, load, dump, typechecks, exceptions
 
 
+@dataclass
+class NestedLoadA:
+    a: int
+    b: str
+
+
+@dataclass
+class NestedLoadB:
+    a: NestedLoadA
+    b: List[NestedLoadA]
+
+
 class TestDataclassLoad(unittest.TestCase):
 
     def test_do_not_init(self):
@@ -72,20 +84,11 @@ class TestDataclassLoad(unittest.TestCase):
         assert load({'a': 101, 'b': 'ciao'}, A) == A(101, 'ciao')
 
     def test_nestedload(self):
-        @dataclass
-        class A:
-            a: int
-            b: str
-        @dataclass
-        class B:
-            a: A
-            b: List[A]
-
-        assert load({'a': {'a': 101, 'b': 'ciao'}, 'b': []}, B) == B(A(101, 'ciao'), [])
+        assert load({'a': {'a': 101, 'b': 'ciao'}, 'b': []}, NestedLoadB) == NestedLoadB(NestedLoadA(101, 'ciao'), [])
         assert load(
             {'a': {'a': 101, 'b': 'ciao'}, 'b': [{'a': 1, 'b': 'a'},{'a': 0, 'b': 'b'}]},
-            B
-        ) == B(A(101, 'ciao'), [A(1, 'a'),A(0, 'b')])
+            NestedLoadB
+        ) == NestedLoadB(NestedLoadA(101, 'ciao'), [NestedLoadA(1, 'a'),NestedLoadA(0, 'b')])
 
     def test_defaultvalue(self):
         @dataclass
