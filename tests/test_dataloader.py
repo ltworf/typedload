@@ -33,6 +33,15 @@ class SelfRef(NamedTuple):
     next: Optional['SelfRef'] = None
 
 
+class ExceptionsA(NamedTuple):
+    a: int
+
+
+class ExceptionsB(NamedTuple):
+    a: ExceptionsA
+    b: int
+
+
 class TestRealCase(unittest.TestCase):
 
     def test_stopboard(self):
@@ -335,25 +344,20 @@ class TestExceptions(unittest.TestCase):
             assert e.trace[-1].annotation[1] == 'q'
 
     def test_attrname(self):
-        class A(NamedTuple):
-            a: int
-        class B(NamedTuple):
-            a: A
-            b: int
         loader = dataloader.Loader()
 
         try:
-            loader.load({'a': 'q'}, A)
+            loader.load({'a': 'q'}, ExceptionsA)
         except Exception as e:
             assert e.trace[-1].annotation[1] == 'a'
 
         try:
-            loader.load({'a':'q','b': {'a': 1}}, B)
+            loader.load({'a':'q','b': {'a': 1}}, ExceptionsB)
         except Exception as e:
             assert e.trace[-1].annotation[1] == 'a'
 
         try:
-            loader.load({'a':3,'b': {'a': 'q'}}, B)
+            loader.load({'a':3,'b': {'a': 'q'}}, ExceptionsB)
         except Exception as e:
             assert e.trace[-1].annotation[1] == 'a'
 
