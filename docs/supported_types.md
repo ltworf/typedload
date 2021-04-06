@@ -164,7 +164,7 @@ class Point3d(NamedTuple):
 
 @attr.s
 class Polygon:
-    vertex: List[Point2d] = attr-ib(factory=list, metadata={'name': 'Vertex'})
+    vertex: List[Point2d] = attr.ib(factory=list, metadata={'name': 'Vertex'})
 
 @dataclass
 class Solid:
