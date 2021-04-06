@@ -455,19 +455,17 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Any:
     """
     This loads a Dict[str, Any] into a NamedTuple.
     """
+    type_hints = get_type_hints(type_)
+    fields = set(type_hints.keys())
     if not hasattr(type_, '__dataclass_fields__'):
-        fields = set(type_.__annotations__.keys())
         optional_fields = set(getattr(type_, '_field_defaults', {}).keys())
-        type_hints = type_.__annotations__
     else:
         #dataclass
         import dataclasses
-        fields = set(type_.__dataclass_fields__.keys())
         optional_fields = {k for k,v in type_.__dataclass_fields__.items() if
                            v.init == False or
                            not isinstance(v.default, dataclasses._MISSING_TYPE) or
                            not isinstance(v.default_factory, dataclasses._MISSING_TYPE)}
-        type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
 
         #Name mangling
 
