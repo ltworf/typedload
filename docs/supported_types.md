@@ -164,17 +164,21 @@ class Point3d(NamedTuple):
 
 @attr.s
 class Polygon:
-    vertex: List[Point2d] = attr-ib(factory=list, metadata={'name': 'Vertex'})
+    vertex: List[Point2d] = attr.ib(factory=list, metadata={'name': 'Vertex'})
 
 @dataclass
 class Solid:
     vertex: List[Point3d] = field(default_factory=list)
+    total: int = field(init=False)
+
+    def __post_init__(self):
+        self.total = 123 # calculation here
 
 In : typedload.load({'Vertex':[{'x': 1,'y': 1}, {'x': 2,'y': 2},{'x': 3,'y': 3}]}, Polygon)
 Out: Polygon(vertex=[Point2d(x=1.0, y=1.0), Point2d(x=2.0, y=2.0), Point2d(x=3.0, y=3.0)])
 
 In : typedload.load({'vertex':[{'x': 1,'y': 1,'z': 1}, {'x': 2,'y': 2, 'z': 2},{'x': 3,'y': 3,'z': 3}]}, Solid)
-Out: Solid(vertex=[Point3d(x=1.0, y=1.0, z=1.0), Point3d(x=2.0, y=2.0, z=2.0), Point3d(x=3.0, y=3.0, z=3.0)])
+Out: Solid(vertex=[Point3d(x=1.0, y=1.0, z=1.0), Point3d(x=2.0, y=2.0, z=2.0), Point3d(x=3.0, y=3.0, z=3.0)], total=123)
 ```
 
 They are loaded from dictionaries into those objects. `failonextra` when set can generate exceptions if more fields than expected are present.
@@ -265,6 +269,16 @@ Exception: TypedloadValueError
 ```
 
 From dict to dict, but it makes sure that the types are as expected.
+
+It also supports non-total TypedDict (since 2.7).
+
+```python
+class A(TypedDict, total=False):
+    val: str
+
+In [5]: typedload.load({}, A)
+Out[5]: {}
+```
 
 typing.Set, typing.Frozenset
 ----------------------------
