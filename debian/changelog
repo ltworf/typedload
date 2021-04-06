@@ -1,8 +1,9 @@
 typedload (2.7-1) UNRELEASED; urgency=medium
 
   * New upstream release
+  * Bumped d/watch version
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Tue, 16 Feb 2021 15:26:48 +0100
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Tue, 06 Apr 2021 21:10:30 +0200
 
 typedload (2.6-1) unstable; urgency=low
 
