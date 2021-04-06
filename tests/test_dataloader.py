@@ -62,36 +62,36 @@ class NestedB(NamedTuple):
     a: NestedA
 
 
+class VehicleType(Enum):
+    ST = 'ST'
+    TRAM = 'TRAM'
+    BUS = 'BUS'
+    WALK = 'WALK'
+    BOAT = 'BOAT'
+
+class BoardItem(NamedTuple):
+    name: str
+    type: VehicleType
+    date: str
+    time: str
+    stop: str
+    stopid: str
+    journeyid: str
+    sname: Optional[str] = None
+    track: str = ''
+    rtDate: Optional[str] = None
+    rtTime: Optional[str] = None
+    direction: Optional[str] = None
+    accessibility: str = ''
+    bgColor: str = '#0000ff'
+    fgColor: str = '#ffffff'
+    stroke: Optional[str] = None
+    night: bool = False
+
+
 class TestRealCase(unittest.TestCase):
 
     def test_stopboard(self):
-
-        class VehicleType(Enum):
-            ST = 'ST'
-            TRAM = 'TRAM'
-            BUS = 'BUS'
-            WALK = 'WALK'
-            BOAT = 'BOAT'
-
-        class BoardItem(NamedTuple):
-            name: str
-            type: VehicleType
-            date: str
-            time: str
-            stop: str
-            stopid: str
-            journeyid: str
-            sname: Optional[str] = None
-            track: str = ''
-            rtDate: Optional[str] = None
-            rtTime: Optional[str] = None
-            direction: Optional[str] = None
-            accessibility: str = ''
-            bgColor: str = '#0000ff'
-            fgColor: str = '#ffffff'
-            stroke: Optional[str] = None
-            night: bool = False
-
         c = {
             'JourneyDetailRef': {'ref': 'https://api.vasttrafik.se/bin/rest.exe/v2/journeyDetail?ref=859464%2F301885%2F523070%2F24954%2F80%3Fdate%3D2018-04-08%26station_evaId%3D5862002%26station_type%3Ddep%26format%3Djson%26'},
             'accessibility': 'wheelChair',
