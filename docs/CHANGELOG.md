@@ -2,6 +2,7 @@
 * Support PEP 563: Postponed Evaluation of Annotations
   This means breaking changes on how the python typing works,
   so for this a new major version is used.
+* Better report errors for Enum
 
 2.7
 * failonextra triggers failure when dropping fields in mangling
