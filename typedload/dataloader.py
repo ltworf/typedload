@@ -600,8 +600,13 @@ def _enumload(l: Loader, value, type_) -> Enum:
             return type_(l.load(value, t, annotation=Annotation(AnnotationType.UNION, t)))
         except Exception as e:
             exceptions.append(e)
+    if len(type_.__members__) <= 10 and all(type(i.value) in l.basictypes for i in type_.__members__.values()):
+        lst = '\nValue %s not between: ' % repr(value) + \
+        ', '.join(repr(i.value) for i in type_.__members__.values())
+    else:
+        lst = ''
     raise TypedloadValueError(
-        'Value of %s could not be loaded into %s' % (tname(type(value)), tname(type_)),
+        'Value of %s could not be loaded into %s%s' % (tname(type(value)), tname(type_), lst),
         value=value,
         type_=type_,
         exceptions=exceptions
