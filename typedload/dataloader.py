@@ -137,26 +137,6 @@ class Loader:
 
     strconstructed: Set of types to construct from a string.
 
-    frefs: Dictionary to resolve ForwardRef.
-        Something like
-        class Node(NamedTuple):
-            next: Optional['Node']
-
-        requires a ForwardRef (also in python3.7), which means that the type
-        is stored as string and must be resolved at runtime.
-
-        This dictionary contains the names of the types as keys, and the
-        actual types as values.
-
-        A loader object by default starts with an empty dictionary and
-        fills it with the types it encounters, but it is possible to
-        manually add more types to the dictionary.
-
-        Setting this to None disables any support for ForwardRef.
-
-        Reusing the same loader object on unrelated types might cause
-        failures, if the types are different but use the same names.
-
     These parameters can be set as named arguments in the constructor
     or they can be set later on.
 
@@ -183,9 +163,6 @@ class Loader:
 
         # Raise errors if the condition fails
         self.raiseconditionerrors = True
-
-        # Forward refs dictionary
-        self.frefs = {}  # type: Optional[Dict[str, Type]]
 
         # Enable conversion of dict-like things to dicts, before loading
         self.dictequivalence = True
@@ -219,7 +196,6 @@ class Loader:
             (is_frozenset, _frozensetload),
             (is_namedtuple, _namedtupleload),
             (is_dataclass, _namedtupleload),
-            (is_forwardref, _forwardrefload),
             (is_literal, _literalload),
             (is_typeddict, _namedtupleload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
@@ -273,12 +249,6 @@ class Loader:
                     type_=type_
                 )
 
-        # Add type to known types, to resolve ForwardRef later on
-        if self.frefs is not None and hasattr(type_, '__name__'):
-            typename = type_.__name__
-            if typename not in self.frefs:
-                self.frefs[typename] = type_
-
         func = self.handlers[index][1]
 
         if self.dictequivalence:
@@ -292,26 +262,6 @@ class Loader:
             assert isinstance(e, TypedloadException)
             e.trace.insert(0, TraceItem(value, type_, annotation))
             raise e
-
-
-def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
-    """
-    This resolves a ForwardRef.
-
-    It just looks up the type in the dictionary of known types
-    and loads the value using that.
-    """
-    if l.frefs is None:
-        raise TypedloadException('ForwardRef resolving is disabled for the loader', value=value, type_=type_)
-    tname = type_.__forward_arg__  # type: ignore
-    t = l.frefs.get(tname)
-    if t is None:
-        raise TypedloadValueError(
-            "ForwardRef '%s' unknown" % tname,
-            value=value,
-            type_=type_
-        )
-    return l.load(value, t, annotation=Annotation(AnnotationType.FORWARDREF, tname))
 
 
 def _anyload(l: Loader, value: Any, type_: type) -> Any:
