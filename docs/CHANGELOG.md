@@ -3,6 +3,8 @@
   This means breaking changes on how the python typing works,
   so for this a new major version is used.
 * Better report errors for Enum
+* Drop frefs dictionary from the loader: I want to use the
+  typing module to resolve types and do nothing smart. 
 
 2.7
 * failonextra triggers failure when dropping fields in mangling
