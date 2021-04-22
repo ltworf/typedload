@@ -37,21 +37,6 @@ class NestedLoadB:
     b: List[NestedLoadA]
 
 
-@dataclass
-class UnionA:
-    a: int
-
-
-@dataclass
-class UnionB:
-    a: str
-
-
-@dataclass
-class UnionC:
-    val: Union[UnionA, UnionB]
-
-
 class TestDataclassLoad(unittest.TestCase):
 
     def test_do_not_init(self):
@@ -116,11 +101,20 @@ class TestDataclassLoad(unittest.TestCase):
 
 class TestDataclassUnion(unittest.TestCase):
 
-    def test_nested_union(self):
+    def test_ComplicatedUnion(self):
+        @dataclass
+        class A:
+            a: int
+        @dataclass
+        class B:
+            a: str
+        @dataclass
+        class C:
+            val: Union[A, B]
         loader = dataloader.Loader()
         loader.basiccast = False
-        assert type(loader.load({'val': {'a': 1}}, UnionC).val) == UnionA
-        assert type(loader.load({'val': {'a': '1'}}, UnionC).val) == UnionB
+        assert type(loader.load({'val': {'a': 1}}, C).val) == A
+        assert type(loader.load({'val': {'a': '1'}}, C).val) == B
 
 class TestDataclassDump(unittest.TestCase):
 
