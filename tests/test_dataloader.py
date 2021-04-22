@@ -281,6 +281,16 @@ class TestForwardRef(unittest.TestCase):
         with self.assertRaises(Exception):
             loader.load(3, A)
 
+    def test_add_fref(self):
+        class A(NamedTuple):
+            i: 'alfio'
+        loader = dataloader.Loader()
+        with self.assertRaises(ValueError):
+            loader.load({'i': 3}, A)
+        loader.frefs['alfio'] = int
+        assert loader.load({'i': 3}, A) == A(3)
+
+
 
 class TestLoaderIndex(unittest.TestCase):
 
