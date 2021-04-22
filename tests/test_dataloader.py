@@ -42,14 +42,6 @@ class ExceptionsB(NamedTuple):
     b: int
 
 
-class NestedA(NamedTuple):
-    a: int
-
-
-class NestedB(NamedTuple):
-    a: NestedA
-
-
 class TestRealCase(unittest.TestCase):
 
     def test_stopboard(self):
@@ -237,11 +229,16 @@ class TestNamedTuple(unittest.TestCase):
         assert loader.load({}, A) == r
 
     def test_nested(self):
+        class A(NamedTuple):
+            a: int
+
+        class B(NamedTuple):
+            a: A
         loader = dataloader.Loader()
-        r = NestedB(NestedA(1))
-        assert loader.load({'a': {'a': 1}}, NestedB) == r
+        r = B(A(1))
+        assert loader.load({'a': {'a': 1}}, B) == r
         with self.assertRaises(TypeError):
-            loader.load({'a': {'a': 1}}, NestedA)
+            loader.load({'a': {'a': 1}}, A)
 
     def test_fail(self):
         class A(NamedTuple):
