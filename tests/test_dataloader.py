@@ -28,18 +28,6 @@ import unittest
 from typedload import dataloader, load, exceptions
 
 
-class UnionA(NamedTuple):
-    a: int
-
-
-class UnionB(NamedTuple):
-    a: str
-
-
-class UnionC(NamedTuple):
-    val: Union[UnionA, UnionB]
-
-
 class SelfRef(NamedTuple):
     value: int = 1
     next: Optional['SelfRef'] = None
@@ -159,11 +147,20 @@ class TestUnion(unittest.TestCase):
             assert loader.load({'a': 12}, t) == expected
 
 
-    def test_complicated_union(self):
+    def test_ComplicatedUnion(self):
+        class A(NamedTuple):
+            a: int
+
+        class B(NamedTuple):
+            a: str
+
+        class C(NamedTuple):
+            val: Union[A, B]
+
         loader = dataloader.Loader()
         loader.basiccast = False
-        assert type(loader.load({'val': {'a': 1}}, UnionC).val) == UnionA
-        assert type(loader.load({'val': {'a': '1'}}, UnionC).val) == UnionB
+        assert type(loader.load({'val': {'a': 1}}, C).val) == A
+        assert type(loader.load({'val': {'a': '1'}}, C).val) == B
 
     def test_optional(self):
         loader = dataloader.Loader()
