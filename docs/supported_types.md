@@ -60,6 +60,8 @@ Succeeds only if obj equals one of the allowed values.
 
 This is normally used in objects, to decide the correct type in a `Union`.
 
+It is very common to use Literal to disambiguate objects in a Union. [See example](examples.md#object-type-in-value)
+
 enum.Enum
 ---------
 
