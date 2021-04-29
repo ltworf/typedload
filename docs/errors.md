@@ -10,12 +10,36 @@ The exceptions have a clear user message, but they offer an API to expose precis
 String trace
 ------------
 
-TODO
+By default when an error occurrs the path within the data structure is shown.
+
+```python
+from typing import *
+import typedload
+
+class Thing(NamedTuple):
+    value: int
+
+class Data(NamedTuple):
+    field1: List[Thing]
+    field2: Tuple[Thing, ...]
+
+
+typedload.load({'field1': [{'value': 12}, {'value': 'a'}], 'field2': []}, Data)
+```
+
+```python
+TypedloadValueError: invalid literal for int() with base 10: 'a'
+Path: .field1.[1].value
+```
+
+The path in the string description tells where the wrong value was found.
 
 Trace
 -----
 
 To be able to locate where in the data an exception happened, `TypedloadException` has the `trace` property, which contains a list `TraceItem`, which help to track where the exception happened.
+
+This can be useful to do more clever error handling.
 
 For example:
 
