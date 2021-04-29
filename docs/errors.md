@@ -7,6 +7,11 @@ To make sure of that, there is an assertion in place that will fail if a type ha
 
 The exceptions have a clear user message, but they offer an API to expose precise knowledge of the problem.
 
+String trace
+------------
+
+TODO
+
 Trace
 -----
 
@@ -59,3 +64,9 @@ Because it is normal for a union of n types to generate n-1 exceptions, a union 
 Typedload has no way of knowing which of those is the important exception that was expected to succeed and instead puts all the exceptions inside the `exception` field of the parent exception.
 
 So all the sub exceptions can be investigated to decide which one is the most relevant one.
+
+
+Raise exceptions in custom handlers
+-----------------------------------
+
+TODO
