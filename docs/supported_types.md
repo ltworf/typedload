@@ -191,7 +191,22 @@ When dumping they go back to dictionaries. `hide_default` defaults to True, so a
 Forward references
 ------------------
 
-TODO
+A forward reference is when a type is specified as a string instead of as an object:
+
+```python
+a: ObjA = ObjA()
+a: 'ObjA' = ObjA()
+```
+
+The 2nd generates a forward reference, that is, a fake type that is really hard to resolve.
+
+The current strategy for typedload is to cache all the names of the types it encounters and use this cache to resolve the names.
+
+In alternative, it is possible to use the `frefs` dictionary to manually force resolution for a particular type.
+
+Python `typing` module offers some ways to resolve those types which are not used at the moment because they are slow and have strong limitations.
+
+Python developers want to turn every type annotation into a forward reference, for speed reasons. This was supposed to come in 3.10 but has been postponed. So for the moment there is little point into working on this very volatile API.
 
 
 typing.Union
