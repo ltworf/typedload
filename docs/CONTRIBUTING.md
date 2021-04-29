@@ -1,3 +1,6 @@
+Contributing
+============
+
 All contributions must pass the test suite and must generate no warnings with the latest available version of mypy.
 
 The best way of sending changes is to use git-send-mail to tiposchi@tiscali.it
