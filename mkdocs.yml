@@ -2,11 +2,23 @@ site_name: typedload
 theme: readthedocs
 nav:
     - Home: README.md
-    - Supported types: supported_types.md
-    - Errors: errors.md
-    - Examples: examples.md
+    #- Origin story: origin_story.md
+    - Changelog: CHANGELOG.md
     - Comparisons: comparisons.md
-    - Origin story: origin_story.md
-    - Downloads: https://github.com/ltworf/typedload/releases
-    - Contributing: CONTRIBUTING.md
-    - Git: https://github.com/ltworf/typedload/
+    - Using typedload:
+        - Examples: examples.md
+        - Supported types: supported_types.md
+        - Errors: errors.md
+    #- Tutorial:
+    - Contriutors:
+        - Contributing: CONTRIBUTING.md
+        - Code of conduct: CODE_OF_CONDUCT.md
+    - Links:
+        - Git: https://github.com/ltworf/typedload/
+        - Downloads: https://github.com/ltworf/typedload/releases
+        - Bug reports: https://github.com/ltworf/typedload/issues
+        - External resources:
+            - Debian: https://packages.debian.org/search?keywords=python3-typedload
+            - Pypi: https://pypi.org/project/typedload/
+            - Pypi stats: https://pypistats.org/packages/typedload
+            - Snyk: https://snyk.io/advisor/python/typedload

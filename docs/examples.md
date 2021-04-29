@@ -269,8 +269,3 @@ Handlers basically permit doing anything, replacing current handlers or adding m
 You can just append them to the list if you are extending.
 
 Remember to always use typedload exceptions, implement checks, and never modify the handler list after loading or dumping something.
-
-Exceptions
-----------
-
-TODO

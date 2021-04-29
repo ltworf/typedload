@@ -5,14 +5,23 @@ In this section we compare typedload to other similar libraries.
 
 In general, the advantages of typedload over competing libraries are:
 
+* Works with existing codebase
+* Easy to extend
+* Supports Union
+
 ### It works with existing codebase
 
 Most libraries require your classes to extend or use decorators from the library itself.
-Instead, typedload works fine with the type annotations from the `typing` module and will work without requiring changes to the datatypes.
+
+Instead, typedload works fine with the type annotations from the `typing` module and will work without requiring any changes to the datatypes.
 
 ### It is easy to extend
 
 Since there can be situations that are highly domain specific, typedload allows to extend its functionality to support more types or replace the existing code to handle special cases.
+
+### Support of Union
+
+Seems to be very rare in this domain, but unions are very common in real world datasets.
 
 
 pydantic

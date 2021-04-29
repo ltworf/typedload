@@ -257,6 +257,12 @@ class Loader:
 
         TypeError is raised if there is no known way to treat type_,
         otherwise all errors raise a ValueError.
+
+        annotation is used by recursive calls to track which path was
+        being executed in case of exceptions.
+
+        It is only needed when calling load recursively from
+        a custom handler.
         """
         p_index = self._indexcache.get(type_)
 

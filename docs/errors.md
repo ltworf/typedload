@@ -7,10 +7,39 @@ To make sure of that, there is an assertion in place that will fail if a type ha
 
 The exceptions have a clear user message, but they offer an API to expose precise knowledge of the problem.
 
+String trace
+------------
+
+By default when an error occurrs the path within the data structure is shown.
+
+```python
+from typing import *
+import typedload
+
+class Thing(NamedTuple):
+    value: int
+
+class Data(NamedTuple):
+    field1: List[Thing]
+    field2: Tuple[Thing, ...]
+
+
+typedload.load({'field1': [{'value': 12}, {'value': 'a'}], 'field2': []}, Data)
+```
+
+```python
+TypedloadValueError: invalid literal for int() with base 10: 'a'
+Path: .field1.[1].value
+```
+
+The path in the string description tells where the wrong value was found.
+
 Trace
 -----
 
 To be able to locate where in the data an exception happened, `TypedloadException` has the `trace` property, which contains a list `TraceItem`, which help to track where the exception happened.
+
+This can be useful to do more clever error handling.
 
 For example:
 
@@ -59,3 +88,13 @@ Because it is normal for a union of n types to generate n-1 exceptions, a union 
 Typedload has no way of knowing which of those is the important exception that was expected to succeed and instead puts all the exceptions inside the `exception` field of the parent exception.
 
 So all the sub exceptions can be investigated to decide which one is the most relevant one.
+
+
+Raise exceptions in custom handlers
+-----------------------------------
+
+To find the path where the wrong value was found, typedload needs to trace the execution by using annotations.
+
+This is used in handlers that do recursive calls to the loader.
+
+See the source code of the handlers for Union and NamedTuple to see how this is done.
