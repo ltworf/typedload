@@ -69,4 +69,8 @@ So all the sub exceptions can be investigated to decide which one is the most re
 Raise exceptions in custom handlers
 -----------------------------------
 
-TODO
+To find the path where the wrong value was found, typedload needs to trace the execution by using annotations.
+
+This is used in handlers that do recursive calls to the loader.
+
+See the source code of the handlers for Union and NamedTuple to see how this is done.
