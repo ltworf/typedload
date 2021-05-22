@@ -35,7 +35,22 @@ class A(TypedDict):
 class B(TypedDict, total=False):
     val: str
 
+class C(A, total=False):
+    vel: int
+
 class TestTypeddictLoad(unittest.TestCase):
+
+    def test_mixed_totality(self):
+        with self.assertRaises(ValueError):
+            load({}, C)
+        assert load({'val': 'a'}, C) == {'val': 'a'}
+        with self.assertRaises(ValueError):
+            load({'val': 'a', 'vel': 'q'}, C)
+        assert load({'val': 'a', 'vel': 1}, C) == {'val': 'a', 'vel': 1}
+        assert load({'val': 'a', 'vel': '1'}, C) == {'val': 'a', 'vel': 1}
+        assert load({'val': 'a','vil': 2}, C) == {'val': 'a'}
+        with self.assertRaises(ValueError):
+            load({'val': 'a','vil': 2}, C, failonextra=True)
 
     def test_totality(self):
         with self.assertRaises(ValueError):
