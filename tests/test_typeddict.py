@@ -19,6 +19,7 @@
 
 from typing import TypedDict
 import unittest
+import sys
 
 from typedload import dataloader, load, dump, typechecks
 
@@ -41,6 +42,11 @@ class C(A, total=False):
 class TestTypeddictLoad(unittest.TestCase):
 
     def test_mixed_totality(self):
+
+        if sys.version_info.minor == 8:
+            # This only works from 3.9
+            return
+
         with self.assertRaises(ValueError):
             load({}, C)
         assert load({'val': 'a'}, C) == {'val': 'a'}
