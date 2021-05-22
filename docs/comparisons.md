@@ -8,12 +8,15 @@ In general, the advantages of typedload over competing libraries are:
 * Works with existing codebase
 * Easy to extend
 * Supports Union
+* Works on python 3.5
 
 ### It works with existing codebase
 
 Most libraries require your classes to extend or use decorators from the library itself.
 
 Instead, typedload works fine with the type annotations from the `typing` module and will work without requiring any changes to the datatypes.
+
+It also works on python 3.5, so projects running on LTS distributions can use it.
 
 ### It is easy to extend
 
@@ -34,7 +37,7 @@ Found [here](https://pydantic-docs.helpmanual.io/)
 * Does not work with mypy:
     * [Abuses python typing annotation to mean something different, breaking linters](https://pydantic-docs.helpmanual.io/usage/models/#required-optional-fields)
     * [Uses float=None without using Optional in its own documentation](https://pydantic-docs.helpmanual.io/usage/models/#recursive-models).
-* Does not handle Union, Set, Path
+* Union might do casting when casting is not needed.
 
 dataclasses-json
 ----------------
