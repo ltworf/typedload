@@ -3,6 +3,7 @@
   This means breaking changes on how the python typing works,
   so for this a new major version is used.
 * Better report errors for Enum
+* Improve support for inheritance with mixed totality of TypedDict (requires Python 3.9)
 
 2.7
 * failonextra triggers failure when dropping fields in mangling

@@ -488,9 +488,12 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Any:
         except ValueError as e:
             raise TypedloadValueError(str(e), value=value, type_=type_)
 
-    if getattr(type_, '__total__', True) == False:
-        # For TypedDict, total=False means that fields can be safely skipped
-        # So we set the necessary_fields to empty.
+    if hasattr(type_, '__required_keys__') and hasattr(type_, '__optional_keys__'):
+        # TypedDict, since 3.9
+        necessary_fields = type_.__required_keys__
+        optional_fields = type_.__optional_keys__
+    elif getattr(type_, '__total__', True) == False:
+        # TypedDict, only for 3.8
         necessary_fields = set()
     else:
         necessary_fields = fields.difference(optional_fields)
