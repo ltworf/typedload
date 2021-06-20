@@ -50,41 +50,58 @@
                     </li>
                 </ul>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../supported_types/">Supported types</a>
-                    </li>
-                </ul>
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Errors</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#trace">Trace</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#union">Union</a>
-    </li>
-    </ul>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../examples/">Examples</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG/">Changelog</a>
                     </li>
                 </ul>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../comparisons/">Comparisons</a>
                     </li>
                 </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../origin_story/">Origin story</a>
+                <p class="caption"><span class="caption-text">Using typedload</span></p>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../examples/">Examples</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../supported_types/">Supported types</a>
+                    </li>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Errors</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#string-trace">String trace</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#trace">Trace</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#union">Union</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#raise-exceptions-in-custom-handlers">Raise exceptions in custom handlers</a>
+    </li>
+    </ul>
                     </li>
                 </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="" href="https://github.com/ltworf/typedload/releases">Downloads</a>
-                    </li>
-                </ul>
+                <p class="caption"><span class="caption-text">Contriutors</span></p>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING/">Contributing</a>
                     </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../CODE_OF_CONDUCT/">Code of conduct</a>
+                    </li>
                 </ul>
+                <p class="caption"><span class="caption-text">Links</span></p>
                 <ul>
                     <li class="toctree-l1"><a class="" href="https://github.com/ltworf/typedload/">Git</a>
+                    </li>
+                    <li class="toctree-l1"><a class="" href="https://github.com/ltworf/typedload/releases">Downloads</a>
+                    </li>
+                    <li class="toctree-l1"><a class="" href="https://github.com/ltworf/typedload/issues">Bug reports</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="#">External resources</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://packages.debian.org/search?keywords=python3-typedload">Debian</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://pypi.org/project/typedload/">Pypi</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://pypistats.org/packages/typedload">Pypi stats</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://snyk.io/advisor/python/typedload">Snyk</a>
+                </li>
+    </ul>
                     </li>
                 </ul>
       </div>
@@ -107,6 +124,10 @@
     <li><a href="..">Docs</a> &raquo;</li>
     
       
+        
+          <li>Using typedload &raquo;</li>
+        
+      
     
     <li>Errors</li>
     <li class="wy-breadcrumbs-aside">
@@ -123,8 +144,28 @@
 <p>All exceptions are subclasses of <code>TypedloadException</code>.</p>
 <p>To make sure of that, there is an assertion in place that will fail if a type handler is misbehaving and raising the wrong type of exception.</p>
 <p>The exceptions have a clear user message, but they offer an API to expose precise knowledge of the problem.</p>
+<h2 id="string-trace">String trace</h2>
+<p>By default when an error occurrs the path within the data structure is shown.</p>
+<pre><code class="language-python">from typing import *
+import typedload
+
+class Thing(NamedTuple):
+    value: int
+
+class Data(NamedTuple):
+    field1: List[Thing]
+    field2: Tuple[Thing, ...]
+
+
+typedload.load({'field1': [{'value': 12}, {'value': 'a'}], 'field2': []}, Data)
+</code></pre>
+<pre><code class="language-python">TypedloadValueError: invalid literal for int() with base 10: 'a'
+Path: .field1.[1].value
+</code></pre>
+<p>The path in the string description tells where the wrong value was found.</p>
 <h2 id="trace">Trace</h2>
 <p>To be able to locate where in the data an exception happened, <code>TypedloadException</code> has the <code>trace</code> property, which contains a list <code>TraceItem</code>, which help to track where the exception happened.</p>
+<p>This can be useful to do more clever error handling.</p>
 <p>For example:</p>
 <pre><code class="language-python">try:
     typedload.load([1, 2, 'a'], List[int])
@@ -155,6 +196,10 @@ TraceItem(value='a', type_=&lt;class 'int'&gt;, annotation=Annotation(annotation
 <p>Because it is normal for a union of n types to generate n-1 exceptions, a union which fails generated n exceptions.</p>
 <p>Typedload has no way of knowing which of those is the important exception that was expected to succeed and instead puts all the exceptions inside the <code>exception</code> field of the parent exception.</p>
 <p>So all the sub exceptions can be investigated to decide which one is the most relevant one.</p>
+<h2 id="raise-exceptions-in-custom-handlers">Raise exceptions in custom handlers</h2>
+<p>To find the path where the wrong value was found, typedload needs to trace the execution by using annotations.</p>
+<p>This is used in handlers that do recursive calls to the loader.</p>
+<p>See the source code of the handlers for Union and NamedTuple to see how this is done.</p>
               
             </div>
           </div>
@@ -162,7 +207,7 @@ TraceItem(value='a', type_=&lt;class 'int'&gt;, annotation=Annotation(annotation
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../examples/" class="btn btn-neutral float-right" title="Examples">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../CONTRIBUTING/" class="btn btn-neutral float-right" title="Contributing">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../supported_types/" class="btn btn-neutral" title="Supported types"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -194,7 +239,7 @@ TraceItem(value='a', type_=&lt;class 'int'&gt;, annotation=Annotation(annotation
         <span><a href="../supported_types/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../examples/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../CONTRIBUTING/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
