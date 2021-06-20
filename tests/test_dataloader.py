@@ -28,70 +28,36 @@ import unittest
 from typedload import dataloader, load, exceptions
 
 
-class UnionA(NamedTuple):
-    a: int
-
-
-class UnionB(NamedTuple):
-    a: str
-
-
-class UnionC(NamedTuple):
-    val: Union[UnionA, UnionB]
-
-
-class SelfRef(NamedTuple):
-    value: int = 1
-    next: Optional['SelfRef'] = None
-
-
-class ExceptionsA(NamedTuple):
-    a: int
-
-
-class ExceptionsB(NamedTuple):
-    a: ExceptionsA
-    b: int
-
-
-class NestedA(NamedTuple):
-    a: int
-
-
-class NestedB(NamedTuple):
-    a: NestedA
-
-
-class VehicleType(Enum):
-    ST = 'ST'
-    TRAM = 'TRAM'
-    BUS = 'BUS'
-    WALK = 'WALK'
-    BOAT = 'BOAT'
-
-class BoardItem(NamedTuple):
-    name: str
-    type: VehicleType
-    date: str
-    time: str
-    stop: str
-    stopid: str
-    journeyid: str
-    sname: Optional[str] = None
-    track: str = ''
-    rtDate: Optional[str] = None
-    rtTime: Optional[str] = None
-    direction: Optional[str] = None
-    accessibility: str = ''
-    bgColor: str = '#0000ff'
-    fgColor: str = '#ffffff'
-    stroke: Optional[str] = None
-    night: bool = False
-
-
 class TestRealCase(unittest.TestCase):
 
     def test_stopboard(self):
+
+        class VehicleType(Enum):
+            ST = 'ST'
+            TRAM = 'TRAM'
+            BUS = 'BUS'
+            WALK = 'WALK'
+            BOAT = 'BOAT'
+
+        class BoardItem(NamedTuple):
+            name: str
+            type: VehicleType
+            date: str
+            time: str
+            stop: str
+            stopid: str
+            journeyid: str
+            sname: Optional[str] = None
+            track: str = ''
+            rtDate: Optional[str] = None
+            rtTime: Optional[str] = None
+            direction: Optional[str] = None
+            accessibility: str = ''
+            bgColor: str = '#0000ff'
+            fgColor: str = '#ffffff'
+            stroke: Optional[str] = None
+            night: bool = False
+
         c = {
             'JourneyDetailRef': {'ref': 'https://api.vasttrafik.se/bin/rest.exe/v2/journeyDetail?ref=859464%2F301885%2F523070%2F24954%2F80%3Fdate%3D2018-04-08%26station_evaId%3D5862002%26station_type%3Ddep%26format%3Djson%26'},
             'accessibility': 'wheelChair',
@@ -159,11 +125,20 @@ class TestUnion(unittest.TestCase):
             assert loader.load({'a': 12}, t) == expected
 
 
-    def test_complicated_union(self):
+    def test_ComplicatedUnion(self):
+        class A(NamedTuple):
+            a: int
+
+        class B(NamedTuple):
+            a: str
+
+        class C(NamedTuple):
+            val: Union[A, B]
+
         loader = dataloader.Loader()
         loader.basiccast = False
-        assert type(loader.load({'val': {'a': 1}}, UnionC).val) == UnionA
-        assert type(loader.load({'val': {'a': '1'}}, UnionC).val) == UnionB
+        assert type(loader.load({'val': {'a': 1}}, C).val) == A
+        assert type(loader.load({'val': {'a': '1'}}, C).val) == B
 
     def test_optional(self):
         loader = dataloader.Loader()
@@ -240,11 +215,16 @@ class TestNamedTuple(unittest.TestCase):
         assert loader.load({}, A) == r
 
     def test_nested(self):
+        class A(NamedTuple):
+            a: int
+
+        class B(NamedTuple):
+            a: A
         loader = dataloader.Loader()
-        r = NestedB(NestedA(1))
-        assert loader.load({'a': {'a': 1}}, NestedB) == r
+        r = B(A(1))
+        assert loader.load({'a': {'a': 1}}, B) == r
         with self.assertRaises(TypeError):
-            loader.load({'a': {'a': 1}}, NestedA)
+            loader.load({'a': {'a': 1}}, A)
 
     def test_fail(self):
         class A(NamedTuple):
@@ -287,10 +267,12 @@ class TestEnum(unittest.TestCase):
 class TestForwardRef(unittest.TestCase):
 
     def test_known_refs(self):
-
-        l = {'next': {'value': 12}, 'value': 12}
+        class Node(NamedTuple):
+            value: int = 1
+            next: Optional['Node'] = None
+        l = {'next': {}, 'value': 12}
         loader = dataloader.Loader()
-        assert loader.load(l, SelfRef) == SelfRef(value=12,next=SelfRef(value=12, next=None))
+        assert loader.load(l, Node) == Node(value=12,next=Node())
 
     def test_disable(self):
         class A(NamedTuple):
@@ -298,6 +280,16 @@ class TestForwardRef(unittest.TestCase):
         loader = dataloader.Loader(frefs=None)
         with self.assertRaises(Exception):
             loader.load(3, A)
+
+    def test_add_fref(self):
+        class A(NamedTuple):
+            i: 'alfio'
+        loader = dataloader.Loader()
+        with self.assertRaises(ValueError):
+            loader.load({'i': 3}, A)
+        loader.frefs['alfio'] = int
+        assert loader.load({'i': 3}, A) == A(3)
+
 
 
 class TestLoaderIndex(unittest.TestCase):
@@ -350,20 +342,25 @@ class TestExceptions(unittest.TestCase):
             assert e.trace[-1].annotation[1] == 'q'
 
     def test_attrname(self):
+        class A(NamedTuple):
+            a: int
+        class B(NamedTuple):
+            a: A
+            b: int
         loader = dataloader.Loader()
 
         try:
-            loader.load({'a': 'q'}, ExceptionsA)
+            loader.load({'a': 'q'}, A)
         except Exception as e:
             assert e.trace[-1].annotation[1] == 'a'
 
         try:
-            loader.load({'a':'q','b': {'a': 1}}, ExceptionsB)
+            loader.load({'a':'q','b': {'a': 1}}, B)
         except Exception as e:
             assert e.trace[-1].annotation[1] == 'a'
 
         try:
-            loader.load({'a':3,'b': {'a': 'q'}}, ExceptionsB)
+            loader.load({'a':3,'b': {'a': 'q'}}, B)
         except Exception as e:
             assert e.trace[-1].annotation[1] == 'a'
 

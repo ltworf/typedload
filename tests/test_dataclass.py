@@ -25,33 +25,6 @@ import unittest
 from typedload import dataloader, load, dump, typechecks, exceptions
 
 
-@dataclass
-class NestedLoadA:
-    a: int
-    b: str
-
-
-@dataclass
-class NestedLoadB:
-    a: NestedLoadA
-    b: List[NestedLoadA]
-
-
-@dataclass
-class UnionA:
-    a: int
-
-
-@dataclass
-class UnionB:
-    a: str
-
-
-@dataclass
-class UnionC:
-    val: Union[UnionA, UnionB]
-
-
 class TestDataclassLoad(unittest.TestCase):
 
     def test_do_not_init(self):
@@ -99,11 +72,20 @@ class TestDataclassLoad(unittest.TestCase):
         assert load({'a': 101, 'b': 'ciao'}, A) == A(101, 'ciao')
 
     def test_nestedload(self):
-        assert load({'a': {'a': 101, 'b': 'ciao'}, 'b': []}, NestedLoadB) == NestedLoadB(NestedLoadA(101, 'ciao'), [])
+        @dataclass
+        class A:
+            a: int
+            b: str
+        @dataclass
+        class B:
+            a: A
+            b: List[A]
+
+        assert load({'a': {'a': 101, 'b': 'ciao'}, 'b': []}, B) == B(A(101, 'ciao'), [])
         assert load(
             {'a': {'a': 101, 'b': 'ciao'}, 'b': [{'a': 1, 'b': 'a'},{'a': 0, 'b': 'b'}]},
-            NestedLoadB
-        ) == NestedLoadB(NestedLoadA(101, 'ciao'), [NestedLoadA(1, 'a'),NestedLoadA(0, 'b')])
+            B
+        ) == B(A(101, 'ciao'), [A(1, 'a'),A(0, 'b')])
 
     def test_defaultvalue(self):
         @dataclass
@@ -116,11 +98,20 @@ class TestDataclassLoad(unittest.TestCase):
 
 class TestDataclassUnion(unittest.TestCase):
 
-    def test_nested_union(self):
+    def test_ComplicatedUnion(self):
+        @dataclass
+        class A:
+            a: int
+        @dataclass
+        class B:
+            a: str
+        @dataclass
+        class C:
+            val: Union[A, B]
         loader = dataloader.Loader()
         loader.basiccast = False
-        assert type(loader.load({'val': {'a': 1}}, UnionC).val) == UnionA
-        assert type(loader.load({'val': {'a': '1'}}, UnionC).val) == UnionB
+        assert type(loader.load({'val': {'a': 1}}, C).val) == A
+        assert type(loader.load({'val': {'a': '1'}}, C).val) == B
 
 class TestDataclassDump(unittest.TestCase):
 
