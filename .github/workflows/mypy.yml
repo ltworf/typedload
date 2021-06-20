@@ -13,6 +13,6 @@ jobs:
       with:
         python-version: '3.x'
     - name: Install dependencies
-      run: pip install mypy
+      run: pip install mypy types-dataclasses
     - name: mypy
       run: make mypy
