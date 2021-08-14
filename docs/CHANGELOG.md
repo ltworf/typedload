@@ -1,4 +1,5 @@
 2.9
+* Use README on pypi.org
 
 2.8
 * Better report errors for Enum
