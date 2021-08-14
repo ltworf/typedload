@@ -20,22 +20,15 @@
 
 from distutils.core import setup
 
+with open('README.md', 'rt') as f:
+    long_description = ''.join((i for i in  f.readlines() if not i.startswith('![')))
+
 setup(
     name='typedload',
     version='2.9',
     description='Load and dump data from json-like format into typed data structures',
-    long_description='''Load and dump json-like data into typed data structures.
-
-This module provides an API to load dictionaries and lists (usually loaded
-from json) into Python's NamedTuples, dataclass, sets, enums, and various
-other typed data structures; respecting all the type-hints and performing
-type checks or casts when needed.
-
-It can also dump from typed data structures to json-like dictionaries and lists.
-
-It is very useful for projects that use Mypy and deal with untyped data
-like json, because it guarantees that the data will have the expected format.
-''',
+    long_description_content_type='text/markdown',
+    long_description=long_description,
     url='https://ltworf.github.io/typedload/',
     author='Salvo \'LtWorf\' Tomaselli',
     author_email='tiposchi@tiscali.it',
