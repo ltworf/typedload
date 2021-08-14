@@ -1,3 +1,5 @@
+2.9
+
 2.8
 * Better report errors for Enum
 * Improve support for inheritance with mixed totality of TypedDict (requires Python 3.9)
