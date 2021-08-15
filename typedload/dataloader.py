@@ -293,7 +293,7 @@ class Loader:
                 value = {k: v for k,v in value._get_kwargs()}
 
         try:
-            return cast(T, func(self, value, type_))
+            return func(self, value, type_)
         except Exception as e:
             assert isinstance(e, TypedloadException)
             e.trace.insert(0, TraceItem(value, type_, annotation))

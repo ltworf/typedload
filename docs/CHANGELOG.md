@@ -1,5 +1,6 @@
 2.9
 * Use README on pypi.org
+* Tiny speed improvement
 
 2.8
 * Better report errors for Enum
