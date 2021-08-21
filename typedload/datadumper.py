@@ -27,15 +27,12 @@ import pathlib
 from typing import *
 
 from .exceptions import TypedloadValueError
-from .typechecks import is_attrs
+from .typechecks import is_attrs, NONETYPE
 
 
 __all__ = [
     'Dumper',
 ]
-
-
-NONETYPE = type(None)  # type: Type[Any]
 
 
 class Dumper:
