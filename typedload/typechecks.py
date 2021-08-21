@@ -232,7 +232,7 @@ def is_literal(type_: Type[Any]) -> bool:
     '''
     Check if the type is a typing.Literal
     '''
-    return getattr(type_, '__origin__', None) == Literal and Literal != None
+    return getattr(type_, '__origin__', None) == Literal and Literal is not None
 
 
 def is_typeddict(type_: Type[Any]) -> bool:
