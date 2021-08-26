@@ -4,19 +4,120 @@ Examples
 Objects
 -------
 
-TODO
+Three different kinds of objects are supported to be loaded and dumped back.
+
+* NamedTuple (stdlib)
+* dataclass (stdlib, since 3.7)
+* attrs (3rd party module)
+
+More or less they all work in the same way: the object is defined, types are assigned for the fields and typedload can inspect the class and create an instance from a dictionary, or go the other way to a dictionary from an instance.
+
+```python
+from typing import NamedTuple, List
+from pathlib import Path
+import typedload
+from attr import attrs, attrib
+
+class File(NamedTuple):
+    path: Union[str, Path]
+    size: int
+
+@attrs
+class Directory:
+    name = str
+    files: List[File] = attrib(factory=list) # mutable objects require a factory, not a default value
+
+dir = {
+    'name': 'home',
+    'files': [
+        {'path': '/asd.txt', 'size': 0},
+        {'path': '/tmp/test.txt', 'size': 30},
+    ]
+}
+
+# Load the dictionary into objects
+d = typedload.load(dir, Directory)
+
+# Dump the objects into a dictionary
+typedload.dump(d)
+```
+
+Please see the other sections for more advanced usage.
 
 Optional values
 ---------------
 
-TODO
+Python typing is a bit confusing about `Optional`. An `Optional[T]` means that the field can assume `None` as value, but the value must still be specified, and can't be omitted.
+
+If, on the other hand, a variable has a default value, then when it's not explicitly specified, the default value is assumed.
+
+Typedload follows exactly the normal behaviour of python and mypy.
+
+
+```python
+import typedload
+from typing import Optional, NamedTuple
+
+class User(NamedTuple):
+    username: str # Must be assigned
+    nickname: Optional[str] # Must be assigned and can be None
+    last_login: Optional[int] = None # Not required.
+
+# This fails, as nickname is not present
+typedload.load({'username': 'ltworf'}, User)
+
+# Those 2 work fine
+typedload.load({'username': 'ltworf', 'nickname': None}, User)
+typedload.load({'username': 'ltworf', 'nickname': 'LtWorf'}, User)
+
+# Those 2 work fine too
+typedload.load({'username': 'ltworf', 'nickname': None, 'last_login': None}, User)
+typedload.load({'username': 'ltworf', 'nickname': None, 'last_login': 666}, User)
+```
+
+There is of course no relationship between a default value and `Optional`, so a default can be anything.
+
+```python
+class Coordinates(NamedTuple):
+    x: int = 0
+    y: int = 0
+```
+
+When dumping values, the fields which match with their default value are omitted.
+
+```python
+# Returns an empty dictionary
+typedload.dump(Coordinates())
+
+# Returns only the x value
+typedload.dump(Coordinates(x=42, y=0))
+
+# Returns both coordinates
+typedload.dump(Coordinates(), hidedefault=False)
+```
 
 Unions
 ------
 
 ### Disable cast
 
-TODO
+Many times it is beneficial to disable casting when loading.
+
+For example, if a value can be an object of a certain kind or a string, not disabling casting will cast any invalid object to a string, which might not be desired.
+
+```python
+import typedload
+from typing import NamedTuple, Union
+
+class Data(NamedTuple):
+    data: int
+
+# This loads "{'date': 33}", since the object is not a valid Data object.
+typedload.load({'date': 33}, Union[str, Data])
+
+# This fails, because the dictionary is not cast to str
+typedload.load({'date': 33}, Union[str, Data], basiccast=False)
+```
 
 ### List or single object
 
