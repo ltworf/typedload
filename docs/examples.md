@@ -4,7 +4,45 @@ Examples
 Objects
 -------
 
-TODO
+Three different kinds of objects are supported to be loaded and dumped back.
+
+* NamedTuple (stdlib)
+* dataclass (stdlib, since 3.7)
+* attrs (3rd party module)
+
+More or less they all work in the same way: the object is defined, types are assigned for the fields and typedload can inspect the class and create an instance from a dictionary, or go the other way to a dictionary from an instance.
+
+```python
+from typing import NamedTuple, List
+from pathlib import Path
+import typedload
+from attr import attrs, attrib
+
+class File(NamedTuple):
+    path: Union[str, Path]
+    size: int
+
+@attrs
+class Directory:
+    name = str
+    files: List[File] = attrib(factory=list) # mutable objects require a factory, not a default value
+
+dir = {
+    'name': 'home',
+    'files': [
+        {'path': '/asd.txt', 'size': 0},
+        {'path': '/tmp/test.txt', 'size': 30},
+    ]
+}
+
+# Load the dictionary into objects
+d = typedload.load(dir, Directory)
+
+# Dump the objects into a dictionary
+typedload.dump(d)
+```
+
+Please see the other sections for more advanced usage.
 
 Optional values
 ---------------
