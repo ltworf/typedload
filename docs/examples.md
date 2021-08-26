@@ -47,7 +47,54 @@ Please see the other sections for more advanced usage.
 Optional values
 ---------------
 
-TODO
+Python typing is a bit confusing about `Optional`. An `Optional[T]` means that the field can assume `None` as value, but the value must still be specified, and can't be omitted.
+
+If, on the other hand, a variable has a default value, then when it's not explicitly specified, the default value is assumed.
+
+Typedload follows exactly the normal behaviour of python and mypy.
+
+
+```python
+import typedload
+from typing import Optional, NamedTuple
+
+class User(NamedTuple):
+    username: str # Must be assigned
+    nickname: Optional[str] # Must be assigned and can be None
+    last_login: Optional[int] = None # Not required.
+
+# This fails, as nickname is not present
+typedload.load({'username': 'ltworf'}, User)
+
+# Those 2 work fine
+typedload.load({'username': 'ltworf', 'nickname': None}, User)
+typedload.load({'username': 'ltworf', 'nickname': 'LtWorf'}, User)
+
+# Those 2 work fine too
+typedload.load({'username': 'ltworf', 'nickname': None, 'last_login': None}, User)
+typedload.load({'username': 'ltworf', 'nickname': None, 'last_login': 666}, User)
+```
+
+There is of course no relationship between a default value and `Optional`, so a default can be anything.
+
+```python
+class Coordinates(NamedTuple):
+    x: int = 0
+    y: int = 0
+```
+
+When dumping values, the fields which match with their default value are omitted.
+
+```python
+# Returns an empty dictionary
+typedload.dump(Coordinates())
+
+# Returns only the x value
+typedload.dump(Coordinates(x=42, y=0))
+
+# Returns both coordinates
+typedload.dump(Coordinates(), hidedefault=False)
+```
 
 Unions
 ------
