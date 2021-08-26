@@ -101,7 +101,23 @@ Unions
 
 ### Disable cast
 
-TODO
+Many times it is beneficial to disable casting when loading.
+
+For example, if a value can be an object of a certain kind or a string, not disabling casting will cast any invalid object to a string, which might not be desired.
+
+```python
+import typedload
+from typing import NamedTuple, Union
+
+class Data(NamedTuple):
+    data: int
+
+# This loads "{'date': 33}", since the object is not a valid Data object.
+typedload.load({'date': 33}, Union[str, Data])
+
+# This fails, because the dictionary is not cast to str
+typedload.load({'date': 33}, Union[str, Data], basiccast=False)
+```
 
 ### List or single object
 
