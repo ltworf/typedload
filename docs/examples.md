@@ -199,7 +199,7 @@ For example, using objects with default values is a bad idea:
 
 ```python
 import typedload
-from typing import NamedTuple, Union
+from typing import NamedTuple, Union, Optional
 
 class Person(NamedTuple):
     name: str = ''
