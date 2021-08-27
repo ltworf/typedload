@@ -37,6 +37,7 @@ dir = {
 
 # Load the dictionary into objects
 d = typedload.load(dir, Directory)
+# Out: Directory(files=[File(path='/asd.txt', size=0), File(path='/tmp/test.txt', size=30)])
 
 # Dump the objects into a dictionary
 typedload.dump(d)
@@ -65,14 +66,21 @@ class User(NamedTuple):
 
 # This fails, as nickname is not present
 typedload.load({'username': 'ltworf'}, User)
+# TypedloadValueError: Value does not contain fields: {'nickname'} which are necessary for type User
 
 # Those 2 work fine
 typedload.load({'username': 'ltworf', 'nickname': None}, User)
+# Out: User(username='ltworf', nickname=None, last_login=None)
+
 typedload.load({'username': 'ltworf', 'nickname': 'LtWorf'}, User)
+# Out: User(username='ltworf', nickname='LtWorf', last_login=None)
 
 # Those 2 work fine too
 typedload.load({'username': 'ltworf', 'nickname': None, 'last_login': None}, User)
+# Out: User(username='ltworf', nickname=None, last_login=None)
+
 typedload.load({'username': 'ltworf', 'nickname': None, 'last_login': 666}, User)
+# Out: User(username='ltworf', nickname=None, last_login=666)
 ```
 
 There is of course no relationship between a default value and `Optional`, so a default can be anything.
@@ -88,12 +96,16 @@ When dumping values, the fields which match with their default value are omitted
 ```python
 # Returns an empty dictionary
 typedload.dump(Coordinates())
+# Out: {}
+
 
 # Returns only the x value
 typedload.dump(Coordinates(x=42, y=0))
+# Out: {'x': 42}
 
 # Returns both coordinates
 typedload.dump(Coordinates(), hidedefault=False)
+# Out: {'x': 0, 'y': 0}
 ```
 
 Unions
@@ -114,9 +126,11 @@ class Data(NamedTuple):
 
 # This loads "{'date': 33}", since the object is not a valid Data object.
 typedload.load({'date': 33}, Union[str, Data])
+# Out: "{'date': 33}"
 
 # This fails, because the dictionary is not cast to str
 typedload.load({'date': 33}, Union[str, Data], basiccast=False)
+# TypedloadValueError: Value of dict could not be loaded into typing.Union[str, __main__.Data]
 ```
 
 ### List or single object
@@ -168,8 +182,13 @@ class Data:
 
 # Now we can load our data, and they will all be lists of Point
 typedload.load(data0, Data).data_points
+# Out: [Point(x=1.4, y=4.1), Point(x=5.2, y=6.13)]
+
 typedload.load(data1, Data).data_points
+# Out: [Point(x=1.4, y=4.1)]
+
 typedload.load(data2, Data).data_points
+# Out: []
 ```
 
 ### Objects
@@ -188,8 +207,10 @@ class Person(NamedTuple):
 class Data(NamedTuple):
     data: Optional[str] = None
 
-# This might return either a Person or a Data. It's random
+# WARNING: This might return either a Person or a Data. It's random
 typedload.load({}, Union[Person, Data])
+# Out: Data(data=None)
+# Out: Person(name='')
 ```
 
 This happens because in the union the order of the type is random, and either object works fine.
@@ -213,25 +234,35 @@ class Car(NamedTuple):
 # This should be a Car, not a Person
 data = {'name': 'macchina', 'model': 'TP21'}
 
-# This can return either a Person or a Car
+# WARNING: This can return either a Person or a Car
 typedload.load(data, Union[Person, Car])
+# Out: Person(name='macchina')
+# Out: Car(name='macchina', model='TP21')
 
 # This can be explained by checking that both of these work
-typedload.load(data, Person)
-typedload.load(data, Car)
 
-# So the union simply picks the first one (and python sorts them randomly)
+typedload.load(data, Person)
+# Out: Person(name='macchina')
+
+typedload.load(data, Car)
+# Out: Car(name='macchina', model='TP21')
+
+# The data we have works for both objects, and the union
+# picks the first one (python sorts them randomly)
 
 # We want to avoid that dictionary to be loaded as Person, so we use failonextra
 
 # This fails
 typedload.load(data, Person, failonextra=True)
+# TypedloadValueError: Dictionary has unrecognized fields: model and cannot be loaded into Person
 
 # This works
 typedload.load(data, Car, failonextra=True)
+# Out: Car(name='macchina', model='TP21')
 
 # At this point the union will reliably pick the class that we want
 typedload.load(data, Union[Person, Car], failonextra=True)
+# Out: Car(name='macchina', model='TP21')
 ```
 
 
@@ -266,6 +297,7 @@ class UserJoined(NamedTuple):
 
 # Now to load our event list
 typedload.load(events, List[Union[Message, UserJoined]])
+# Out: [Message(type='message', text='hello'), UserJoined(type='user-joined', username='giufà')]
 ```
 
 
@@ -292,12 +324,14 @@ class Character:
 data = {"firstName": "Paolino", "lastName": "Paperino"}
 
 character = typedload.load(data, Character)
+# Out: Character(first_name='Paolino', last_name='Paperino')
 ```
 
 When dumping back the data
 
 ```python
 typedload.dump(character)
+# Out: {'lastName': 'Paperino', 'firstName': 'Paolino'}
 ```
 
 the names will be converted back to camel case.
@@ -319,7 +353,10 @@ class Character:
 data = {"firstName": "Paolino", "lastName": "Paperino"}
 
 character = typedload.load(data, Character)
+# Out: Character(first_name='Paolino', last_name='Paperino')
+
 typedload.dump(character, mangle_key='alt_name')
+# Out: {'last-name': 'Paperino', 'first-name': 'Paolino'}
 ```
 
 Load and dump types from str
