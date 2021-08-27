@@ -58,7 +58,7 @@ for i in range(len(long_description)):
 
 setup(
     name='typedload',
-    version='2.9',
+    version='2.10',
     description='Load and dump data from json-like format into typed data structures',
     long_description=''.join(long_description),
     url='https://ltworf.github.io/typedload/',
