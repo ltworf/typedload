@@ -268,7 +268,11 @@ typedload.load(data, Union[Person, Car], failonextra=True)
 
 ### Object type in value
 
-Let's assume that our json objects contain a *type* field that names the object itself. Slack sends events in this way for example.
+Let's assume that our json objects contain a *type* field that names the object itself.
+
+This makes conflicts impossible and so in the union the correct type will always be picked.
+
+Slack sends events in this way.
 
 ```python
 import typedload
