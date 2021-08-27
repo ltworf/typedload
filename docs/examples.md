@@ -174,7 +174,66 @@ typedload.load(data2, Data).data_points
 
 ### Objects
 
-TODO
+Loading different objects with a `Union` is of course possible, but some care is needed to avoid unexpected results.
+
+For example, using objects with default values is a bad idea:
+
+```python
+import typedload
+from typing import NamedTuple, Union
+
+class Person(NamedTuple):
+    name: str = ''
+
+class Data(NamedTuple):
+    data: Optional[str] = None
+
+# This might return either a Person or a Data. It's random
+typedload.load({}, Union[Person, Data])
+```
+
+This happens because in the union the order of the type is random, and either object works fine.
+
+So you want to use union on objects that have at least one non default non colliding field.
+
+You might want to use `failonextra` for objects whose fields are subset of other objects.
+
+```python
+import typedload
+from typing import NamedTuple, Union
+
+
+class Person(NamedTuple):
+    name: str
+
+class Car(NamedTuple):
+    name: str
+    model: str
+
+# This should be a Car, not a Person
+data = {'name': 'macchina', 'model': 'TP21'}
+
+# This can return either a Person or a Car
+typedload.load(data, Union[Person, Car])
+
+# This can be explained by checking that both of these work
+typedload.load(data, Person)
+typedload.load(data, Car)
+
+# So the union simply picks the first one (and python sorts them randomly)
+
+# We want to avoid that dictionary to be loaded as Person, so we use failonextra
+
+# This fails
+typedload.load(data, Person, failonextra=True)
+
+# This works
+typedload.load(data, Car, failonextra=True)
+
+# At this point the union will reliably pick the class that we want
+typedload.load(data, Union[Person, Car], failonextra=True)
+```
+
 
 ### Object type in value
 

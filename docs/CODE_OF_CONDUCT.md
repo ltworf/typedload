@@ -81,4 +81,4 @@ If you disagree with the license, feel free to start your own project from scrat
 See also
 --------
 
-* International code of conduct: https://github.com/ltworf/international_code_of_conduct
+* [International code of conduct](https://github.com/ltworf/international_code_of_conduct)
