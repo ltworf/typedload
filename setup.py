@@ -21,14 +21,46 @@
 from distutils.core import setup
 
 with open('README.md', 'rt') as f:
-    long_description = ''.join((i for i in  f.readlines() if not i.startswith('![')))
+    long_description = [i for i in  f.readlines() if not i.startswith('![')]
+
+# Add double ===
+to_add = []
+for i, line in enumerate(long_description):
+    line = line.rstrip()
+    if set(line) != {'='}:
+        continue # Line is not made of ======
+    to_add.append((i, len(line)))
+
+to_add.reverse()
+for line, size in to_add:
+    long_description.insert(line - 1, '=' * size + '\n')
+
+# Convert ``` to indentation
+indent_block = False
+for i in range(len(long_description)):
+    line = long_description[i]
+    if line.startswith('```'):
+        indent_block = not indent_block
+        long_description[i] = '\n>>>\n' if indent_block else '\n'
+        continue
+
+    if line.rstrip() == '' and indent_block:
+        long_description[i] = '>>>\n'
+
+#for i, line in enumerate(long_description):
+    #if not line.endswith('\n'):
+        #print(i, 'AAAAAAAAAAAAAAAAAAAAA ERRORE!!!!')
+    #print (i, line.rstrip())
+
+#from docutils import core
+#core.publish_string(''.join(long_description ))
+
 
 setup(
     name='typedload',
     version='2.9',
     description='Load and dump data from json-like format into typed data structures',
-    long_description_content_type='text/markdown',
-    long_description=long_description,
+    long_description=''.join(long_description),
     url='https://ltworf.github.io/typedload/',
     author='Salvo \'LtWorf\' Tomaselli',
     author_email='tiposchi@tiscali.it',
