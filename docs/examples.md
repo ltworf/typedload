@@ -178,7 +178,7 @@ class Data:
         # We make a property called data_points, that always returns a list
         if not isinstance(self._data_points, list):
             return [self._data_points]
-        return self._data_point
+        return self._data_points
 
 # Now we can load our data, and they will all be lists of Point
 typedload.load(data0, Data).data_points
