@@ -2,6 +2,7 @@
 ===
 * Use README on pypi.org
 * Tiny speed improvement
+* Expanded and improved documentation
 
 2.8
 ===
