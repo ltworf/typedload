@@ -16,7 +16,7 @@ like json, because it guarantees that the data will follow the specified schema.
 
 It is released with a GPLv3 license.
 
-![GPLv3 logo](gpl3logo.png)
+![GPLv3 logo](https://ltworf.github.io/typedload/gpl3logo.png)
 
 Example
 =======
