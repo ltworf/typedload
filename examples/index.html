@@ -160,12 +160,110 @@
               
                 <h1 id="examples">Examples</h1>
 <h2 id="objects">Objects</h2>
-<p>TODO</p>
+<p>Three different kinds of objects are supported to be loaded and dumped back.</p>
+<ul>
+<li>NamedTuple (stdlib)</li>
+<li>dataclass (stdlib, since 3.7)</li>
+<li>attrs (3rd party module)</li>
+</ul>
+<p>More or less they all work in the same way: the object is defined, types are assigned for the fields and typedload can inspect the class and create an instance from a dictionary, or go the other way to a dictionary from an instance.</p>
+<pre><code class="language-python">from typing import NamedTuple, List
+from pathlib import Path
+import typedload
+from attr import attrs, attrib
+
+class File(NamedTuple):
+    path: Union[str, Path]
+    size: int
+
+@attrs
+class Directory:
+    name = str
+    files: List[File] = attrib(factory=list) # mutable objects require a factory, not a default value
+
+dir = {
+    'name': 'home',
+    'files': [
+        {'path': '/asd.txt', 'size': 0},
+        {'path': '/tmp/test.txt', 'size': 30},
+    ]
+}
+
+# Load the dictionary into objects
+d = typedload.load(dir, Directory)
+# Out: Directory(files=[File(path='/asd.txt', size=0), File(path='/tmp/test.txt', size=30)])
+
+# Dump the objects into a dictionary
+typedload.dump(d)
+</code></pre>
+<p>Please see the other sections for more advanced usage.</p>
 <h2 id="optional-values">Optional values</h2>
-<p>TODO</p>
+<p>Python typing is a bit confusing about <code>Optional</code>. An <code>Optional[T]</code> means that the field can assume <code>None</code> as value, but the value must still be specified, and can't be omitted.</p>
+<p>If, on the other hand, a variable has a default value, then when it's not explicitly specified, the default value is assumed.</p>
+<p>Typedload follows exactly the normal behaviour of python and mypy.</p>
+<pre><code class="language-python">import typedload
+from typing import Optional, NamedTuple
+
+class User(NamedTuple):
+    username: str # Must be assigned
+    nickname: Optional[str] # Must be assigned and can be None
+    last_login: Optional[int] = None # Not required.
+
+# This fails, as nickname is not present
+typedload.load({'username': 'ltworf'}, User)
+# TypedloadValueError: Value does not contain fields: {'nickname'} which are necessary for type User
+
+# Those 2 work fine
+typedload.load({'username': 'ltworf', 'nickname': None}, User)
+# Out: User(username='ltworf', nickname=None, last_login=None)
+
+typedload.load({'username': 'ltworf', 'nickname': 'LtWorf'}, User)
+# Out: User(username='ltworf', nickname='LtWorf', last_login=None)
+
+# Those 2 work fine too
+typedload.load({'username': 'ltworf', 'nickname': None, 'last_login': None}, User)
+# Out: User(username='ltworf', nickname=None, last_login=None)
+
+typedload.load({'username': 'ltworf', 'nickname': None, 'last_login': 666}, User)
+# Out: User(username='ltworf', nickname=None, last_login=666)
+</code></pre>
+<p>There is of course no relationship between a default value and <code>Optional</code>, so a default can be anything.</p>
+<pre><code class="language-python">class Coordinates(NamedTuple):
+    x: int = 0
+    y: int = 0
+</code></pre>
+<p>When dumping values, the fields which match with their default value are omitted.</p>
+<pre><code class="language-python"># Returns an empty dictionary
+typedload.dump(Coordinates())
+# Out: {}
+
+
+# Returns only the x value
+typedload.dump(Coordinates(x=42, y=0))
+# Out: {'x': 42}
+
+# Returns both coordinates
+typedload.dump(Coordinates(), hidedefault=False)
+# Out: {'x': 0, 'y': 0}
+</code></pre>
 <h2 id="unions">Unions</h2>
 <h3 id="disable-cast">Disable cast</h3>
-<p>TODO</p>
+<p>Many times it is beneficial to disable casting when loading.</p>
+<p>For example, if a value can be an object of a certain kind or a string, not disabling casting will cast any invalid object to a string, which might not be desired.</p>
+<pre><code class="language-python">import typedload
+from typing import NamedTuple, Union
+
+class Data(NamedTuple):
+    data: int
+
+# This loads &quot;{'date': 33}&quot;, since the object is not a valid Data object.
+typedload.load({'date': 33}, Union[str, Data])
+# Out: &quot;{'date': 33}&quot;
+
+# This fails, because the dictionary is not cast to str
+typedload.load({'date': 33}, Union[str, Data], basiccast=False)
+# TypedloadValueError: Value of dict could not be loaded into typing.Union[str, __main__.Data]
+</code></pre>
 <h3 id="list-or-single-object">List or single object</h3>
 <p>Some terribly evil programmers use json in this way:</p>
 <ul>
@@ -208,17 +306,86 @@ class Data:
         # We make a property called data_points, that always returns a list
         if not isinstance(self._data_points, list):
             return [self._data_points]
-        return self._data_point
+        return self._data_points
 
 # Now we can load our data, and they will all be lists of Point
 typedload.load(data0, Data).data_points
+# Out: [Point(x=1.4, y=4.1), Point(x=5.2, y=6.13)]
+
 typedload.load(data1, Data).data_points
+# Out: [Point(x=1.4, y=4.1)]
+
 typedload.load(data2, Data).data_points
+# Out: []
 </code></pre>
 <h3 id="objects_1">Objects</h3>
-<p>TODO</p>
+<p>Loading different objects with a <code>Union</code> is of course possible, but some care is needed to avoid unexpected results.</p>
+<p>For example, using objects with default values is a bad idea:</p>
+<pre><code class="language-python">import typedload
+from typing import NamedTuple, Union, Optional
+
+class Person(NamedTuple):
+    name: str = ''
+
+class Data(NamedTuple):
+    data: Optional[str] = None
+
+# WARNING: This might return either a Person or a Data. It's random
+typedload.load({}, Union[Person, Data])
+# Out: Data(data=None)
+# Out: Person(name='')
+</code></pre>
+<p>This happens because in the union the order of the type is random, and either object works fine.</p>
+<p>So you want to use union on objects that have at least one non default non colliding field.</p>
+<p>You might want to use <code>failonextra</code> for objects whose fields are subset of other objects.</p>
+<pre><code class="language-python">import typedload
+from typing import NamedTuple, Union
+
+
+class Person(NamedTuple):
+    name: str
+
+class Car(NamedTuple):
+    name: str
+    model: str
+
+# This should be a Car, not a Person
+data = {'name': 'macchina', 'model': 'TP21'}
+
+# WARNING: This can return either a Person or a Car
+typedload.load(data, Union[Person, Car])
+# Out: Person(name='macchina')
+# Out: Car(name='macchina', model='TP21')
+
+# This can be explained by checking that both of these work
+
+typedload.load(data, Person)
+# Out: Person(name='macchina')
+
+typedload.load(data, Car)
+# Out: Car(name='macchina', model='TP21')
+
+# The data we have works for both objects, and the union
+# picks the first one (python sorts them randomly)
+
+# We want to avoid that dictionary to be loaded as Person, so we use failonextra
+
+# This fails
+typedload.load(data, Person, failonextra=True)
+# TypedloadValueError: Dictionary has unrecognized fields: model and cannot be loaded into Person
+
+# This works
+typedload.load(data, Car, failonextra=True)
+# Out: Car(name='macchina', model='TP21')
+
+# At this point the union will reliably pick the class that we want
+typedload.load(data, Union[Person, Car], failonextra=True)
+# Out: Car(name='macchina', model='TP21')
+</code></pre>
 <h3 id="object-type-in-value">Object type in value</h3>
-<p>Let's assume that our json objects contain a <em>type</em> field that names the object itself. Slack sends events in this way for example.</p>
+<p>Let's assume that our json objects contain a <em>type</em> field that names the object itself.</p>
+<p>This makes conflicts impossible and so in the union the correct type will always be picked.</p>
+<p>Slack sends events in this way.</p>
 <pre><code class="language-python">import typedload
 from typing import List, Literal, Union, NamedTuple
 
@@ -245,6 +412,7 @@ class UserJoined(NamedTuple):
 
 # Now to load our event list
 typedload.load(events, List[Union[Message, UserJoined]])
+# Out: [Message(type='message', text='hello'), UserJoined(type='user-joined', username='giufà')]
 </code></pre>
 <h2 id="name-mangling">Name mangling</h2>
 <p>Name mangling is primarily used to deal with camel-case in codebases that use snake_case.</p>
@@ -262,9 +430,11 @@ class Character:
 data = {&quot;firstName&quot;: &quot;Paolino&quot;, &quot;lastName&quot;: &quot;Paperino&quot;}
 
 character = typedload.load(data, Character)
+# Out: Character(first_name='Paolino', last_name='Paperino')
 </code></pre>
 <p>When dumping back the data</p>
 <pre><code class="language-python">typedload.dump(character)
+# Out: {'lastName': 'Paperino', 'firstName': 'Paolino'}
 </code></pre>
 <p>the names will be converted back to camel case.</p>
 <h3 id="multiple-name-mangling-schemes">Multiple name mangling schemes</h3>
@@ -280,7 +450,10 @@ class Character:
 data = {&quot;firstName&quot;: &quot;Paolino&quot;, &quot;lastName&quot;: &quot;Paperino&quot;}
 
 character = typedload.load(data, Character)
+# Out: Character(first_name='Paolino', last_name='Paperino')
+
 typedload.dump(character, mangle_key='alt_name')
+# Out: {'last-name': 'Paperino', 'first-name': 'Paolino'}
 </code></pre>
 <h2 id="load-and-dump-types-from-str">Load and dump types from str</h2>
 <p>Some classes are easy to load and dump from <code>str</code>. For example this is done for <code>Path</code>.</p>
