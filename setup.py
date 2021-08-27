@@ -25,7 +25,7 @@ with open('README.md', 'rt') as f:
 
 setup(
     name='typedload',
-    version='2.9',
+    version='2.10',
     description='Load and dump data from json-like format into typed data structures',
     long_description_content_type='text/markdown',
     long_description=long_description,
