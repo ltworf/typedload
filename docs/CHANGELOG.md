@@ -9,49 +9,49 @@
 
 2.8
 ===
-* Better report errors for Enum
-* Improve support for inheritance with mixed totality of TypedDict (requires Python 3.9)
+* Better report errors for `Enum`
+* Improve support for inheritance with mixed totality of `TypedDict` (requires Python 3.9)
 
 2.7
 ===
 * failonextra triggers failure when dropping fields in mangling
-* Support for total=False in TypedDict
-* Support init=False in dataclass field
+* Support for `total=False` in `TypedDict`
+* Support `init=False` in `dataclass` field
 
 2.6
 ===
-* Handle Any types as passthrough
-* Easy way to handle types loaded from and dumped to str
+* Handle `Any` types as passthrough
+* Easy way to handle types loaded from and dumped to `str`
 * Improve how exceptions are displayed
 
 2.5
 ===
 * Fix dump for attr classes with factory
-* Let name mangling use arbitrary metadata fields rather than just 'name'
+* Let name mangling use arbitrary metadata fields rather than just `name`
 
 2.4
 ===
-* Support for ipaddress.IPv4Address, ipaddress.IPv6Address,
-  ipaddress.IPv4Network, ipaddress.IPv6Network,
-  ipaddress.IPv4Interface, ipaddress.IPv6Interface.
+* Support for `ipaddress.IPv4Address`, `ipaddress.IPv6Address`,
+  `ipaddress.IPv4Network`, `ipaddress.IPv6Network`,
+  `ipaddress.IPv4Interface`, `ipaddress.IPv6Interface`.
 
 2.3
 ===
-* Better type sorting in Union
-  This helps when using Union[dataclass, str]
+* Better type sorting in `Union`
+  This helps when using `Union[dataclass, str]`
 
 2.2
 ===
 * Add Python3.9 to the supported versions
-* Prevent loading dict as List,Tuple,Set
-  This helps when using Union[Dict, List] to take the correct
+* Prevent loading dict as `List`, `Tuple`, `Set`
+  This helps when using `Union[Dict, List]` to take the correct
   type.
 
 2.1
 ===
 * Written new usage example
 * typechecks internals now pass with more mypy configurations
-* Fix import *
+* Fix `import *`
 
 2.0
 ===
@@ -59,20 +59,20 @@
 * Breaking API change: plugins removed (attr support is by default)
 * Exceptions contain more information
 * Greatly improve performances with iterables types
-* Support for pathlib.Path
+* Support for `pathlib.Path`
 
 1.20
 ====
 * Drop support for Python 3.5.2 (3.5 series is still supported)
-* Support TypedDict
-* More precise type annotation of TypedloadException and Annotation fields
-* Deprecate the plugin to handle attr.s and make it always supported.
+* Support `TypedDict`
+* More precise type annotation of `TypedloadException` and `Annotation` fields
+* Deprecate the plugin to handle `attr.s` and make it always supported.
   This means that there will be no need for special code.
 * Fix datetime loader raising exceptions with the wrong type
 
 1.19
 ====
-* Add support for Literal.
+* Add support for `Literal`.
 
 1.18
 ====
@@ -85,20 +85,20 @@
 
 1.16
 ====
-* New uniontypes() function.
+* New `uniontypes()` function.
 * Make list and dictionary loaders raise the correct exceptions
-* Able to load from argparse.Namespace
+* Able to load from `argparse.Namespace`
 
 1.15
 ====
-* Add support for FrozenSet[T].
-* Define __all__ for typechecks.
+* Add support for `FrozenSet[T]`.
+* Define `__all__` for typechecks.
 * Add name mangling support in dataclass, to match attrs.
-* Add support for datetime.date, datetime.time, datetime.datetime
+* Add support for `datetime.date`, `datetime.time`, `datetime.datetime`
 
 1.14
 ====
-* Add support for Tuple[t, ...]
+* Add support for `Tuple[t, ...]`
 
 1.13
 ====
@@ -121,7 +121,7 @@
 
 1.9
 ===
-* Support ForwardRef
+* Support `ForwardRef`
 * Add a new Exception type with more details on the error (no breaking API changes)
 
 1.8
@@ -148,7 +148,7 @@
 ===
 * Add support for name mangling in attr plugin
 * Parameters can be passed as kwargs
-* Improved exception message for NamedTuple loading
+* Improved exception message for `NamedTuple` loading
 
 1.3
 ===
@@ -160,7 +160,7 @@
 
 1.1
 ===
-* Able to load and dump old style NamedTuple
+* Able to load and dump old style `NamedTuple`
 * Support for Python 3.5
 * Target to run mypy in makefile
 * Refactor to support plugins. The API is still compatible.
