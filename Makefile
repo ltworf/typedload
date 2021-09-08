@@ -9,6 +9,10 @@ mypy:
 	mypy --config-file mypy.conf typedload
 	mypy --python-version=3.6 example.py
 
+setup.py:
+	./gensetup.py > setup.py
+	chmod u+x setup.py
+
 pypi: setup.py typedload
 	mkdir -p dist pypi
 	./setup.py sdist
@@ -16,17 +20,19 @@ pypi: setup.py typedload
 	rmdir dist
 	gpg --detach-sign -a pypi/typedload-`./setup.py --version`.tar.gz
 
+.PHONY: clean
 clean:
 	$(RM) -r pypi
 	$(RM) -r .mypy_cache
 	$(RM) MANIFEST
 	$(RM) -r `find . -name __pycache__`
-	$(RM) typedload_`./setup.py --version`.orig.tar.gz
-	$(RM) typedload_`./setup.py --version`.orig.tar.gz.asc
+	$(RM) typedload_`head -1 CHANGELOG`.orig.tar.gz
+	$(RM) typedload_`head -1 CHANGELOG`.orig.tar.gz.asc
 	$(RM) -r deb-pkg
+	$(RM) setup.py
 
 .PHONY: dist
-dist: clean
+dist: clean setup.py
 	cd ..; tar -czvvf typedload.tar.gz \
 		typedload/setup.py \
 		typedload/Makefile \
