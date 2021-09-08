@@ -18,51 +18,63 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
+def load_long_description():
+
+    with open('README.md', 'rt') as f:
+        long_description = [i for i in  f.readlines() if not i.startswith('![')]
+
+    # Add double ===
+    to_add = []
+    for i, line in enumerate(long_description):
+        line = line.rstrip()
+        if set(line) != {'='}:
+            continue # Line is not made of ======
+        to_add.append((i, len(line)))
+
+    to_add.reverse()
+    for line, size in to_add:
+        long_description.insert(line - 1, '=' * size + '\n')
+
+    # Convert ``` to indentation
+    indent_block = False
+    for i in range(len(long_description)):
+        line = long_description[i]
+        if line.startswith('```'):
+            indent_block = not indent_block
+            long_description[i] = '\n>>>\n' if indent_block else '\n'
+            continue
+
+        if line.rstrip() == '' and indent_block:
+            long_description[i] = '>>>\n'
+
+    #for i, line in enumerate(long_description):
+        #if not line.endswith('\n'):
+            #print(i, 'AAAAAAAAAAAAAAAAAAAAA ERRORE!!!!')
+        #print (i, line.rstrip())
+
+    #from docutils import core
+    #core.publish_string(''.join(long_description ))
+    return long_description
+
+
+def load_version():
+    with open('CHANGELOG', 'rt') as f:
+        return f.readline().strip()
+
+AUTHOR = 'Salvo \'LtWorf\' Tomaselli'
+
+
+print(
+f'''#!/usr/bin/python3
+# This file is auto generated. Do not modify
 from distutils.core import setup
-
-with open('README.md', 'rt') as f:
-    long_description = [i for i in  f.readlines() if not i.startswith('![')]
-
-# Add double ===
-to_add = []
-for i, line in enumerate(long_description):
-    line = line.rstrip()
-    if set(line) != {'='}:
-        continue # Line is not made of ======
-    to_add.append((i, len(line)))
-
-to_add.reverse()
-for line, size in to_add:
-    long_description.insert(line - 1, '=' * size + '\n')
-
-# Convert ``` to indentation
-indent_block = False
-for i in range(len(long_description)):
-    line = long_description[i]
-    if line.startswith('```'):
-        indent_block = not indent_block
-        long_description[i] = '\n>>>\n' if indent_block else '\n'
-        continue
-
-    if line.rstrip() == '' and indent_block:
-        long_description[i] = '>>>\n'
-
-#for i, line in enumerate(long_description):
-    #if not line.endswith('\n'):
-        #print(i, 'AAAAAAAAAAAAAAAAAAAAA ERRORE!!!!')
-    #print (i, line.rstrip())
-
-#from docutils import core
-#core.publish_string(''.join(long_description ))
-
-
 setup(
     name='typedload',
-    version='2.10',
+    version={load_version()!r},
     description='Load and dump data from json-like format into typed data structures',
-    long_description=''.join(long_description),
+    long_description={''.join(load_long_description())!r},
     url='https://ltworf.github.io/typedload/',
-    author='Salvo \'LtWorf\' Tomaselli',
+    author={AUTHOR!r},
     author_email='tiposchi@tiscali.it',
     license='GPLv3',
     classifiers=[
@@ -77,5 +89,6 @@ setup(
     ],
     keywords='typing types mypy json',
     packages=['typedload'],
-    package_data={"typedload": ["py.typed"]},
+    package_data={{"typedload": ["py.typed"]}},
+)'''
 )
