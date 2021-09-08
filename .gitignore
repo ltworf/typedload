@@ -9,3 +9,4 @@ deb-pkg/
 *.swp
 dist/
 site/
+setup.py
