@@ -16,9 +16,9 @@ setup.py:
 pypi: setup.py typedload
 	mkdir -p dist pypi
 	./setup.py sdist
-	mv dist/typedload-`./setup.py --version`.tar.gz pypi
+	mv dist/typedload-`head -1 CHANGELOG`.tar.gz pypi
 	rmdir dist
-	gpg --detach-sign -a pypi/typedload-`./setup.py --version`.tar.gz
+	gpg --detach-sign -a pypi/typedload-`head -1 CHANGELOG`.tar.gz
 
 .PHONY: clean
 clean:
