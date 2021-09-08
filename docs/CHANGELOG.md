@@ -1,5 +1,6 @@
 2.10
 ====
+* Fix setup.py referring to a non-existing file when installing with pip
 
 2.9
 ===
