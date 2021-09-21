@@ -6,8 +6,12 @@ test:
 
 .PHONY: mypy
 mypy:
-	mypy --config-file mypy.conf typedload
+	mypy --config-file mypy.conf --python-version=3.5 typedload
 	mypy --python-version=3.6 example.py
+
+mypy-unversioned:
+	mypy --config-file mypy.conf typedload
+	mypy example.py
 
 setup.py:
 	./gensetup.py > setup.py

@@ -1,0 +1,28 @@
+Author: Michael R. Crusoe <crusoe@debian.org>
+Description: Adjust imports for Python 3.8+
+Forwarded: not-needed
+--- typedload.orig/typedload/typechecks.py
++++ typedload/typedload/typechecks.py
+@@ -60,20 +60,9 @@
+ ]
+ 
+ 
+-try:
+-    # Since 3.7
+-    from typing import ForwardRef  # type: ignore
+-except ImportError:
+-    from typing import _ForwardRef as ForwardRef  # type: ignore
++from typing import ForwardRef 
+ 
+-
+-Literal = None  # type: Any
+-_TypedDictMeta = None  # type: Any
+-try:
+-    # Since 3.8
+-    from typing import Literal, _TypedDictMeta  # type: ignore
+-except ImportError:
+-    pass
++from typing import Literal, _TypedDictMeta  # type: ignore
+ 
+ 
+ def _issubclass(t1, t2) -> bool:

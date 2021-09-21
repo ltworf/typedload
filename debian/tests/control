@@ -1,4 +1,4 @@
-Test-Command: make mypy
+Test-Command: make mypy-unversioned
 Depends: mypy
 
 Test-Command: make test
