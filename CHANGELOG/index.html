@@ -128,7 +128,11 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="29">2.9</h1>
+                <h1 id="210">2.10</h1>
+<ul>
+<li>Fix setup.py referring to a non-existing file when installing with pip</li>
+</ul>
+<h1 id="29">2.9</h1>
 <ul>
 <li>Use README on pypi.org</li>
 <li>Tiny speed improvement</li>
@@ -136,49 +140,49 @@
 </ul>
 <h1 id="28">2.8</h1>
 <ul>
-<li>Better report errors for Enum</li>
-<li>Improve support for inheritance with mixed totality of TypedDict (requires Python 3.9)</li>
+<li>Better report errors for <code>Enum</code></li>
+<li>Improve support for inheritance with mixed totality of <code>TypedDict</code> (requires Python 3.9)</li>
 </ul>
 <h1 id="27">2.7</h1>
 <ul>
 <li>failonextra triggers failure when dropping fields in mangling</li>
-<li>Support for total=False in TypedDict</li>
-<li>Support init=False in dataclass field</li>
+<li>Support for <code>total=False</code> in <code>TypedDict</code></li>
+<li>Support <code>init=False</code> in <code>dataclass</code> field</li>
 </ul>
 <h1 id="26">2.6</h1>
 <ul>
-<li>Handle Any types as passthrough</li>
-<li>Easy way to handle types loaded from and dumped to str</li>
+<li>Handle <code>Any</code> types as passthrough</li>
+<li>Easy way to handle types loaded from and dumped to <code>str</code></li>
 <li>Improve how exceptions are displayed</li>
 </ul>
 <h1 id="25">2.5</h1>
 <ul>
 <li>Fix dump for attr classes with factory</li>
-<li>Let name mangling use arbitrary metadata fields rather than just 'name'</li>
+<li>Let name mangling use arbitrary metadata fields rather than just <code>name</code></li>
 </ul>
 <h1 id="24">2.4</h1>
 <ul>
-<li>Support for ipaddress.IPv4Address, ipaddress.IPv6Address,
-  ipaddress.IPv4Network, ipaddress.IPv6Network,
-  ipaddress.IPv4Interface, ipaddress.IPv6Interface.</li>
+<li>Support for <code>ipaddress.IPv4Address</code>, <code>ipaddress.IPv6Address</code>,
+  <code>ipaddress.IPv4Network</code>, <code>ipaddress.IPv6Network</code>,
+  <code>ipaddress.IPv4Interface</code>, <code>ipaddress.IPv6Interface</code>.</li>
 </ul>
 <h1 id="23">2.3</h1>
 <ul>
-<li>Better type sorting in Union
-  This helps when using Union[dataclass, str]</li>
+<li>Better type sorting in <code>Union</code>
+  This helps when using <code>Union[dataclass, str]</code></li>
 </ul>
 <h1 id="22">2.2</h1>
 <ul>
 <li>Add Python3.9 to the supported versions</li>
-<li>Prevent loading dict as List,Tuple,Set
-  This helps when using Union[Dict, List] to take the correct
+<li>Prevent loading dict as <code>List</code>, <code>Tuple</code>, <code>Set</code>
+  This helps when using <code>Union[Dict, List]</code> to take the correct
   type.</li>
 </ul>
 <h1 id="21">2.1</h1>
 <ul>
 <li>Written new usage example</li>
 <li>typechecks internals now pass with more mypy configurations</li>
-<li>Fix import *</li>
+<li>Fix <code>import *</code></li>
 </ul>
 <h1 id="20">2.0</h1>
 <ul>
@@ -186,20 +190,20 @@
 <li>Breaking API change: plugins removed (attr support is by default)</li>
 <li>Exceptions contain more information</li>
 <li>Greatly improve performances with iterables types</li>
-<li>Support for pathlib.Path</li>
+<li>Support for <code>pathlib.Path</code></li>
 </ul>
 <h1 id="120">1.20</h1>
 <ul>
 <li>Drop support for Python 3.5.2 (3.5 series is still supported)</li>
-<li>Support TypedDict</li>
-<li>More precise type annotation of TypedloadException and Annotation fields</li>
-<li>Deprecate the plugin to handle attr.s and make it always supported.
+<li>Support <code>TypedDict</code></li>
+<li>More precise type annotation of <code>TypedloadException</code> and <code>Annotation</code> fields</li>
+<li>Deprecate the plugin to handle <code>attr.s</code> and make it always supported.
   This means that there will be no need for special code.</li>
 <li>Fix datetime loader raising exceptions with the wrong type</li>
 </ul>
 <h1 id="119">1.19</h1>
 <ul>
-<li>Add support for Literal.</li>
+<li>Add support for <code>Literal</code>.</li>
 </ul>
 <h1 id="118">1.18</h1>
 <ul>
@@ -212,20 +216,20 @@
 </ul>
 <h1 id="116">1.16</h1>
 <ul>
-<li>New uniontypes() function.</li>
+<li>New <code>uniontypes()</code> function.</li>
 <li>Make list and dictionary loaders raise the correct exceptions</li>
-<li>Able to load from argparse.Namespace</li>
+<li>Able to load from <code>argparse.Namespace</code></li>
 </ul>
 <h1 id="115">1.15</h1>
 <ul>
-<li>Add support for FrozenSet[T].</li>
-<li>Define <strong>all</strong> for typechecks.</li>
+<li>Add support for <code>FrozenSet[T]</code>.</li>
+<li>Define <code>__all__</code> for typechecks.</li>
 <li>Add name mangling support in dataclass, to match attrs.</li>
-<li>Add support for datetime.date, datetime.time, datetime.datetime</li>
+<li>Add support for <code>datetime.date</code>, <code>datetime.time</code>, <code>datetime.datetime</code></li>
 </ul>
 <h1 id="114">1.14</h1>
 <ul>
-<li>Add support for Tuple[t, ...]</li>
+<li>Add support for <code>Tuple[t, ...]</code></li>
 </ul>
 <h1 id="113">1.13</h1>
 <ul>
@@ -248,7 +252,7 @@
 </ul>
 <h1 id="19">1.9</h1>
 <ul>
-<li>Support ForwardRef</li>
+<li>Support <code>ForwardRef</code></li>
 <li>Add a new Exception type with more details on the error (no breaking API changes)</li>
 </ul>
 <h1 id="18">1.8</h1>
@@ -275,7 +279,7 @@
 <ul>
 <li>Add support for name mangling in attr plugin</li>
 <li>Parameters can be passed as kwargs</li>
-<li>Improved exception message for NamedTuple loading</li>
+<li>Improved exception message for <code>NamedTuple</code> loading</li>
 </ul>
 <h1 id="13">1.3</h1>
 <ul>
@@ -287,7 +291,7 @@
 </ul>
 <h1 id="11">1.1</h1>
 <ul>
-<li>Able to load and dump old style NamedTuple</li>
+<li>Able to load and dump old style <code>NamedTuple</code></li>
 <li>Support for Python 3.5</li>
 <li>Target to run mypy in makefile</li>
 <li>Refactor to support plugins. The API is still compatible.</li>
