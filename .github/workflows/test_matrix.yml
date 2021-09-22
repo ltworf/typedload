@@ -17,6 +17,8 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: pip install attrs
+      run: pip install attrs mypy types-dataclasses
     - name: Run tests
       run: make test
+    - name: Run mypy
+      run: make mypy
