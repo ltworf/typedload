@@ -1,5 +1,6 @@
 2.11
 ====
+* Make newer mypy happy
 
 2.10
 ====

@@ -1,6 +1,7 @@
-typedload (2.11-1) UNRELEASED; urgency=medium
+typedload (2.11-1) unstable; urgency=high
 
   * New upstream release
+  * Successful test with newer mypy version
 
  -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Wed, 08 Sep 2021 05:08:04 +0200
 
