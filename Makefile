@@ -1,3 +1,6 @@
+MINIMUM_PYTHON_VERSION=3.5
+
+
 all: pypi
 
 .PHONY: test
@@ -6,8 +9,8 @@ test:
 
 .PHONY: mypy
 mypy:
-	mypy --config-file mypy.conf typedload
-	mypy --python-version=3.6 example.py
+	mypy --python-version=$(MINIMUM_PYTHON_VERSION) --config-file mypy.conf typedload
+	mypy --python-version=3.7 example.py
 
 setup.py:
 	./gensetup.py > setup.py
