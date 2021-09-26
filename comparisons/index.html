@@ -178,6 +178,186 @@
 <li>Has dependencies (marshmallow, marshmallow-enum, typing-inspect)</li>
 <li>Very complicated way for doing lists</li>
 </ul>
+<p>Skip to content
+apischema Difference with pydantic
+Type to start searching</p>
+<p>wyfo/apischema</p>
+<pre><code>43 Stars
+3 Forks
+</code></pre>
+<p>apischema</p>
+<pre><code>Overview
+Data model
+(De)serialization
+JSON schema
+Validation
+Conversions
+GraphQL
+</code></pre>
+<p>Examples</p>
+<pre><code>Benchmark
+Difference with pydantic
+Releases
+</code></pre>
+<p>Table of contents</p>
+<pre><code>apischema is faster
+apischema can generate GraphQL schema from your resolvers
+apischema uses standard dataclasses and types
+apischema doesn't require external plugins for editors, linters, etc.
+apischema doesn't mix up (de)serialization with your code
+apischema truly works out-of-the-box with forward type references (especially for recursive model)
+apischema supports Generic in Python 3.6 and without requiring additional stuff
+apischema conversions feature allows to support any type defined in your code, but also in external libraries
+apischema can also customize serialization with computed fields
+apischema allows you to use composition over inheritance
+apischema has a functional approach, pydantic has an object one
+apischema can use both camelCase and snake_case with the same types
+apischema doesn't coerce by default
+apischema has a better integration of JSON schema/OpenAPI
+apischema can add validators and JSON schema to NewType
+apischema validators are regular methods with automatic dependencies management
+apischema supports pydantic
+</code></pre>
+<p>Difference with pydantic</p>
+<p>As the question is often asked, it is answered in a dedicated section. Here are some the key differences between apischema and pydantic:
+apischema is faster</p>
+<p>pydantic uses Cython to improve its performance; apischema doesn't need it and is still 1.5x faster according to pydantic benchmark — more than 2x when pydantic is not compiled with Cython.</p>
+<p>Better performance, but not at the cost of fewer functionalities; that's rather the opposite: dynamic aliasing, conversions, flattened fields, etc.
+apischema can generate GraphQL schema from your resolvers</p>
+<p>Not just a simple printable schema but a complete graphql.GraphQLSchema (using graphql-core library) which can be used to execute your queries/mutations/subscriptions through your resolvers, powered by apischema (de)serialization and conversions features.</p>
+<p>Types and resolvers can be used both in traditional JSON-oriented API and GraphQL API
+apischema uses standard dataclasses and types</p>
+<p>pydantic uses its own BaseModel class, or its own pseudo-dataclass, so you are forced to tie all your code to the library, and you cannot easily reuse code written in a more standard way or in external libraries.</p>
+<p>By the way, Pydantic use expressions in typing annotations (conint, etc.), while it's not recommended and treated as an error by tools like Mypy
+apischema doesn't require external plugins for editors, linters, etc.</p>
+<p>pydantic requires a plugin to allow Mypy to type checked BaseModel and others pydantic singularities (and to not raise errors on it); plugin are also needed for editors.
+apischema doesn't mix up (de)serialization with your code</p>
+<p>While pydantic mix up model constructor with deserializer, apischema use dedicated functions for its features, meaning your dataclasses are instantiated normally with type checking. In your code, you manipulate objects; (de)serialization is for input/output.</p>
+<p>apischema also doesn't mix up validation of external data with your statically checked code; there is no runtime validation in constructors.
+apischema truly works out-of-the-box with forward type references (especially for recursive model)</p>
+<p>pydantic requires calling update_forward_refs method on recursive types, while apischema "just works".
+apischema supports Generic in Python 3.6 and without requiring additional stuff</p>
+<p>pydantic BaseModel cannot be used with generic model, you have to use GenericModel, and it's not supported in Python 3.6.</p>
+<p>With apischema, you just write your generic classes normally.
+apischema conversions feature allows to support any type defined in your code, but also in external libraries</p>
+<p>pydantic doesn't make it easy to support external types, like bson.ObjectId; see this issue on the subject. You could dynamically add a <strong>get_validators</strong> method to foreign classes, but that doesn't work with builtin types like collection.deque and other types written in C.</p>
+<p>Serialization customization is harder, with definition of encoding function by model; it cannot be done at the same place as deserialization. There is also no correlation done between (de)serialization customization and model JSON schema; you could have to overwrite the generated schema if you don't want to get an inconsistency.</p>
+<p>apischema only requires a few lines of code to support any type you want, from bson.ObjectId to SQLAlchemy models by way of builtin and generic like collection.deque, and even pydantic. Conversions are also integrated in JSON schema this one is generated according to the source/target of the conversion</p>
+<p>Here is a comparison of a custom type support:</p>
+<p>import re
+from typing import NamedTuple, NewType</p>
+<p>import pydantic.validators</p>
+<p>import apischema</p>
+<h1 id="serialization-can-only-be-customized-into-the-enclosing-models">Serialization can only be customized into the enclosing models</h1>
+<p>class RGB(NamedTuple):
+    red: int
+    green: int
+    blue: int</p>
+<pre><code># If you don't put this method, RGB schema will be:
+# {'title': 'Rgb', 'type': 'array', 'items': {}}
+@classmethod
+def __modify_schema__(cls, field_schema) -&gt; None:
+    field_schema.update({"type": "string", "pattern": r"#[0-9A-Fa-f]{6}"})
+    field_schema.pop("items", ...)
+
+@classmethod
+def __get_validators__(cls):
+    yield pydantic.validators.str_validator
+    yield cls.validate
+
+@classmethod
+def validate(cls, value) -&gt; "RGB":
+    if (
+        not isinstance(value, str)
+        or re.fullmatch(r"#[0-9A-Fa-f]{6}", value) is None
+    ):
+        raise ValueError("Invalid RGB")
+    return RGB(
+        red=int(value[1:3], 16), green=int(value[3:5], 16), blue=int(value[5:7], 16)
+    )
+</code></pre>
+<h1 id="simpler-with-apischema">Simpler with apischema</h1>
+<p>class RGB(NamedTuple):
+    red: int
+    green: int
+    blue: int</p>
+<h1 id="newtype-can-be-used-to-add-schema-to-conversion-sourcetarget">NewType can be used to add schema to conversion source/target</h1>
+<h1 id="but-annotatedstr-apischemaschemapatternr0-9a-fa-f6-would-have-worked-too">but Annotated[str, apischema.schema(pattern=r"#[0-9A-Fa-f]{6}")] would have worked too</h1>
+<p>HexaRGB = NewType("HexaRGB", str)</p>
+<h1 id="pattern-is-used-in-json-schema-and-in-deserialization-validation">pattern is used in JSON schema and in deserialization validation</h1>
+<p>apischema.schema(pattern=r"#[0-9A-Fa-f]{6}")(HexaRGB)</p>
+<p>@apischema.deserializer  # could be declared as a staticmethod of RGB class
+def from_hexa(hexa: HexaRGB) -&gt; RGB:
+    return RGB(int(hexa[1:3], 16), int(hexa[3:5], 16), int(hexa[5:7], 16))</p>
+<p>@apischema.serializer  # could be declared as a method/property of RGB class
+def to_hexa(rgb: RGB) -&gt; HexaRGB:
+    return HexaRGB(f"#{rgb.red:02x}{rgb.green:02x}{rgb.blue:02x}")</p>
+<p>assert (  # schema is inherited from deserialized type
+    apischema.json_schema.deserialization_schema(RGB)
+    == apischema.json_schema.deserialization_schema(HexaRGB)
+    == {
+        "$schema": "http://json-schema.org/draft/2019-09/schema#",
+        "type": "string",
+        "pattern": "#[0-9A-Fa-f]{6}",
+    }
+)</p>
+<p>apischema can also customize serialization with computed fields</p>
+<p>Serialized methods/properties are regular methods/properties which are included in serialization effortlessly.
+apischema allows you to use composition over inheritance</p>
+<p>Flattened fields is a distinctive apischema feature that is very handy to build complex model from smaller fragments; you don't have to merge yourself the fields of your fragments in a complex class with a lot of fields, apischema deal with it for you, and your code is kept simple.
+apischema has a functional approach, pydantic has an object one</p>
+<p>pydantic features are based on BaseModel methods. You have to have a BaseModel instance to do anything, even if you manipulate only an integer. Complex pydantic stuff like <strong>root</strong> model or deserialization customization come from this approach.</p>
+<p>apischema is functional, it doesn't use method but simple functions, which works with all types. You can also register conversions for any types similarly you would implement a type class in a functional language. And your class namespace don't mix up with a mandatory base class' one.
+apischema can use both camelCase and snake_case with the same types</p>
+<p>While pydantic field aliases are fixed at model creation, apischema let you choose which aliasing you want at (de)serialization time.</p>
+<p>It can be convenient if you need to juggle with cases for the same models between frontends and other backend services for example.
+apischema doesn't coerce by default</p>
+<p>Your API respects its schema.</p>
+<p>It can also coerce, for example to parse configuration file, and coercion can be adjusted (for example coercing list from comma-separated string).
+apischema has a better integration of JSON schema/OpenAPI</p>
+<p>With pydantic, if you want to have a nullable field in the generated schema, you have to put nullable into schema extra keywords.</p>
+<p>apischema is bound to the last JSON schema version but offers conversion to other version like OpenAPI 3.0 and nullable is added for Optional types.</p>
+<p>apischema also support more advanced features like dependentRequired or unevaluatedProperties. Reference handling is also more flexible
+apischema can add validators and JSON schema to NewType</p>
+<p>So it will be used in deserialization validation. You can use NewType everywhere, to gain a better type checking, self-documented code.
+apischema validators are regular methods with automatic dependencies management</p>
+<p>Using regular methods allows benefiting of type checking of fields, where pydantic validators use dynamic stuffs (name of the fields as strings) and are not type-checked or have to get redundant type annotations.</p>
+<p>apischema validators also have automatic dependency management. And apischema directly supports JSON schema property dependencies.</p>
+<p>Comparison is simple with an example (validator is taken from pydantic documentation:</p>
+<p>from dataclasses import dataclass</p>
+<p>import apischema
+import pydantic</p>
+<p>class UserModel(pydantic.BaseModel):
+    username: str
+    password1: str
+    password2: str</p>
+<pre><code>@pydantic.root_validator
+def check_passwords_match(cls, values):
+    # This is a classmethod (it needs a plugin to not raise a warning in your IDE)
+    # What is the type of of values? of values['password1']?
+    # If you rename password1 field, validator will hardly be updated
+    # You also have to test yourself that values are provided
+    pw1, pw2 = values.get("password1"), values.get("password2")
+    if pw1 is not None and pw2 is not None and pw1 != pw2:
+        raise ValueError("passwords do not match")
+    return values
+</code></pre>
+<p>@dataclass
+class LoginForm:
+    username: str
+    password1: str
+    password2: str</p>
+<pre><code>@apischema.validator
+def check_password_match(self):
+    # Typed checked, simpler, and not executed if password1 or password2
+    # are missing/invalid
+    if self.password1 != self.password2:
+        raise ValueError("passwords do not match")
+</code></pre>
+<p>apischema supports pydantic</p>
+<p>It's not a feature, is just the result of 30 lines of code.
+Previous Benchmark
+Made with Material for MkDocs</p>
               
             </div>
           </div>
