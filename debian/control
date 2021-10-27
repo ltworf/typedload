@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>
 Build-Depends:
  debhelper (>= 13),
- python3-all,
+ python3-all:any,
  dh-python,
  python3-distutils,
  mypy,
