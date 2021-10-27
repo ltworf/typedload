@@ -1,4 +1,4 @@
-typedload (2.12-1) UNRELEASED; urgency=medium
+typedload (2.12-1) unstable; urgency=low
 
   * New upstream release
   * Bump Standards-Version to 4.6.0
@@ -6,7 +6,7 @@ typedload (2.12-1) UNRELEASED; urgency=medium
   * Drop obsolete minimum version for mypy
   * Build depend on python3-all:any instead of python3-all
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Mon, 27 Sep 2021 00:06:06 +0200
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Med, 27 Oct 2021 22:23:06 +0200
 
 typedload (2.11-1) unstable; urgency=high
 
