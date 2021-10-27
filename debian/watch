@@ -1,5 +1,4 @@
 version=4
 
-opts="pgpsigurlmangle=s/$/.asc/" \
-https://github.com/ltworf/typedload/releases \
-/download/(?:\d[\d.]*)/@PACKAGE@_(\d[\d.]*)(?:\.orig)?@ARCHIVE_EXT@
+opts=pgpmode=auto \
+https://github.com/ltworf/typedload/tags (?:.*?/)?v?@ANY_VERSION@@ARCHIVE_EXT@
