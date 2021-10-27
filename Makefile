@@ -64,6 +64,7 @@ deb-pkg: dist
 	mv /tmp/typedload_* /tmp/python3-typedload_*.deb deb-pkg
 	$(RM) -r /tmp/typedload
 
+.PHONY: site
 site: mkdocs.yml README.md docs/examples.md docs/origin_story.md
 	mkdocs build
 	#install -d site/docstring
