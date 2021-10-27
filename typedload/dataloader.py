@@ -586,7 +586,7 @@ def _unionload(l: Loader, value, type_) -> Any:
 
     # Try all types
     loaded_count = 0
-    r: Any = None
+    r = None
     for t in sorted_args:
         try:
             r = l.load(value, t, annotation=Annotation(AnnotationType.UNION, t))
