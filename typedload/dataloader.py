@@ -467,12 +467,12 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Any:
         type_hints = type_.__annotations__
     else:
         #dataclass
-        import dataclasses
+        from dataclasses import _MISSING_TYPE as DT_MISSING_TYPE
         fields = set(type_.__dataclass_fields__.keys())
         optional_fields = {k for k,v in type_.__dataclass_fields__.items() if
                            v.init == False or
-                           not isinstance(v.default, dataclasses._MISSING_TYPE) or
-                           not isinstance(v.default_factory, dataclasses._MISSING_TYPE)}
+                           not isinstance(v.default, DT_MISSING_TYPE) or
+                           not isinstance(v.default_factory, DT_MISSING_TYPE)}
         type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
 
         #Name mangling

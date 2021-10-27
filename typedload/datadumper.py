@@ -201,10 +201,10 @@ def _namedtupledump(l, value):
 
 
 def _dataclassdump(d, value):
-    import dataclasses
+    from dataclasses import _MISSING_TYPE as DT_MISSING_TYPE
     fields = set(value.__dataclass_fields__.keys())
-    field_defaults = {k: v.default for k,v in value.__dataclass_fields__.items() if not isinstance (v.default, dataclasses._MISSING_TYPE)}
-    field_factories = {k: v.default_factory() for k,v in value.__dataclass_fields__.items() if not isinstance (v.default_factory, dataclasses._MISSING_TYPE)}
+    field_defaults = {k: v.default for k,v in value.__dataclass_fields__.items() if not isinstance (v.default, DT_MISSING_TYPE)}
+    field_factories = {k: v.default_factory() for k,v in value.__dataclass_fields__.items() if not isinstance (v.default_factory, DT_MISSING_TYPE)}
     defaults = {**field_defaults, **field_factories} # Merge the two dictionaries
 
     r = {
