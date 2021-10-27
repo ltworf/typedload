@@ -5,14 +5,21 @@ In this section we compare typedload to other similar libraries.
 
 In general, the advantages of typedload over competing libraries are:
 
-* Works with existing codebase
-* Easy to extend
+* Works with existing codebase and uses standard types. No inheritance or decorators
+* Easy to extend, even with objects from 3rd party libraries
 * Supports Union
 * Works on python 3.5
+* Mypy and similar work without plugins
+* Can use camelCase and snake_case
+* Functional approach
 
 ### It works with existing codebase
 
 Most libraries require your classes to extend or use decorators from the library itself.
+
+This means that types from other libraries or non supported stdlib classes can never be used.
+
+It also means that mypy will just work out of the box, rather than requiring plugins.
 
 Instead, typedload works fine with the type annotations from the `typing` module and will work without requiring any changes to the datatypes.
 
@@ -25,6 +32,10 @@ Since there can be situations that are highly domain specific, typedload allows 
 ### Support of Union
 
 Seems to be very rare in this domain, but unions are very common in real world datasets.
+
+# Functional approach
+
+You can load a `List[YourType]`, while pydantic can only load a single object that then will contain the list.
 
 
 pydantic
