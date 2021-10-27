@@ -3,6 +3,7 @@ typedload (2.12-1) UNRELEASED; urgency=medium
   * New upstream release
   * Bump Standards-Version to 4.6.0
   * Fix debian/watch
+  * Drop obsolete minimum version for mypy
 
  -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Mon, 27 Sep 2021 00:06:06 +0200
 
