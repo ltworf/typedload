@@ -112,8 +112,8 @@ class Loader:
         and the condition is considered False.
 
     uniondebugconflict: Disabled by default
-        When enabled all the possible types for the unions
-        are evaluated, rather than only the one that works first.
+        When enabled, all the possible types for the unions
+        are evaluated instead of stopping at the first that works.
         If more than one type in the union works, an error is raised
         because the types are conflicting and the union might return
         different types with the same input value.
@@ -611,7 +611,7 @@ def _unionload(l: Loader, value, type_) -> Any:
     else:
         # Loaded more than once, conflict
         raise TypedloadTypeError(
-            'Value of %s could be loaded into %s multiple times' % (tname(value_type), tname(type_)),
+            'Value of %s could be loaded into %s %d times' % (tname(value_type), tname(type_), loaded_count),
                 value=value,
                 type_=type_,
                 exceptions=exceptions
