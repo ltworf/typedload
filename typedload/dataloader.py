@@ -676,7 +676,7 @@ def _attrload(l, value, type_):
 
 def _strconstructload(l: Loader, value, type_):
     """
-    Loader for all the types in the stdlib ipaddress module.
+    Loader for all the types taking a string as single constructor parameter
     """
     try:
         return type_(value)
