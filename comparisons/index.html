@@ -62,10 +62,6 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#support-of-union">Support of Union</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#pydantic">pydantic</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#dataclasses-json">dataclasses-json</a>
-    </li>
     </ul>
                     </li>
                 </ul>
@@ -102,6 +98,8 @@
                 <li class="toctree-l2"><a class="" href="https://pypistats.org/packages/typedload">Pypi stats</a>
                 </li>
                 <li class="toctree-l2"><a class="" href="https://snyk.io/advisor/python/typedload">Snyk</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://package.wiki/typedload">Python Pkg Wiki</a>
                 </li>
     </ul>
                     </li>
@@ -142,19 +140,26 @@
 <p>In this section we compare typedload to other similar libraries.</p>
 <p>In general, the advantages of typedload over competing libraries are:</p>
 <ul>
-<li>Works with existing codebase</li>
-<li>Easy to extend</li>
+<li>Works with existing codebase and uses standard types. No inheritance or decorators</li>
+<li>Easy to extend, even with objects from 3rd party libraries</li>
 <li>Supports Union</li>
 <li>Works on python 3.5</li>
+<li>Mypy and similar work without plugins</li>
+<li>Can use camelCase and snake_case</li>
+<li>Functional approach</li>
 </ul>
 <h3 id="it-works-with-existing-codebase">It works with existing codebase</h3>
 <p>Most libraries require your classes to extend or use decorators from the library itself.</p>
+<p>This means that types from other libraries or non supported stdlib classes can never be used.</p>
+<p>It also means that mypy will just work out of the box, rather than requiring plugins.</p>
 <p>Instead, typedload works fine with the type annotations from the <code>typing</code> module and will work without requiring any changes to the datatypes.</p>
 <p>It also works on python 3.5, so projects running on LTS distributions can use it.</p>
 <h3 id="it-is-easy-to-extend">It is easy to extend</h3>
 <p>Since there can be situations that are highly domain specific, typedload allows to extend its functionality to support more types or replace the existing code to handle special cases.</p>
 <h3 id="support-of-union">Support of Union</h3>
 <p>Seems to be very rare in this domain, but unions are very common in real world datasets.</p>
+<h1 id="functional-approach">Functional approach</h1>
+<p>You can load a <code>List[YourType]</code>, while pydantic can only load a single object that then will contain the list.</p>
 <h2 id="pydantic">pydantic</h2>
 <p>Found <a href="https://pydantic-docs.helpmanual.io/">here</a></p>
 <ul>

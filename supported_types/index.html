@@ -92,6 +92,10 @@
     <li class="toctree-l3"><a class="reference internal" href="#optional">Optional</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#ambiguity">Ambiguity</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#finding-ambiguity">Finding ambiguity</a>
+    </li>
+        </ul>
     </li>
         </ul>
     </li>
@@ -142,6 +146,8 @@
                 <li class="toctree-l2"><a class="" href="https://pypistats.org/packages/typedload">Pypi stats</a>
                 </li>
                 <li class="toctree-l2"><a class="" href="https://snyk.io/advisor/python/typedload">Snyk</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://package.wiki/typedload">Python Pkg Wiki</a>
                 </li>
     </ul>
                     </li>
@@ -367,6 +373,13 @@ class B(NamedTuple):
 In : typedload.load({}, Union[A, B])
 Out: A(x=1)
 </code></pre>
+<h4 id="finding-ambiguity">Finding ambiguity</h4>
+<p>Typedload can't solve certain ambiguities, but setting <code>uniondebugconflict=True</code> will help detect them.</p>
+<pre><code class="language-python">In : typedload.load({}, Union[A, B], uniondebugconflict=True)
+TypedloadTypeError: Value of dict could be loaded into typing.Union[__main__.A, __main__.B] multiple times
+</code></pre>
+<p>So this setting can be used to find ambiguities and manually correct them.</p>
+<p><em>NOTE</em>: The setting slows down the loading of unions, so it is recommended to use it only during tests or when designing the data structures, but not in production.</p>
 <h2 id="typingtypeddict">typing.TypedDict</h2>
 <pre><code class="language-python">class A(TypedDict):
     val: str
