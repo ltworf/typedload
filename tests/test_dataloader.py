@@ -166,6 +166,19 @@ class TestUnion(unittest.TestCase):
         assert type(loader.load(1.0, Optional[Union[int, float]])) == float
         assert loader.load(None, Optional[str]) is None
 
+    def test_debug_union(self):
+        loader = dataloader.Loader()
+
+        class A(NamedTuple):
+            a: int
+        class B(NamedTuple):
+            a: int
+
+        assert isinstance(loader.load({'a': 1}, Union[A, B]), (A, B))
+        loader.uniondebugconflict = True
+        with self.assertRaises(TypeError):
+            loader.load({'a': 1}, Union[A, B])
+
 
 class TestTupleLoad(unittest.TestCase):
 
