@@ -1,6 +1,6 @@
 2.12
 ====
-
+* Add `uniondebugconflict` flag to detect unions with conflicts.
 
 2.11
 ====

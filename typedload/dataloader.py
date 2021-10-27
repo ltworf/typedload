@@ -111,6 +111,15 @@ class Loader:
         handler. When disabled, the exceptions are not raised
         and the condition is considered False.
 
+    uniondebugconflict: Disabled by default
+        When enabled, all the possible types for the unions
+        are evaluated instead of stopping at the first that works.
+        If more than one type in the union works, an error is raised
+        because the types are conflicting and the union might return
+        different types with the same input value.
+        This option makes the loading slower and is only to be used when
+        debugging issues.
+
     mangle_key: Defaults to 'name'
         Specifies which key is used into the metadata dictionaries
         to perform name-mangling.
@@ -192,6 +201,9 @@ class Loader:
 
         # Which key is used in metadata to perform name mangling
         self.mangle_key = 'name'
+
+        # Fail if multiple types work within the union
+        self.uniondebugconflict = False
 
         # Objects loaded from a string
         self.strconstructed = {
@@ -573,17 +585,37 @@ def _unionload(l: Loader, value, type_) -> Any:
             sorted_args.append(t)
 
     # Try all types
+    loaded_count = 0
+    r = None
     for t in sorted_args:
         try:
-            return l.load(value, t, annotation=Annotation(AnnotationType.UNION, t))
+            r = l.load(value, t, annotation=Annotation(AnnotationType.UNION, t))
+            loaded_count += 1
+            if not l.uniondebugconflict:
+                # Do not try more if we are not debugging
+                break
         except Exception as e:
             exceptions.append(e)
-    raise TypedloadValueError(
-        'Value of %s could not be loaded into %s' % (tname(value_type), tname(type_)),
-            value=value,
-            type_=type_,
-            exceptions=exceptions
-    )
+
+    if loaded_count == 1:
+        # Loaded only once, all good
+        return r
+    elif loaded_count == 0:
+        # Could not be loaded
+        raise TypedloadValueError(
+            'Value of %s could not be loaded into %s' % (tname(value_type), tname(type_)),
+                value=value,
+                type_=type_,
+                exceptions=exceptions
+        )
+    else:
+        # Loaded more than once, conflict
+        raise TypedloadTypeError(
+            'Value of %s could be loaded into %s %d times' % (tname(value_type), tname(type_), loaded_count),
+                value=value,
+                type_=type_,
+                exceptions=exceptions
+        )
 
 
 def _enumload(l: Loader, value, type_) -> Enum:
