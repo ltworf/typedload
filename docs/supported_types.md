@@ -268,6 +268,20 @@ In : typedload.load({}, Union[A, B])
 Out: A(x=1)
 ```
 
+#### Finding ambiguity
+
+Typedload can't solve certain ambiguities, but setting `uniondebugconflict=True` will help detect them.
+
+```python
+In : typedload.load({}, Union[A, B], uniondebugconflict=True)
+TypedloadTypeError: Value of dict could be loaded into typing.Union[__main__.A, __main__.B] multiple times
+```
+
+So this setting can be used to find ambiguities and manually correct them.
+
+*NOTE*: The setting slows down the loading of unions, so it is recommended to use it only during tests or when designing the data structures, but not in production.
+
+
 typing.TypedDict
 ----------------
 
