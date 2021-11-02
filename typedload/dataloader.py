@@ -473,16 +473,12 @@ def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
     """
     This loads a Dict[str, Any] into a NamedTuple.
     """
-        #fields = set(type_.__annotations__.keys())
-        #optional_fields = set(getattr(type_, '_field_defaults', {}).keys())
-        #type_hints = type_.__annotations__
-        #necessary_fields
     from dataclasses import _MISSING_TYPE as DT_MISSING_TYPE
     fields = set(type_.__dataclass_fields__.keys())
-    optional_fields = {k for k,v in type_.__dataclass_fields__.items() if
-                        v.init == False or
-                        not isinstance(v.default, DT_MISSING_TYPE) or
-                        not isinstance(v.default_factory, DT_MISSING_TYPE)}
+    necessary_fields = {k for k,v in type_.__dataclass_fields__.items() if
+                        v.init == True and
+                        isinstance(v.default, DT_MISSING_TYPE) and
+                        isinstance(v.default_factory, DT_MISSING_TYPE)}
     type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
 
     #Name mangling
@@ -500,11 +496,10 @@ def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
     except ValueError as e:
         raise TypedloadValueError(str(e), value=value, type_=type_)
 
-    necessary_fields = fields.difference(optional_fields)
-    return _objloader(l, fields, necessary_fields, optional_fields, type_hints, value, type_)
+    return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
 
-def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], optional_fields: Set[str], type_hints, value: Dict[str, Any], type_) -> Any:
+def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hints, value: Dict[str, Any], type_) -> Any:
     try:
         vfields = set(value.keys())
     except AttributeError as e:
@@ -555,7 +550,7 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Any:
     type_hints = type_.__annotations__
     necessary_fields = fields.difference(optional_fields)
 
-    return _objloader(l, fields, necessary_fields, optional_fields, type_hints, value, type_)
+    return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
 
 def _typeddictload(l: Loader, value: Dict[str, Any], type_) -> Any:
@@ -563,20 +558,18 @@ def _typeddictload(l: Loader, value: Dict[str, Any], type_) -> Any:
     This loads a Dict[str, Any] into a NamedTuple.
     """
     fields = set(type_.__annotations__.keys())
-    optional_fields = set(getattr(type_, '_field_defaults', {}).keys())
     type_hints = type_.__annotations__
 
     if hasattr(type_, '__required_keys__') and hasattr(type_, '__optional_keys__'):
         # TypedDict, since 3.9
         necessary_fields = type_.__required_keys__
-        optional_fields = type_.__optional_keys__
     elif getattr(type_, '__total__', True) == False:
         # TypedDict, only for 3.8
         necessary_fields = set()
     else:
-        necessary_fields = fields.difference(optional_fields)
+        necessary_fields = fields
 
-    return _objloader(l, fields, necessary_fields, optional_fields, type_hints, value, type_)
+    return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
 
 def _unionload(l: Loader, value, type_) -> Any:
