@@ -45,7 +45,7 @@ def main():
 
     # Add current branch if it is not master
     current = check_output(['git', 'branch', '--show-current'], encoding='ascii').strip()
-    if current != 'master'
+    if current != 'master':
         tags.append(current)
 
     for i in tests:
