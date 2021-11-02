@@ -43,6 +43,11 @@ def main():
     # Sort by version
     tags.sort(key=lambda i: tuple(int(j) for j in i.split('.')))
 
+    # Add current branch if it is not master
+    current = check_output(['git', 'branch', '--show-current'], encoding='ascii').strip()
+    if current != 'master'
+        tags.append(current)
+
     for i in tests:
         print(f'Now running: {i}')
 
