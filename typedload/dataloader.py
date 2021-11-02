@@ -264,11 +264,6 @@ class Loader:
 
         func = self.handlers[index][1]
 
-        if self.dictequivalence:
-            # Convert argparse.Namespace to dictionary
-            if hasattr(value, '_get_kwargs'):
-                value = {k: v for k,v in value._get_kwargs()}
-
         try:
             return func(self, value, type_)
         except Exception as e:
@@ -468,7 +463,11 @@ def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hin
     try:
         vfields = set(value.keys())
     except AttributeError as e:
-        raise TypedloadAttributeError(str(e), value=value, type_=type_)
+        # Convert argparse.Namespace to dictionary
+        if l.dictequivalence and hasattr(value, '_get_kwargs'):
+                value = {k: v for k,v in value._get_kwargs()}
+        else:
+            raise TypedloadAttributeError(str(e), value=value, type_=type_)
 
     if necessary_fields.intersection(vfields) != necessary_fields:
         raise TypedloadValueError(
