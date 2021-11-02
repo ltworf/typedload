@@ -48,7 +48,7 @@ def main():
             print('\tRunning test with pydantic')
             pydantic_time = float(check_output(['python3', f'{tempdir}/{i}.py', '--pydantic']))
             f.write(f'{counter} "pydantic" {pydantic_time}\n')
-            for branch in tags[len(tags)-4:] + ['master']:
+            for branch in tags[len(tags) - 10:] + ['master']:
                 counter += 1
                 print(f'\tRunning test with {branch}')
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
