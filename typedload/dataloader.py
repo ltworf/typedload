@@ -256,11 +256,11 @@ class Loader:
                     type_=type_
                 )
 
-        # Add type to known types, to resolve ForwardRef later on
-        if self.frefs is not None and hasattr(type_, '__name__'):
-            typename = type_.__name__
-            if typename not in self.frefs:
-                self.frefs[typename] = type_
+            # Add type to known types, to resolve ForwardRef later on
+            if self.frefs is not None and hasattr(type_, '__name__'):
+                typename = type_.__name__
+                if typename not in self.frefs:
+                    self.frefs[typename] = type_
 
         func = self.handlers[index][1]
 
