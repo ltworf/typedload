@@ -1,5 +1,6 @@
 2.13
 ====
+* Separate and simpler handlers for NamedTuple, dataclass, attrs, TypedDict
 
 2.12
 ====
