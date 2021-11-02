@@ -39,41 +39,6 @@ __all__ = [
 T = TypeVar('T')
 
 
-class _FakeNamedTuple(tuple):
-    """
-    This class simulates a Python3.6 NamedTuple
-    instance.
-
-    It has the same hidden fields, so the same
-    loader for the NamedTuple.
-
-    It needs to be created with fields, field_types, field_defaults
-    """
-
-    def __new__(cls, fields):
-        return super(_FakeNamedTuple, cls).__new__(cls, tuple(fields))
-
-    @property
-    def _fields(self):
-        return self[0]
-
-    @property
-    def __annotations__(self):
-        return self[1]
-
-    @property
-    def _field_defaults(self):
-        return self[2]
-
-    def __call__(self, **kwargs):
-        try:
-            return self[3](**kwargs)
-        except TypeError as e:
-            raise TypedloadTypeError(str(e), type_=self[3], value=kwargs)
-        except Exception as e:
-            raise TypedloadException(str(e), type_=self[3], value=kwargs)
-
-
 class Loader:
     """
     A loader object that recursively loads data into
@@ -230,10 +195,10 @@ class Loader:
             (is_set, _setload),
             (is_frozenset, _frozensetload),
             (is_namedtuple, _namedtupleload),
-            (is_dataclass, _namedtupleload),
+            (is_dataclass, _dataclassload),
             (is_forwardref, _forwardrefload),
             (is_literal, _literalload),
-            (is_typeddict, _namedtupleload),
+            (is_typeddict, _typeddictload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
             (lambda type_: type_ in self.strconstructed, _strconstructload),
             (is_attrs, _attrload),
@@ -469,49 +434,40 @@ def _mangle_names(namesmap: Dict[str, str], value: Dict[str, Any], failonextra: 
     return r
 
 
-def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Any:
+def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
     """
     This loads a Dict[str, Any] into a NamedTuple.
     """
-    if not hasattr(type_, '__dataclass_fields__'):
-        fields = set(type_.__annotations__.keys())
-        optional_fields = set(getattr(type_, '_field_defaults', {}).keys())
-        type_hints = type_.__annotations__
-    else:
-        #dataclass
-        from dataclasses import _MISSING_TYPE as DT_MISSING_TYPE
-        fields = set(type_.__dataclass_fields__.keys())
-        optional_fields = {k for k,v in type_.__dataclass_fields__.items() if
-                           v.init == False or
-                           not isinstance(v.default, DT_MISSING_TYPE) or
-                           not isinstance(v.default_factory, DT_MISSING_TYPE)}
-        type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
+    from dataclasses import _MISSING_TYPE as DT_MISSING_TYPE
+    fields = set(type_.__dataclass_fields__.keys())
+    necessary_fields = {k for k,v in type_.__dataclass_fields__.items() if
+                        v.init == True and
+                        isinstance(v.default, DT_MISSING_TYPE) and
+                        isinstance(v.default_factory, DT_MISSING_TYPE)}
+    type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
 
-        #Name mangling
+    #Name mangling
 
-        # Prepare the list of the needed name changes
-        transforms = {}  # type: Dict[str, str]
-        for pyname in fields:
-            if type_.__dataclass_fields__[pyname].metadata:
-                name = type_.__dataclass_fields__[pyname].metadata.get(l.mangle_key)
-                if name:
-                    transforms[name] = pyname
+    # Prepare the list of the needed name changes
+    transforms = {}  # type: Dict[str, str]
+    for pyname in fields:
+        if type_.__dataclass_fields__[pyname].metadata:
+            name = type_.__dataclass_fields__[pyname].metadata.get(l.mangle_key)
+            if name:
+                transforms[name] = pyname
 
-        try:
-            value = _mangle_names(transforms, value, l.failonextra)
-        except ValueError as e:
-            raise TypedloadValueError(str(e), value=value, type_=type_)
+    try:
+        value = _mangle_names(transforms, value, l.failonextra)
+    except ValueError as e:
+        raise TypedloadValueError(str(e), value=value, type_=type_)
 
-    if hasattr(type_, '__required_keys__') and hasattr(type_, '__optional_keys__'):
-        # TypedDict, since 3.9
-        necessary_fields = type_.__required_keys__
-        optional_fields = type_.__optional_keys__
-    elif getattr(type_, '__total__', True) == False:
-        # TypedDict, only for 3.8
-        necessary_fields = set()
-    else:
-        necessary_fields = fields.difference(optional_fields)
+    return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
+
+def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hints, value: Dict[str, Any], type_) -> Any:
+    #FIXME remove this
+    if not isinstance(value, dict):
+        raise TypedloadTypeError('Expected dictionary, got %s' % tname(type(value)), type_=type_, value=value)
     try:
         vfields = set(value.keys())
     except AttributeError as e:
@@ -551,6 +507,37 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Any:
         raise TypedloadTypeError(e)
     except ValueError as e:
         raise TypedloadValueError(e)
+
+
+def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Any:
+    """
+    This loads a Dict[str, Any] into a NamedTuple.
+    """
+    fields = set(type_.__annotations__.keys())
+    optional_fields = set(getattr(type_, '_field_defaults', {}).keys())
+    type_hints = type_.__annotations__
+    necessary_fields = fields.difference(optional_fields)
+
+    return _objloader(l, fields, necessary_fields, type_hints, value, type_)
+
+
+def _typeddictload(l: Loader, value: Dict[str, Any], type_) -> Any:
+    """
+    This loads a Dict[str, Any] into a NamedTuple.
+    """
+    fields = set(type_.__annotations__.keys())
+    type_hints = type_.__annotations__
+
+    if hasattr(type_, '__required_keys__') and hasattr(type_, '__optional_keys__'):
+        # TypedDict, since 3.9
+        necessary_fields = type_.__required_keys__
+    elif getattr(type_, '__total__', True) == False:
+        # TypedDict, only for 3.8
+        necessary_fields = set()
+    else:
+        necessary_fields = fields
+
+    return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
 
 def _unionload(l: Loader, value, type_) -> Any:
@@ -674,18 +661,16 @@ def _datetimeload(l: Loader, value, type_) -> Union[datetime.date, datetime.time
 
 
 def _attrload(l, value, type_):
-    if not isinstance(value, dict):
-        raise TypedloadTypeError('Expected dictionary, got %s' % tname(type(value)), type_=type_, value=value)
-    value = value.copy()
-    names = []
-    defaults = {}
-    types = {}
+    from attr._make import _Nothing as NOTHING
+
+    fields = {i.name for i in type_.__attrs_attrs__}
+    necessary_fields = set()
+    type_hints = {i.name: i.type for i in type_.__attrs_attrs__}
     namesmap = {}  # type: Dict[str, str]
 
     for attribute in type_.__attrs_attrs__:
-        names.append(attribute.name)
-        types[attribute.name] = attribute.type
-        defaults[attribute.name] = attribute.default
+        if attribute.default is NOTHING and attribute.init:
+            necessary_fields.add(attribute.name)
 
         # Manage name mangling
         if l.mangle_key in attribute.metadata:
@@ -696,14 +681,7 @@ def _attrload(l, value, type_):
     except ValueError as e:
         raise TypedloadValueError(str(e), value=value, type_=type_)
 
-    t = _FakeNamedTuple((
-        tuple(names),
-        types,
-        defaults,
-        type_,
-    ))
-
-    return _namedtupleload(l, value, t)
+    return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
 
 def _strconstructload(l: Loader, value, type_):
