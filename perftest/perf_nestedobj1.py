@@ -37,7 +37,7 @@ class Child(NamedTuple):
 
 
 class Data(NamedTuple):
-    data: List[int]
+    data: List[Child]
 
 
 data = {'data': [{'value': i} for i in range(30000)]}
