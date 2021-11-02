@@ -28,6 +28,8 @@ def main():
         'perf_intlist',
         'perf_numunionlist',
         'perf_nestedobj1',
+        'perf_nestedobj2',
+        'perf_nestedobj3',
     ]
 
     tempdir = mkdtemp()
@@ -40,6 +42,11 @@ def main():
     tags = [i for i in tags if '-' not in i and ',' not in i]
     # Sort by version
     tags.sort(key=lambda i: tuple(int(j) for j in i.split('.')))
+
+    # Add current branch if it is not master
+    current = check_output(['git', 'branch', '--show-current'], encoding='ascii').strip()
+    if current != 'master'
+        tags.append(current)
 
     for i in tests:
         print(f'Now running: {i}')
