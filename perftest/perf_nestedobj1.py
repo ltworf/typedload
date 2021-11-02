@@ -40,7 +40,7 @@ class Data(NamedTuple):
     data: List[Child]
 
 
-data = {'data': [{'value': i} for i in range(30000)]}
+data = {'data': [{'value': i} for i in range(300000)]}
 
 
 if sys.argv[1] == '--typedload':
