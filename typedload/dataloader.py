@@ -465,9 +465,6 @@ def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
 
 
 def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hints, value: Dict[str, Any], type_) -> Any:
-    #FIXME remove this
-    if not isinstance(value, dict):
-        raise TypedloadTypeError('Expected dictionary, got %s' % tname(type(value)), type_=type_, value=value)
     try:
         vfields = set(value.keys())
     except AttributeError as e:

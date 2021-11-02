@@ -192,12 +192,13 @@ class TestMangling(unittest.TestCase):
 
 class TestAttrExceptions(unittest.TestCase):
 
-    def test_wrongtype(self):
+    def test_wrongtype_simple(self):
         try:
             load(3, Person)
-        except exceptions.TypedloadTypeError:
+        except exceptions.TypedloadAttributeError:
             pass
 
+    def test_wrongtype_nested(self):
         data = {
             'course': 'how to be a corsair',
             'students': [
@@ -207,7 +208,7 @@ class TestAttrExceptions(unittest.TestCase):
         }
         try:
             load(data, Students)
-        except exceptions.TypedloadTypeError as e:
+        except exceptions.TypedloadAttributeError as e:
             assert e.trace[-1].annotation[1] == 1
 
     def test_index(self):

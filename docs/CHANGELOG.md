@@ -1,6 +1,7 @@
 2.13
 ====
 * Separate and simpler handlers for NamedTuple, dataclass, attrs, TypedDict
+* Allow duck typing when loading attr (allow any dict-like class to be used)
 
 2.12
 ====
