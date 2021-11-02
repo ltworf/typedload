@@ -695,7 +695,6 @@ def _datetimeload(l: Loader, value, type_) -> Union[datetime.date, datetime.time
 def _attrload(l, value, type_):
     if not isinstance(value, dict):
         raise TypedloadTypeError('Expected dictionary, got %s' % tname(type(value)), type_=type_, value=value)
-    value = value.copy()
     names = []
     defaults = {}
     types = {}
