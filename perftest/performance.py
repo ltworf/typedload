@@ -26,6 +26,7 @@ from shutil import copy, rmtree
 def main():
     tests = [
         'perf_intlist',
+        'perf_numunionlist',
     ]
 
     tempdir = mkdtemp()
