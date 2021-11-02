@@ -16,27 +16,21 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
-from typing import List, NamedTuple
-import sys
 
-from typedload import load
-import pydantic
-
-from common import timeit
+from time import monotonic as time
 
 
-class DataPy(pydantic.BaseModel):
-    data: List[int]
+def timeit(f) -> float:
+    '''
+    f is a function taking no parameters.
 
-
-class Data(NamedTuple):
-    data: List[int]
-
-
-data = {'data': list(range(3000000))}
-
-
-if sys.argv[1] == '--typedload':
-    print(timeit(lambda: load(data, Data)))
-elif sys.argv[1] == '--pydantic':
-    print(timeit(lambda: DataPy(**data)))
+    It gets called multiple times to try and reduce
+    measure error.
+    '''
+    r = []
+    for i in range(5):
+        begin = time()
+        f()
+        end = time()
+        r.append(end - begin)
+    return min(r)

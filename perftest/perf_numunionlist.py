@@ -16,7 +16,7 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
-from typing import List, NamedTuple
+from typing import List, NamedTuple, Union
 import sys
 
 from typedload import load
@@ -26,14 +26,14 @@ from common import timeit
 
 
 class DataPy(pydantic.BaseModel):
-    data: List[int]
+    data: List[Union[int, float]]
 
 
 class Data(NamedTuple):
-    data: List[int]
+    data: List[Union[int, float]]
 
 
-data = {'data': list(range(3000000))}
+data = {'data': [i if i % 2 else float(i) for i in range(3000000)]}
 
 
 if sys.argv[1] == '--typedload':

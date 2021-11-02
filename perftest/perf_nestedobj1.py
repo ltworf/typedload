@@ -24,16 +24,23 @@ import pydantic
 
 from common import timeit
 
+class ChildPy(pydantic.BaseModel):
+    value: int
+
 
 class DataPy(pydantic.BaseModel):
-    data: List[int]
+    data: List[ChildPy]
+
+
+class Child(NamedTuple):
+    value: int
 
 
 class Data(NamedTuple):
-    data: List[int]
+    data: List[Child]
 
 
-data = {'data': list(range(3000000))}
+data = {'data': [{'value': i} for i in range(300000)]}
 
 
 if sys.argv[1] == '--typedload':

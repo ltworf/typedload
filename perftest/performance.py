@@ -19,14 +19,27 @@
 
 
 from subprocess import check_output, DEVNULL
+from tempfile import mkdtemp
+from shutil import copy, rmtree
 
 
 def main():
     tests = [
         'perf_intlist',
+        'perf_numunionlist',
+        'perf_nestedobj1',
     ]
 
+    tempdir = mkdtemp()
+    for i in ['common'] + tests:
+        copy(f'perftest/{i}.py', tempdir)
+
+
     tags = check_output(['git', 'tag', '--list'], encoding='ascii').strip().split('\n')
+    # Skip minor versions
+    tags = [i for i in tags if '-' not in i and ',' not in i]
+    # Sort by version
+    tags.sort(key=lambda i: tuple(int(j) for j in i.split('.')))
 
     for i in tests:
         print(f'Now running: {i}')
@@ -35,17 +48,19 @@ def main():
             counter = 0
 
             print('\tRunning test with pydantic')
-            pydantic_time = float(check_output(['python3', f'perftest/{i}.py', '--pydantic']))
+            pydantic_time = float(check_output(['python3', f'{tempdir}/{i}.py', '--pydantic']))
             f.write(f'{counter} "pydantic" {pydantic_time}\n')
-            for branch in tags[len(tags)-4:] + ['master']:
+            for branch in tags[len(tags) - 10:] + ['master']:
                 counter += 1
                 print(f'\tRunning test with {branch}')
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
-                typedload_time = float(check_output(['python3', f'perftest/{i}.py', '--typedload']))
+                typedload_time = float(check_output(['python3', f'{tempdir}/{i}.py', '--typedload']))
                 f.write(f'{counter} "typedload {branch}" {typedload_time}\n')
 
             counter += 1
             f.write(f'{counter} "0" {0}\n')
+    rmtree(tempdir)
+
 
 if __name__ == '__main__':
     main()
