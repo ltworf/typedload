@@ -39,41 +39,6 @@ __all__ = [
 T = TypeVar('T')
 
 
-class _FakeNamedTuple(tuple):
-    """
-    This class simulates a Python3.6 NamedTuple
-    instance.
-
-    It has the same hidden fields, so the same
-    loader for the NamedTuple.
-
-    It needs to be created with fields, field_types, field_defaults
-    """
-
-    def __new__(cls, fields):
-        return super(_FakeNamedTuple, cls).__new__(cls, tuple(fields))
-
-    @property
-    def _fields(self):
-        return self[0]
-
-    @property
-    def __annotations__(self):
-        return self[1]
-
-    @property
-    def _field_defaults(self):
-        return self[2]
-
-    def __call__(self, **kwargs):
-        try:
-            return self[3](**kwargs)
-        except TypeError as e:
-            raise TypedloadTypeError(str(e), type_=self[3], value=kwargs)
-        except Exception as e:
-            raise TypedloadException(str(e), type_=self[3], value=kwargs)
-
-
 class Loader:
     """
     A loader object that recursively loads data into
@@ -500,6 +465,9 @@ def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
 
 
 def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hints, value: Dict[str, Any], type_) -> Any:
+    #FIXME remove this
+    if not isinstance(value, dict):
+        raise TypedloadTypeError('Expected dictionary, got %s' % tname(type(value)), type_=type_, value=value)
     try:
         vfields = set(value.keys())
     except AttributeError as e:
@@ -693,17 +661,16 @@ def _datetimeload(l: Loader, value, type_) -> Union[datetime.date, datetime.time
 
 
 def _attrload(l, value, type_):
-    if not isinstance(value, dict):
-        raise TypedloadTypeError('Expected dictionary, got %s' % tname(type(value)), type_=type_, value=value)
-    names = []
-    defaults = {}
-    types = {}
+    from attr._make import _Nothing as NOTHING
+
+    fields = {i.name for i in type_.__attrs_attrs__}
+    necessary_fields = set()
+    type_hints = {i.name: i.type for i in type_.__attrs_attrs__}
     namesmap = {}  # type: Dict[str, str]
 
     for attribute in type_.__attrs_attrs__:
-        names.append(attribute.name)
-        types[attribute.name] = attribute.type
-        defaults[attribute.name] = attribute.default
+        if attribute.default is NOTHING and attribute.init:
+            necessary_fields.add(attribute.name)
 
         # Manage name mangling
         if l.mangle_key in attribute.metadata:
@@ -714,14 +681,7 @@ def _attrload(l, value, type_):
     except ValueError as e:
         raise TypedloadValueError(str(e), value=value, type_=type_)
 
-    t = _FakeNamedTuple((
-        tuple(names),
-        types,
-        defaults,
-        type_,
-    ))
-
-    return _namedtupleload(l, value, t)
+    return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
 
 def _strconstructload(l: Loader, value, type_):
