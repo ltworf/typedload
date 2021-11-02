@@ -463,6 +463,15 @@ def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
 
 
 def _dictequivalence(l: Loader, value: Any) -> Dict:
+    '''
+    Helper function to convert classes that are functionally
+    the same as a dict into a dict.
+
+    At the moment the only class that can be converted is
+    argparse.Namespace.
+
+    in all other cases this simply returns value.
+    '''
     # Convert argparse.Namespace to dictionary
     if l.dictequivalence and hasattr(value, '_get_kwargs'):
         return {k: v for k,v in value._get_kwargs()}
