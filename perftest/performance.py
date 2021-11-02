@@ -27,6 +27,7 @@ def main():
     tests = [
         'perf_intlist',
         'perf_numunionlist',
+        'perf_nestedobj1',
     ]
 
     tempdir = mkdtemp()
