@@ -28,6 +28,8 @@ def main():
         'perf_intlist',
         'perf_numunionlist',
         'perf_nestedobj1',
+        'perf_nestedobj2',
+        'perf_nestedobj3',
     ]
 
     tempdir = mkdtemp()
