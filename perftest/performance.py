@@ -29,7 +29,7 @@ def main():
     ]
 
     tempdir = mkdtemp()
-    for i in tests:
+    for i in ['common'] + tests:
         copy(f'perftest/{i}.py', tempdir)
 
 
