@@ -256,18 +256,13 @@ class Loader:
                     type_=type_
                 )
 
-        # Add type to known types, to resolve ForwardRef later on
-        if self.frefs is not None and hasattr(type_, '__name__'):
-            typename = type_.__name__
-            if typename not in self.frefs:
-                self.frefs[typename] = type_
+            # Add type to known types, to resolve ForwardRef later on
+            if self.frefs is not None and hasattr(type_, '__name__'):
+                typename = type_.__name__
+                if typename not in self.frefs:
+                    self.frefs[typename] = type_
 
         func = self.handlers[index][1]
-
-        if self.dictequivalence:
-            # Convert argparse.Namespace to dictionary
-            if hasattr(value, '_get_kwargs'):
-                value = {k: v for k,v in value._get_kwargs()}
 
         try:
             return func(self, value, type_)
@@ -358,6 +353,9 @@ def _dictload(l: Loader, value, type_) -> Dict:
     Recursively loads both keys and values.
     """
     key_type, value_type = type_.__args__
+
+    value = _dictequivalence(l, value)
+
     try:
         return {
             l.load(k, key_type, annotation=Annotation(AnnotationType.KEY, k)): l.load(v, value_type, annotation=Annotation(AnnotationType.VALUE, v))
@@ -464,11 +462,33 @@ def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
     return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
 
+def _dictequivalence(l: Loader, value: Any) -> Dict:
+    '''
+    Helper function to convert classes that are functionally
+    the same as a dict into a dict.
+
+    At the moment the only class that can be converted is
+    argparse.Namespace.
+
+    in all other cases this simply returns value.
+    '''
+    # Convert argparse.Namespace to dictionary
+    if l.dictequivalence and hasattr(value, '_get_kwargs'):
+        return {k: v for k,v in value._get_kwargs()}
+    return value
+
+
 def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hints, value: Dict[str, Any], type_) -> Any:
     try:
         vfields = set(value.keys())
     except AttributeError as e:
-        raise TypedloadAttributeError(str(e), value=value, type_=type_)
+        newvalue = _dictequivalence(l, value)
+
+        if newvalue is value:
+            raise TypedloadAttributeError(str(e), value=value, type_=type_)
+        else:
+            value = newvalue
+            vfields = set(value.keys())
 
     if necessary_fields.intersection(vfields) != necessary_fields:
         raise TypedloadValueError(
