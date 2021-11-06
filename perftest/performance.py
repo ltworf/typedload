@@ -24,11 +24,11 @@ from shutil import copy, rmtree
 
 def main():
     tests = [
-        'perf_intlist',
-        'perf_numunionlist',
-        'perf_nestedobj1',
-        'perf_nestedobj2',
-        'perf_nestedobj3',
+        'load list of ints',
+        'load list of floats and ints',
+        'load list of NamedTuple objects',
+        'load list of dataclass objects',
+        'load list of attrs objects',
     ]
 
     tempdir = mkdtemp()
