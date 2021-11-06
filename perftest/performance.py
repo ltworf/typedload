@@ -22,7 +22,6 @@ from subprocess import check_output, DEVNULL
 from tempfile import mkdtemp
 from shutil import copy, rmtree
 
-
 def main():
     tests = [
         'perf_intlist',
@@ -37,6 +36,8 @@ def main():
         copy(f'perftest/{i}.py', tempdir)
 
 
+
+
     tags = check_output(['git', 'tag', '--list'], encoding='ascii').strip().split('\n')
     # Skip minor versions
     tags = [i for i in tags if '-' not in i and ',' not in i]
@@ -48,6 +49,9 @@ def main():
     if current != 'master':
         tags.append(current)
 
+    plotcmd = []
+    maxtime = 0
+
     for i in tests:
         print(f'Now running: {i}')
 
@@ -56,6 +60,7 @@ def main():
 
             print('\tRunning test with pydantic')
             pydantic_time = float(check_output(['python3', f'{tempdir}/{i}.py', '--pydantic']))
+            maxtime = maxtime if maxtime > pydantic_time else pydantic_time
             f.write(f'{counter} "pydantic" {pydantic_time}\n')
             for branch in tags[len(tags) - 10:] + ['master']:
                 counter += 1
@@ -63,10 +68,20 @@ def main():
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
                 typedload_time = float(check_output(['python3', f'{tempdir}/{i}.py', '--typedload']))
                 f.write(f'{counter} "typedload {branch}" {typedload_time}\n')
+                maxtime = maxtime if maxtime > typedload_time else typedload_time
 
             counter += 1
-            f.write(f'{counter} "0" {0}\n')
+        plotcmd.append(f'"{i}.dat" using 1:3:xtic(2) with linespoint title "{i}"')
     rmtree(tempdir)
+
+
+    with open('perf.p', 'wt') as f:
+        print('set style fill solid', file=f)
+        print('set ylabel "seconds"', file=f)
+        print('set xlabel "package"', file=f)
+        print(f'set title "typedload performance test"', file=f)
+        print(f'set yrange [0:{maxtime}]', file=f)
+        print('plot ' + ','.join(plotcmd), file=f)
 
 
 if __name__ == '__main__':
