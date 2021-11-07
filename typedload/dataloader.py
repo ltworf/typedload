@@ -580,12 +580,8 @@ def _unionload(l: Loader, value, type_) -> Any:
     exceptions = []
 
     # Give a score to the types
-    sorted_args = []  # type: List[Type]
-    for t in args:
-        if t not in l.basictypes:
-            sorted_args.insert(0, t)
-        else:
-            sorted_args.append(t)
+    sorted_args = list(args)  # type: List[Type]
+    sorted_args.sort(key=lambda i: i in l.basictypes)
 
     # Try all types
     loaded_count = 0
