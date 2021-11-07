@@ -69,7 +69,7 @@ def main():
                 print(f'\tRunning test with {branch}')
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
                 typedload_time = float(check_output(['python3', f'{tempdir}/{i}.py', '--typedload']))
-                f.write(f'{counter} "typedload {branch}" {typedload_time}\n')
+                f.write(f'{counter} "{branch}" {typedload_time}\n')
                 maxtime = maxtime if maxtime > typedload_time else typedload_time
 
             counter += 1
