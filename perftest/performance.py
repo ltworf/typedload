@@ -30,6 +30,7 @@ def main():
         'load list of NamedTuple objects',
         'load list of dataclass objects',
         'load list of attrs objects',
+        'realistic union of objects as namedtuple',
     ]
 
     outdir = Path('perftest.output')
