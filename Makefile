@@ -33,6 +33,7 @@ clean:
 	$(RM) typedload_`head -1 CHANGELOG`.orig.tar.gz.asc
 	$(RM) -r deb-pkg
 	$(RM) setup.py
+	$(RM) -r perftest.output
 
 .PHONY: dist
 dist: clean setup.py

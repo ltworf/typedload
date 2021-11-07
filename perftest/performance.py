@@ -21,6 +21,7 @@
 from subprocess import check_output, DEVNULL
 from tempfile import mkdtemp
 from shutil import copy, rmtree
+from pathlib import Path
 
 def main():
     tests = [
@@ -31,12 +32,13 @@ def main():
         'load list of attrs objects',
     ]
 
+    outdir = Path('perftest.output')
+    if not outdir.exists():
+        outdir.mkdir()
+
     tempdir = mkdtemp()
     for i in ['common'] + tests:
         copy(f'perftest/{i}.py', tempdir)
-
-
-
 
     tags = check_output(['git', 'tag', '--list'], encoding='ascii').strip().split('\n')
     # Skip minor versions
@@ -55,7 +57,7 @@ def main():
     for i in tests:
         print(f'Now running: {i}')
 
-        with open(f'{i}.dat', 'wt') as f:
+        with open(outdir / f'{i}.dat', 'wt') as f:
             counter = 0
 
             print('\tRunning test with pydantic')
@@ -74,14 +76,17 @@ def main():
         plotcmd.append(f'"{i}.dat" using 1:3:xtic(2) with linespoint title "{i}"')
     rmtree(tempdir)
 
-
-    with open('perf.p', 'wt') as f:
+    gnuplot_script = outdir / 'perf.p'
+    with open(gnuplot_script, 'wt') as f:
         print('set style fill solid', file=f)
         print('set ylabel "seconds"', file=f)
         print('set xlabel "package"', file=f)
         print(f'set title "typedload performance test"', file=f)
         print(f'set yrange [0:{maxtime}]', file=f)
         print('plot ' + ','.join(plotcmd), file=f)
+    print(f'Gnuplot script generated in {gnuplot_script}. You can execute')
+    print(f'load "{gnuplot_script}"')
+    print(f'inside a gnuplot shell')
 
 
 if __name__ == '__main__':
