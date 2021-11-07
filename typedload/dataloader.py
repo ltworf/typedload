@@ -569,10 +569,7 @@ def _unionload(l: Loader, value, type_) -> Any:
 
     If no suitable type is found, an exception is raised.
     """
-    try:
-        args = uniontypes(type_)
-    except AttributeError:
-        raise TypedloadAttributeError('The typing API for this Python version is unknown', type_=type_, value=value)
+    args = uniontypes(type_)
 
     value_type = type(value)
 
