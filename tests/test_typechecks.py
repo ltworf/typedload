@@ -130,12 +130,12 @@ class TestChecks(unittest.TestCase):
         assert typechecks.is_forwardref(ForwardRef('SomeType'))
 
     def test_uniontypes(self):
-        assert typechecks.uniontypes(Optional[bool]) == {typechecks.NONETYPE, bool}
-        assert typechecks.uniontypes(Optional[int]) == {typechecks.NONETYPE, int}
-        assert typechecks.uniontypes(Optional[Union[int, float]]) == {typechecks.NONETYPE, float, int}
-        assert typechecks.uniontypes(Optional[Union[int, str, Optional[float]]]) == {typechecks.NONETYPE, str, int, float}
+        assert set(typechecks.uniontypes(Optional[bool])) == {typechecks.NONETYPE, bool}
+        assert set(typechecks.uniontypes(Optional[int])) == {typechecks.NONETYPE, int}
+        assert set(typechecks.uniontypes(Optional[Union[int, float]])) == {typechecks.NONETYPE, float, int}
+        assert set(typechecks.uniontypes(Optional[Union[int, str, Optional[float]]])) == {typechecks.NONETYPE, str, int, float}
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(AttributeError):
             typechecks.uniontypes(Union[int])
 
     def test_any(self):
