@@ -574,7 +574,7 @@ def _unionload(l: Loader, value, type_) -> Any:
     value_type = type(value)
 
     # Do not convert basic types, if possible
-    if value_type in args.intersection(l.basictypes):
+    if value_type in l.basictypes and value_type in args:
         return value
 
     exceptions = []
