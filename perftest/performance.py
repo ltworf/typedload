@@ -47,10 +47,12 @@ def main():
     # Sort by version
     tags.sort(key=lambda i: tuple(int(j) for j in i.split('.')))
 
-    # Add current branch if it is not master
+    # Add current branch and master
     current = check_output(['git', 'branch', '--show-current'], encoding='ascii').strip()
     if current != 'master':
-        tags.append(current)
+        tags += ['master', current]
+    else:
+        tags.append('master')
 
     plotcmd = []
     maxtime = 0
@@ -65,7 +67,7 @@ def main():
             pydantic_time = float(check_output(['python3', f'{tempdir}/{i}.py', '--pydantic']))
             maxtime = maxtime if maxtime > pydantic_time else pydantic_time
             f.write(f'{counter} "pydantic" {pydantic_time}\n')
-            for branch in tags[len(tags) - 10:] + ['master']:
+            for branch in tags[len(tags) - 10:]:
                 counter += 1
                 print(f'\tRunning test with {branch}')
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
