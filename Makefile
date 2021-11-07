@@ -33,6 +33,7 @@ clean:
 	$(RM) typedload_`head -1 CHANGELOG`.orig.tar.gz.asc
 	$(RM) -r deb-pkg
 	$(RM) setup.py
+	$(RM) -r perftest.output
 
 .PHONY: dist
 dist: clean setup.py
@@ -76,3 +77,10 @@ site: mkdocs.yml README.md docs/examples.md docs/origin_story.md
 	#mv *.html site/docstring
 	#ln -s typedload.html site/docstring/index.html
 	mkdocs gh-deploy
+
+perftest.output/perf.p:
+	perftest/performance.py
+
+.PHONY: gnuplot
+gnuplot: perftest.output/perf.p
+	cd "perftest.output"; gnuplot -persist -c perf.p

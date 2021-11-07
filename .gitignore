@@ -10,4 +10,4 @@ deb-pkg/
 dist/
 site/
 setup.py
-perf*.dat
+perftest.output

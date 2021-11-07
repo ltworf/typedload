@@ -21,21 +21,24 @@
 from subprocess import check_output, DEVNULL
 from tempfile import mkdtemp
 from shutil import copy, rmtree
-
+from pathlib import Path
 
 def main():
     tests = [
-        'perf_intlist',
-        'perf_numunionlist',
-        'perf_nestedobj1',
-        'perf_nestedobj2',
-        'perf_nestedobj3',
+        'load list of ints',
+        'load list of floats and ints',
+        'load list of NamedTuple objects',
+        'load list of dataclass objects',
+        'load list of attrs objects',
     ]
+
+    outdir = Path('perftest.output')
+    if not outdir.exists():
+        outdir.mkdir()
 
     tempdir = mkdtemp()
     for i in ['common'] + tests:
         copy(f'perftest/{i}.py', tempdir)
-
 
     tags = check_output(['git', 'tag', '--list'], encoding='ascii').strip().split('\n')
     # Skip minor versions
@@ -48,25 +51,42 @@ def main():
     if current != 'master':
         tags.append(current)
 
+    plotcmd = []
+    maxtime = 0
+
     for i in tests:
         print(f'Now running: {i}')
 
-        with open(f'{i}.dat', 'wt') as f:
+        with open(outdir / f'{i}.dat', 'wt') as f:
             counter = 0
 
             print('\tRunning test with pydantic')
             pydantic_time = float(check_output(['python3', f'{tempdir}/{i}.py', '--pydantic']))
+            maxtime = maxtime if maxtime > pydantic_time else pydantic_time
             f.write(f'{counter} "pydantic" {pydantic_time}\n')
             for branch in tags[len(tags) - 10:] + ['master']:
                 counter += 1
                 print(f'\tRunning test with {branch}')
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
                 typedload_time = float(check_output(['python3', f'{tempdir}/{i}.py', '--typedload']))
-                f.write(f'{counter} "typedload {branch}" {typedload_time}\n')
+                f.write(f'{counter} "{branch}" {typedload_time}\n')
+                maxtime = maxtime if maxtime > typedload_time else typedload_time
 
             counter += 1
-            f.write(f'{counter} "0" {0}\n')
+        plotcmd.append(f'"{i}.dat" using 1:3:xtic(2) with linespoint title "{i}"')
     rmtree(tempdir)
+
+    gnuplot_script = outdir / 'perf.p'
+    with open(gnuplot_script, 'wt') as f:
+        print('set style fill solid', file=f)
+        print('set ylabel "seconds"', file=f)
+        print('set xlabel "package"', file=f)
+        print(f'set title "typedload performance test"', file=f)
+        print(f'set yrange [0:{maxtime}]', file=f)
+        print('plot ' + ','.join(plotcmd), file=f)
+    print(f'Gnuplot script generated in {gnuplot_script}. You can execute')
+    print(f'load "{gnuplot_script}"')
+    print(f'inside a gnuplot shell')
 
 
 if __name__ == '__main__':
