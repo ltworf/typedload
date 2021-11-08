@@ -23,6 +23,12 @@ from tempfile import mkdtemp
 from shutil import copy, rmtree
 from pathlib import Path
 
+
+def parse_performance(cmd: list[str]) -> tuple[float, float]:
+    out = check_output(cmd).replace(b'(', b'').replace(b')', b'').replace(b' ', b'')
+    return tuple(float(i) for i in out.split(b',', 1))
+
+
 def main():
     tests = [
         'load list of ints',
@@ -64,24 +70,24 @@ def main():
             counter = 0
 
             print('\tRunning test with pydantic')
-            pydantic_time = float(check_output(['python3', f'{tempdir}/{i}.py', '--pydantic']))
+            pydantic_time, maxduration = parse_performance(['python3', f'{tempdir}/{i}.py', '--pydantic'])
             maxtime = maxtime if maxtime > pydantic_time else pydantic_time
-            f.write(f'{counter} "pydantic" {pydantic_time}\n')
+            f.write(f'{counter} "pydantic" {pydantic_time} {maxduration}\n')
             for branch in tags[len(tags) - 10:]:
                 counter += 1
                 print(f'\tRunning test with {branch}')
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
-                typedload_time = float(check_output(['python3', f'{tempdir}/{i}.py', '--typedload']))
-                f.write(f'{counter} "{branch}" {typedload_time}\n')
+                typedload_time, maxduration = parse_performance(['python3', f'{tempdir}/{i}.py', '--typedload'])
+                f.write(f'{counter} "{branch}" {typedload_time} {maxduration}\n')
                 maxtime = maxtime if maxtime > typedload_time else typedload_time
 
             counter += 1
-        plotcmd.append(f'"{i}.dat" using 1:3:xtic(2) with linespoint title "{i}"')
+        plotcmd.append(f'"{i}.dat" using 1:3:4 with filledcurves title "", "" using 1:3:xtic(2) with linespoint title "{i}"')
     rmtree(tempdir)
 
     gnuplot_script = outdir / 'perf.p'
     with open(gnuplot_script, 'wt') as f:
-        print('set style fill solid', file=f)
+        print('set style fill transparent solid 0.2 noborder', file=f)
         print('set ylabel "seconds"', file=f)
         print('set xlabel "package"', file=f)
         print(f'set title "typedload performance test"', file=f)
