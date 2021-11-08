@@ -71,7 +71,7 @@ def main():
 
             print('\tRunning test with pydantic')
             pydantic_time, maxduration = parse_performance(['python3', f'{tempdir}/{i}.py', '--pydantic'])
-            maxtime = maxtime if maxtime > pydantic_time else pydantic_time
+            maxtime = maxtime if maxtime > maxduration else maxduration
             f.write(f'{counter} "pydantic" {pydantic_time} {maxduration}\n')
             for branch in tags[len(tags) - 10:]:
                 counter += 1
@@ -79,7 +79,7 @@ def main():
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
                 typedload_time, maxduration = parse_performance(['python3', f'{tempdir}/{i}.py', '--typedload'])
                 f.write(f'{counter} "{branch}" {typedload_time} {maxduration}\n')
-                maxtime = maxtime if maxtime > typedload_time else typedload_time
+                maxtime = maxtime if maxtime > maxduration else maxduration
 
             counter += 1
         plotcmd.append(f'"{i}.dat" using 1:3:4 with filledcurves title "", "" using 1:3:xtic(2) with linespoint title "{i}"')
