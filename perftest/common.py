@@ -18,9 +18,10 @@
 
 
 from time import monotonic as time
+from typing import Tuple
 
 
-def timeit(f) -> float:
+def timeit(f) -> Tuple[float, float]:
     '''
     f is a function taking no parameters.
 
@@ -33,4 +34,4 @@ def timeit(f) -> float:
         f()
         end = time()
         r.append(end - begin)
-    return min(r)
+    return min(r), max(r)
