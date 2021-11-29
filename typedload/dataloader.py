@@ -481,6 +481,9 @@ def _dictequivalence(l: Loader, value: Any) -> Dict:
 
 
 def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hints, value: Dict[str, Any], type_) -> Any:
+    '''
+    Helper function to load dict-like data into an object.
+    '''
     try:
         vfields = set(value.keys())
     except AttributeError as e:
