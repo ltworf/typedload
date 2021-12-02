@@ -1,6 +1,7 @@
-typedload (2.13-1) UNRELEASED; urgency=medium
+typedload (2.13-1) unstable; urgency=low
 
   * New upstream release
+  * Changed LGPL exceptions
 
  -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Wed, 27 Oct 2021 23:55:34 +0200
 
