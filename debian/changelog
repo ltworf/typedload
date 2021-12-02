@@ -1,4 +1,4 @@
-typedload (2.13-1) UNRELEASED; urgency=medium
+typedload (2.13-1) unstable; urgency=low
 
   * New upstream release
   * Changed LGPL exceptions
