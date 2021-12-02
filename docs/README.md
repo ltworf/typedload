@@ -132,5 +132,3 @@ Used by
 As dependency, typedload is used by those entities. Feel free to add to the list.
 
 * Several universities around the world
-* United States Air Force
-* Exxonmobil
