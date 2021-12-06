@@ -193,7 +193,7 @@ class TestMangling(unittest.TestCase):
         @attrs
         class A:
             a = attrib(type=str, metadata={'name': 'q'})
-        with self.assertRaises(exceptions.TypedloadException):
+        with self.assertRaises(exceptions.TypedloadAttributeError):
             load(1, A)
 
 class TestAttrExceptions(unittest.TestCase):

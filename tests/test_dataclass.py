@@ -182,5 +182,5 @@ class TestDataclassMangle(unittest.TestCase):
         @dataclass
         class A:
             a: str = field(metadata={'name': 'q'})
-        with self.assertRaises(exceptions.TypedloadException):
+        with self.assertRaises(exceptions.TypedloadAttributeError):
             load(1, A)
