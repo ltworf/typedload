@@ -177,3 +177,10 @@ class TestDataclassMangle(unittest.TestCase):
         assert load({'q': 1, 'b': 'ciao'}, Mangle, mangle_key='alt') == Mangle(1, 'ciao')
         assert dump(Mangle(1, 'ciao')) == {'b': 1, 'a': 'ciao'}
         assert dump(Mangle(1, 'ciao'), mangle_key='alt') == {'q': 1, 'b': 'ciao'}
+
+    def test_correct_exception_when_mangling(self):
+        @dataclass
+        class A:
+            a: str = field(metadata={'name': 'q'})
+        with self.assertRaises(exceptions.TypedloadException):
+            load(1, A)

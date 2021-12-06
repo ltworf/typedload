@@ -189,6 +189,12 @@ class TestMangling(unittest.TestCase):
         assert dump(Mangle(1, 'ciao')) == {'b': 1, 'a': 'ciao'}
         assert dump(Mangle(1, 'ciao'), mangle_key='alt') == {'q': 1, 'b': 'ciao'}
 
+    def test_correct_exception_when_mangling(self):
+        @attrs
+        class A:
+            a: str = attrib(metadata={'name': 'q'})
+        with self.assertRaises(exceptions.TypedloadException):
+            load(1, A)
 
 class TestAttrExceptions(unittest.TestCase):
 
@@ -227,3 +233,4 @@ class TestAttrExceptions(unittest.TestCase):
         except Exception as e:
             assert e.trace[-2].annotation[1] == 'students'
             assert e.trace[-1].annotation[1] == 2
+
