@@ -481,6 +481,9 @@ def _dictequivalence(l: Loader, value: Any) -> Dict:
 
 
 def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hints, value: Dict[str, Any], type_) -> Any:
+    '''
+    Helper function to load dict-like data into an object.
+    '''
     try:
         vfields = set(value.keys())
     except AttributeError as e:
@@ -502,19 +505,19 @@ def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hin
             type_=type_,
         )
 
-    fieldsdiff = vfields.difference(fields)
-    if l.failonextra and len(fieldsdiff):
-        extra = ', '.join(fieldsdiff)
-        raise TypedloadValueError(
-            'Dictionary has unrecognized fields: %s and cannot be loaded into %s' % (extra, tname(type_)),
-            value=value,
-            type_=type_,
-        )
-
     params = {}
     for k, v in value.items():
         if k not in fields:
-            continue
+            # Field in value is not in the type
+            if l.failonextra:
+                extra = ', '.join(vfields.difference(fields))
+                raise TypedloadValueError(
+                    'Dictionary has unrecognized fields: %s and cannot be loaded into %s' % (extra, tname(type_)),
+                    value=value,
+                    type_=type_,
+                )
+            else:
+                continue
         params[k] = l.load(
             v,
             type_hints[k],
