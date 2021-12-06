@@ -1,5 +1,6 @@
 2.14
 ====
+* Fix bug where AttributeError from name mangling caused an AssertionError
 
 2.13
 ====
