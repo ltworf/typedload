@@ -458,6 +458,8 @@ def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
         value = _mangle_names(transforms, value, l.failonextra)
     except ValueError as e:
         raise TypedloadValueError(str(e), value=value, type_=type_)
+    except AttributeError as e:
+        raise TypedloadAttributeError(str(e), value=value, type_=type_)
 
     return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
@@ -697,6 +699,8 @@ def _attrload(l, value, type_):
         value = _mangle_names(namesmap, value, l.failonextra)
     except ValueError as e:
         raise TypedloadValueError(str(e), value=value, type_=type_)
+    except AttributeError as e:
+        raise TypedloadAttributeError(str(e), value=value, type_=type_)
 
     return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
