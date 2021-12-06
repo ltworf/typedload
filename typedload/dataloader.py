@@ -572,26 +572,19 @@ def _unionload(l: Loader, value, type_) -> Any:
 
     If no suitable type is found, an exception is raised.
     """
-    try:
-        args = uniontypes(type_)
-    except AttributeError:
-        raise TypedloadAttributeError('The typing API for this Python version is unknown', type_=type_, value=value)
+    args = uniontypes(type_)
 
     value_type = type(value)
 
     # Do not convert basic types, if possible
-    if value_type in args.intersection(l.basictypes):
+    if value_type in l.basictypes and value_type in args:
         return value
 
     exceptions = []
 
     # Give a score to the types
-    sorted_args = []  # type: List[Type]
-    for t in args:
-        if t not in l.basictypes:
-            sorted_args.insert(0, t)
-        else:
-            sorted_args.append(t)
+    sorted_args = list(args)  # type: List[Type]
+    sorted_args.sort(key=lambda i: i in l.basictypes)
 
     # Try all types
     loaded_count = 0
