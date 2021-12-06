@@ -192,7 +192,7 @@ class TestMangling(unittest.TestCase):
     def test_correct_exception_when_mangling(self):
         @attrs
         class A:
-            a: str = attrib(metadata={'name': 'q'})
+            a = attrib(type=str, metadata={'name': 'q'})
         with self.assertRaises(exceptions.TypedloadException):
             load(1, A)
 
