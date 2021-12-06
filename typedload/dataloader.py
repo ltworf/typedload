@@ -596,7 +596,7 @@ def _unionload(l: Loader, value, type_) -> Any:
             if not l.uniondebugconflict:
                 # Do not try more if we are not debugging
                 break
-        except Exception as e:
+        except TypedloadException as e:
             exceptions.append(e)
 
     if loaded_count == 1:

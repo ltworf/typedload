@@ -1,5 +1,6 @@
 2.15
 ====
+* Union fails immediately when a non typedload exception is found
 
 2.14
 ====
