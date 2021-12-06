@@ -64,6 +64,7 @@ deb-pkg: dist
 	mkdir deb-pkg
 	mv /tmp/typedload_* /tmp/python3-typedload_*.deb deb-pkg
 	$(RM) -r /tmp/typedload
+	lintian --pedantic -E --color auto -i -I deb-pkg/*.changes deb-pkg/*.deb
 
 .PHONY: site
 site: mkdocs.yml README.md docs/examples.md docs/origin_story.md
