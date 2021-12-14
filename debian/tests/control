@@ -1,6 +1,3 @@
-Test-Command:  make MINIMUM_PYTHON_VERSION=3.7 mypy
-Depends: mypy
-
 Test-Command: make test
 Restrictions: allow-stderr
 

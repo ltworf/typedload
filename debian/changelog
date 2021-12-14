@@ -2,7 +2,13 @@ typedload (2.15-1) UNRELEASED; urgency=medium
 
   * New upstream release
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Mon, 06 Dec 2021 17:45:05 +0100
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Wed, 15 Dec 2021 00:37:30 +0100
+
+typedload (2.14-2) unstable; urgency=high
+
+  * Remove mypy tests since they periodically fail (Closes: #1001736)
+
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Wed, 15 Dec 2021 00:37:30 +0100
 
 typedload (2.14-1) unstable; urgency=low
 

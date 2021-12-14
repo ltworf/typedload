@@ -7,7 +7,6 @@ Build-Depends:
  python3-all:any,
  dh-python,
  python3-distutils,
- mypy,
  python3-attr,
  debhelper-compat (= 13)
 Standards-Version: 4.6.0
