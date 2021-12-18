@@ -5,7 +5,6 @@
 
 override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	make MINIMUM_PYTHON_VERSION=3.7 mypy
 	for pyversion in `py3versions -s`; do \
 		$$pyversion -m tests; \
 	done
