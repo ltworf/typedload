@@ -64,7 +64,7 @@ deb-pkg: dist
 	cp -r debian /tmp/typedload/
 	cd /tmp/typedload/; dpkg-buildpackage --changes-option=-S
 	mkdir deb-pkg
-	mv /tmp/typedload_* /tmp/python3-typedload_*.deb deb-pkg
+	mv /tmp/typedload_* /tmp/python3-typedload*.deb deb-pkg
 	$(RM) -r /tmp/typedload
 	lintian --pedantic -E --color auto -i -I deb-pkg/*.changes deb-pkg/*.deb
 
