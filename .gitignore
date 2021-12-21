@@ -8,6 +8,6 @@ typedload.kdev4
 deb-pkg/
 *.swp
 dist/
-site/
+html/
 setup.py
 perftest.output

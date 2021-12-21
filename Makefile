@@ -33,7 +33,7 @@ clean:
 	$(RM) typedload_`head -1 CHANGELOG`.orig.tar.gz.asc
 	$(RM) -r deb-pkg
 	$(RM) setup.py
-	$(RM) -r site
+	$(RM) -r html
 	$(RM) -r perftest.output
 
 .PHONY: dist
@@ -68,7 +68,7 @@ deb-pkg: dist
 	$(RM) -r /tmp/typedload
 	lintian --pedantic -E --color auto -i -I deb-pkg/*.changes deb-pkg/*.deb
 
-site: \
+html: \
 		mkdocs.yml \
 		docs/CHANGELOG.md \
 		docs/comparisons.md \
@@ -83,8 +83,8 @@ site: \
 		docs/origin_story.md
 	mkdocs build
 
-.PHONY: publish_site
-publish_site: site
+.PHONY: publish_html
+publish_html: html
 	mkdocs gh-deploy
 
 perftest.output/perf.p:
