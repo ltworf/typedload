@@ -67,7 +67,19 @@ deb-pkg: dist
 	$(RM) -r /tmp/typedload
 	lintian --pedantic -E --color auto -i -I deb-pkg/*.changes deb-pkg/*.deb
 
-site: mkdocs.yml README.md docs/examples.md docs/origin_story.md
+site: \
+		mkdocs.yml \
+		docs/CHANGELOG.md \
+		docs/comparisons.md \
+		docs/errors.md \
+		docs/CONTRIBUTING.md \
+		docs/gpl3logo.png \
+		docs/CODE_OF_CONDUCT.md \
+		docs/examples.md \
+		docs/README.md \
+		docs/supported_types.md \
+		docs/SECURITY.md \
+		docs/origin_story.md
 	mkdocs build
 
 .PHONY: publish_site
