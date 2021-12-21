@@ -9,3 +9,7 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 		$$pyversion -m tests; \
 	done
 endif
+
+override_dh_installdocs:
+	make site
+	dh_installdocs
