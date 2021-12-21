@@ -8,7 +8,8 @@ Build-Depends:
  dh-python,
  python3-distutils,
  python3-attr,
- debhelper-compat (= 13)
+ debhelper-compat (= 13),
+ mkdocs
 Standards-Version: 4.6.0
 Homepage: https://ltworf.github.io/typedload/
 Vcs-Browser: https://github.com/ltworf/typedload
