@@ -43,6 +43,7 @@ dist: clean setup.py
 		typedload/Makefile \
 		typedload/tests \
 		typedload/docs \
+		typedload/mkdocs.yml \
 		typedload/LICENSE \
 		typedload/CONTRIBUTING.md \
 		typedload/CHANGELOG \
