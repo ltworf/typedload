@@ -33,6 +33,7 @@ clean:
 	$(RM) typedload_`head -1 CHANGELOG`.orig.tar.gz.asc
 	$(RM) -r deb-pkg
 	$(RM) setup.py
+	$(RM) -r site
 	$(RM) -r perftest.output
 
 .PHONY: dist
@@ -66,17 +67,11 @@ deb-pkg: dist
 	$(RM) -r /tmp/typedload
 	lintian --pedantic -E --color auto -i -I deb-pkg/*.changes deb-pkg/*.deb
 
-.PHONY: site
 site: mkdocs.yml README.md docs/examples.md docs/origin_story.md
 	mkdocs build
-	#install -d site/docstring
-	#pydoc3 -w typedload
-	#pydoc3 -w typedload.datadumper
-	#pydoc3 -w typedload.dataloader
-	#pydoc3 -w typedload.exceptions
-	#pydoc3 -w typedload.typechecks
-	#mv *.html site/docstring
-	#ln -s typedload.html site/docstring/index.html
+
+.PHONY: publish_site
+publish_site: site
 	mkdocs gh-deploy
 
 perftest.output/perf.p:
