@@ -1,6 +1,7 @@
 site_name: typedload
 site_dir: html
 theme: readthedocs
+use_directory_urls: false
 nav:
     - Home: README.md
     #- Origin story: origin_story.md
