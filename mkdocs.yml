@@ -1,5 +1,8 @@
 site_name: typedload
 site_dir: html
+site_description: typedload documentation — a python module to load untyped data into typed data structures
+site_author: Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>
+copyright: Copyright (C) 2021 Salvo "LtWorf" Tomaselli
 theme: readthedocs
 use_directory_urls: false
 nav:
