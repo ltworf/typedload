@@ -33,6 +33,7 @@ clean:
 	$(RM) typedload_`head -1 CHANGELOG`.orig.tar.gz.asc
 	$(RM) -r deb-pkg
 	$(RM) setup.py
+	$(RM) -r html
 	$(RM) -r perftest.output
 
 .PHONY: dist
@@ -42,6 +43,7 @@ dist: clean setup.py
 		typedload/Makefile \
 		typedload/tests \
 		typedload/docs \
+		typedload/mkdocs.yml \
 		typedload/LICENSE \
 		typedload/CONTRIBUTING.md \
 		typedload/CHANGELOG \
@@ -62,21 +64,27 @@ deb-pkg: dist
 	cp -r debian /tmp/typedload/
 	cd /tmp/typedload/; dpkg-buildpackage --changes-option=-S
 	mkdir deb-pkg
-	mv /tmp/typedload_* /tmp/python3-typedload_*.deb deb-pkg
+	mv /tmp/typedload_* /tmp/python3-typedload*.deb deb-pkg
 	$(RM) -r /tmp/typedload
 	lintian --pedantic -E --color auto -i -I deb-pkg/*.changes deb-pkg/*.deb
 
-.PHONY: site
-site: mkdocs.yml README.md docs/examples.md docs/origin_story.md
+html: \
+		mkdocs.yml \
+		docs/CHANGELOG.md \
+		docs/comparisons.md \
+		docs/errors.md \
+		docs/CONTRIBUTING.md \
+		docs/gpl3logo.png \
+		docs/CODE_OF_CONDUCT.md \
+		docs/examples.md \
+		docs/README.md \
+		docs/supported_types.md \
+		docs/SECURITY.md \
+		docs/origin_story.md
 	mkdocs build
-	#install -d site/docstring
-	#pydoc3 -w typedload
-	#pydoc3 -w typedload.datadumper
-	#pydoc3 -w typedload.dataloader
-	#pydoc3 -w typedload.exceptions
-	#pydoc3 -w typedload.typechecks
-	#mv *.html site/docstring
-	#ln -s typedload.html site/docstring/index.html
+
+.PHONY: publish_html
+publish_html: html
 	mkdocs gh-deploy
 
 perftest.output/perf.p:

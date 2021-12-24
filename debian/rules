@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@ --with python3 --buildsystem=pybuild
+	dh $@ --with python3,mkdocs --buildsystem=pybuild
 
 override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
@@ -9,3 +9,7 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 		$$pyversion -m tests; \
 	done
 endif
+
+override_dh_installdocs:
+	make html
+	dh_installdocs
