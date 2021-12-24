@@ -1,6 +1,7 @@
 2.15
 ====
 * Union fails immediately when a non typedload exception is found
+* New `make html` target to generate the website
 
 2.14
 ====
