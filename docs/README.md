@@ -93,6 +93,8 @@ The following things are supported:
 Using Mypy
 ==========
 
+Mypy and similar tools work without requiring any plugins.
+
 ```python
 # This is treated as Any, no checks done.
 data = json.load(f)
@@ -109,6 +111,13 @@ data = typedload.load(json.load(f), Dict[str, int])
 
 So when using Mypy, it makes sense to make sure that the type is correct,
 rather than hoping the data will respect the format.
+
+Extending
+=========
+
+Type handlers can easily be added, and existing ones can be replaced, so the library is fully cusomizable and can work with any type.
+
+Inheriting a base class is not required.
 
 Install
 =======
