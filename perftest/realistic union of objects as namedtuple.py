@@ -21,6 +21,7 @@ import sys
 from dataclasses import dataclass
 
 from typedload import load
+import apischema
 import pydantic
 
 from common import timeit
@@ -106,3 +107,18 @@ if sys.argv[1] == '--typedload':
     print(timeit(lambda: load(data, EventList)))
 elif sys.argv[1] == '--pydantic':
     print(timeit(lambda: EventListPy(**data)))
+elif sys.argv[1] == '--apischema':
+    print(timeit(lambda: apischema.deserialize(EventList, data)))
+if sys.argv[1] == '--apischema-discriminator':
+    try:
+        from typing import Annotated
+    except ImportError:
+        pass
+    else:
+        discriminator = apischema.discriminator(
+            "type", {"message": EventMessage, "ping": EventPing, "file": EventFile}
+        )
+        class DiscriminatedEventList(NamedTuple):
+            data: Tuple[Annotated[Event, discriminator], ...]
+        print(timeit(lambda: apischema.deserialize(DiscriminatedEventList, data)))
+

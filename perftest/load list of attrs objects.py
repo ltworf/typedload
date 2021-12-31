@@ -16,11 +16,12 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
-from typing import List, NamedTuple
+from typing import List, NamedTuple, Sequence
 import sys
 
-from attr import attrs, attrib
 from typedload import load
+import attrs
+import apischema
 import pydantic
 
 from common import timeit
@@ -33,9 +34,9 @@ class DataPy(pydantic.BaseModel):
     data: List[ChildPy]
 
 
-@attrs
+@attrs.define
 class Child:
-    value: int = attrib()
+    value: int
 
 
 class Data(NamedTuple):
@@ -44,8 +45,28 @@ class Data(NamedTuple):
 
 data = {'data': [{'value': i} for i in range(300000)]}
 
+##### apischema attrs support #####
+prev_default_object_fields = apischema.settings.default_object_fields
+
+
+def attrs_fields(cls: type) -> Sequence[apischema.objects.ObjectField] | None:
+    if hasattr(cls, "__attrs_attrs__"):
+        return [
+            apischema.objects.ObjectField(
+                a.name, a.type, required=a.default == attrs.NOTHING, default=a.default
+            )
+            for a in getattr(cls, "__attrs_attrs__")
+        ]
+    else:
+        return prev_default_object_fields(cls)
+
+
+apischema.settings.default_object_fields = attrs_fields
+#####
 
 if sys.argv[1] == '--typedload':
     print(timeit(lambda: load(data, Data)))
 elif sys.argv[1] == '--pydantic':
     print(timeit(lambda: DataPy(**data)))
+elif sys.argv[1] == '--apischema':
+    print(timeit(lambda: apischema.deserialize(Data, data)))

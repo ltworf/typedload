@@ -69,19 +69,20 @@ def main():
         with open(outdir / f'{i}.dat', 'wt') as f:
             counter = 0
 
-            print('\tRunning test with pydantic')
-            pydantic_time, maxduration = parse_performance(['python3', f'{tempdir}/{i}.py', '--pydantic'])
-            maxtime = maxtime if maxtime > maxduration else maxduration
-            f.write(f'{counter} "pydantic" {pydantic_time} {maxduration}\n')
-            for branch in tags[len(tags) - 10:]:
+            for library in ('apischema', 'pydantic'):
+                print(f'\tRunning test with {library}')
+                library_time, maxduration = parse_performance(['python3', f'{tempdir}/{i}.py', f'--{library}'])
+                maxtime = maxtime if maxtime > maxduration else maxduration
+                f.write(f'{counter} "{library}" {library_time} {maxduration}\n')
                 counter += 1
+            for branch in tags[len(tags) - 10:]:
                 print(f'\tRunning test with {branch}')
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
                 typedload_time, maxduration = parse_performance(['python3', f'{tempdir}/{i}.py', '--typedload'])
                 f.write(f'{counter} "{branch}" {typedload_time} {maxduration}\n')
                 maxtime = maxtime if maxtime > maxduration else maxduration
+                counter += 1
 
-            counter += 1
         plotcmd.append(f'"{i}.dat" using 1:3:4 with filledcurves title "", "" using 1:3:xtic(2) with linespoint title "{i}"')
     rmtree(tempdir)
 

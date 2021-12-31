@@ -21,6 +21,7 @@ import sys
 from dataclasses import dataclass
 
 from typedload import load
+import apischema
 import pydantic
 
 from common import timeit
@@ -49,3 +50,5 @@ if sys.argv[1] == '--typedload':
     print(timeit(lambda: load(data, Data)))
 elif sys.argv[1] == '--pydantic':
     print(timeit(lambda: DataPy(**data)))
+elif sys.argv[1] == '--apischema':
+    print(timeit(lambda: apischema.deserialize(Data, data)))
