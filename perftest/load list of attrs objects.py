@@ -16,7 +16,7 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
-from typing import List, NamedTuple, Sequence
+from typing import List, NamedTuple, Sequence, Union
 import sys
 
 from typedload import load
@@ -49,7 +49,7 @@ data = {'data': [{'value': i} for i in range(300000)]}
 prev_default_object_fields = apischema.settings.default_object_fields
 
 
-def attrs_fields(cls: type) -> Sequence[apischema.objects.ObjectField] | None:
+def attrs_fields(cls: type) -> Union[Sequence[apischema.objects.ObjectField], None]:
     if hasattr(cls, "__attrs_attrs__"):
         return [
             apischema.objects.ObjectField(
