@@ -2,6 +2,7 @@
 ====
 * Union fails immediately when a non typedload exception is found
 * New `make html` target to generate the website
+* Updated CONTRIBUTING file, with details about new licenses from the FSF
 
 2.14
 ====
