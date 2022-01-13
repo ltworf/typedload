@@ -15,9 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
-
 from enum import Enum
-from typing import Dict, FrozenSet, List, NamedTuple, Optional, Set, Tuple, Union, Any
+from typing import Dict, FrozenSet, List, NamedTuple, Optional, Set, Tuple, Union, Any, NewType
 import unittest
 import sys
 
@@ -144,3 +143,9 @@ class TestChecks(unittest.TestCase):
         assert not typechecks.is_any(Tuple[int, ...])
         assert not typechecks.is_any(int)
         assert not typechecks.is_any(List[float])
+
+    @unittest.skipIf(sys.version_info < (3, 10, 0), "requires python 3.10 or newer")
+    def test_isnewtype(self):
+        assert typechecks.is_newtype(NewType("foo", str))
+        assert not typechecks.is_newtype(type(NewType("foo", str)("bar")))
+        assert not typechecks.is_typeddict(str)
