@@ -203,6 +203,7 @@ class Loader:
             (lambda type_: type_ in self.strconstructed, _strconstructload),
             (is_attrs, _attrload),
             (is_any, _anyload),
+            (is_newtype, _newtypeload),
         ]  # type: List[Tuple[Callable[[Any], bool], Callable[[Loader, Any, Type], Any]]]
 
         for k, v in kwargs.items():
