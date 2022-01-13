@@ -89,7 +89,7 @@ The following things are supported:
  * Path
  * IPv4Address, IPv6Address
  * typing.Any
- * typing.NewType (requires Python 3.10)
+ * typing.NewType
 
 Using Mypy
 ==========

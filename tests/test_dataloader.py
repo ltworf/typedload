@@ -19,7 +19,6 @@
 
 import argparse
 import datetime
-import sys
 from enum import Enum
 from ipaddress import IPv4Address, IPv6Address, IPv6Network, IPv4Network, IPv4Interface, IPv6Interface
 from pathlib import Path
@@ -478,7 +477,6 @@ class TestAny(unittest.TestCase):
 
 class TestNewType(unittest.TestCase):
 
-    @unittest.skipIf(sys.version_info < (3, 10, 0), "requires python 3.10 or newer")
     def test_newtype(self):
         loader = dataloader.Loader()
         Foo = NewType("Foo", str)
