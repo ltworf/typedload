@@ -31,9 +31,9 @@ different versions of Python.
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
-
+import sys
 from enum import Enum
-from typing import Any, Tuple, Union, Set, List, Dict, Type, FrozenSet
+from typing import Any, Tuple, Union, Set, List, Dict, Type, FrozenSet, NewType
 
 
 __all__ = [
@@ -52,6 +52,7 @@ __all__ = [
     'is_tuple',
     'is_union',
     'is_typeddict',
+    'is_newtype',
     'uniontypes',
     'literalvalues',
     'NONETYPE',
@@ -197,6 +198,15 @@ def is_attrs(type_: Type[Any]) -> bool:
     @attr.s decorator
     '''
     return hasattr(type_, '__attrs_attrs__')
+
+
+if sys.version_info > (3, 10, 0):
+    def is_newtype(type_: Type[Any]) -> bool:
+        return type(type_) == NewType
+
+else:
+    def is_newtype(type_: Type[Any]) -> bool:
+        return hasattr(type_, '__supertype__')
 
 
 def uniontypes(type_: Type[Any]) -> Tuple[Type[Any], ...]:

@@ -203,6 +203,7 @@ class Loader:
             (lambda type_: type_ in self.strconstructed, _strconstructload),
             (is_attrs, _attrload),
             (is_any, _anyload),
+            (is_newtype, _newtypeload),
         ]  # type: List[Tuple[Callable[[Any], bool], Callable[[Loader, Any, Type], Any]]]
 
         for k, v in kwargs.items():
@@ -713,3 +714,7 @@ def _strconstructload(l: Loader, value, type_):
         raise TypedloadTypeError(str(e), type_=type_, value=value)
     except Exception as e:
         raise TypedloadException(str(e), type_=type, value=value)
+
+
+def _newtypeload(l: Loader, value, type_):
+    return l.load(value, type_.__supertype__)
