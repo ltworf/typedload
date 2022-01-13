@@ -23,6 +23,8 @@ Module to load data into typed data structures
 
 import datetime
 import ipaddress
+import sys
+from enum import Enum
 from pathlib import Path
 from typing import *
 
@@ -203,8 +205,10 @@ class Loader:
             (lambda type_: type_ in self.strconstructed, _strconstructload),
             (is_attrs, _attrload),
             (is_any, _anyload),
-            (is_newtype, _newtypeload),
         ]  # type: List[Tuple[Callable[[Any], bool], Callable[[Loader, Any, Type], Any]]]
+
+        if sys.version_info > (3, 10, 0):
+            self.handlers.append((is_newtype, _newtypeload))
 
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -714,3 +718,7 @@ def _strconstructload(l: Loader, value, type_):
         raise TypedloadTypeError(str(e), type_=type_, value=value)
     except Exception as e:
         raise TypedloadException(str(e), type_=type, value=value)
+
+
+def _newtypeload(l: Loader, value, type_):
+    return l.load(value, type_.__supertype__)

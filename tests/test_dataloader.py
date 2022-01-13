@@ -19,10 +19,11 @@
 
 import argparse
 import datetime
+import sys
 from enum import Enum
 from ipaddress import IPv4Address, IPv6Address, IPv6Network, IPv4Network, IPv4Interface, IPv6Interface
 from pathlib import Path
-from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union, Any
+from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union, Any, NewType
 import unittest
 
 from typedload import dataloader, load, exceptions
@@ -473,3 +474,14 @@ class TestAny(unittest.TestCase):
         loader = dataloader.Loader()
         o = object()
         assert loader.load(o, Any) is o
+
+
+class TestNewType(unittest.TestCase):
+
+    @unittest.skipIf(sys.version_info < (3, 10, 0), "requires python 3.10 or newer")
+    def test_newtype(self):
+        loader = dataloader.Loader()
+        Foo = NewType("Foo", str)
+        bar = loader.load("bar", Foo)
+        assert bar == "bar"
+        assert type(bar) is str
