@@ -5,11 +5,11 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="None">
   
+  <meta name="author" content="Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>">
   
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>typedload</title>
+  <title>Home - typedload</title>
   <link rel="stylesheet" href="css/theme.css" />
   <link rel="stylesheet" href="css/theme_extra.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
@@ -46,33 +46,33 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
                 <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href=".">Home</a>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="index.html">Home</a>
     <ul class="current">
     </ul>
                     </li>
                 </ul>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="CHANGELOG/">Changelog</a>
+                    <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a>
                     </li>
                 </ul>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="comparisons/">Comparisons</a>
+                    <li class="toctree-l1"><a class="reference internal" href="comparisons.html">Comparisons</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Using typedload</span></p>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="examples/">Examples</a>
+                    <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="supported_types/">Supported types</a>
+                    <li class="toctree-l1"><a class="reference internal" href="supported_types.html">Supported types</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="errors/">Errors</a>
+                    <li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Contriutors</span></p>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING/">Contributing</a>
+                    <li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT/">Code of conduct</a>
+                    <li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Code of conduct</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Links</span></p>
@@ -141,7 +141,7 @@ type checks or casts when needed.</p>
 <p>It is very useful for projects that use Mypy and deal with untyped data
 like json, because it guarantees that the data will follow the specified schema.</p>
 <p>It is released with a GPLv3 license.</p>
-<p><img alt="GPLv3 logo" src="https://ltworf.github.io/typedload/gpl3logo.png" /></p>
+<p><img alt="GPLv3 logo" src="docs/gpl3logo.png" /></p>
 <h1 id="example">Example</h1>
 <p>For example this dictionary, loaded from a json:</p>
 <pre><code class="language-python">data = {
@@ -195,8 +195,10 @@ class Logins(NamedTuple):
 <li>Path</li>
 <li>IPv4Address, IPv6Address</li>
 <li>typing.Any</li>
+<li>typing.NewType</li>
 </ul>
 <h1 id="using-mypy">Using Mypy</h1>
+<p>Mypy and similar tools work without requiring any plugins.</p>
 <pre><code class="language-python"># This is treated as Any, no checks done.
 data = json.load(f)
 
@@ -211,6 +213,9 @@ data = typedload.load(json.load(f), Dict[str, int])
 </code></pre>
 <p>So when using Mypy, it makes sense to make sure that the type is correct,
 rather than hoping the data will respect the format.</p>
+<h1 id="extending">Extending</h1>
+<p>Type handlers can easily be added, and existing ones can be replaced, so the library is fully cusomizable and can work with any type.</p>
+<p>Inheriting a base class is not required.</p>
 <h1 id="install">Install</h1>
 <ul>
 <li><code>pip install typedload</code></li>
@@ -236,7 +241,7 @@ the capabilities of this module.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="CHANGELOG/" class="btn btn-neutral float-right" title="Changelog">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="CHANGELOG.html" class="btn btn-neutral float-right" title="Changelog">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
     </div>
@@ -246,6 +251,8 @@ the capabilities of this module.</p>
 
   <div role="contentinfo">
     <!-- Copyright etc -->
+    
+      <p>Copyright (C) 2021 Salvo "LtWorf" Tomaselli</p>
     
   </div>
 
@@ -264,7 +271,7 @@ the capabilities of this module.</p>
       
       
       
-        <span style="margin-left: 15px"><a href="CHANGELOG/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="CHANGELOG.html" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
@@ -279,8 +286,3 @@ the capabilities of this module.</p>
 
 </body>
 </html>
-
-<!--
-MkDocs version : 1.1.2
-Build Date UTC : 2021-12-06 16:42:02.190107+00:00
--->
