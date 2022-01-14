@@ -340,6 +340,16 @@ This will just return `obj` without doing any check or transformation.
 
 To work with `dump()`, `obj` needs to be of a supported type, or an handler is needed.
 
+typing.NewType
+--------------
+
+```python
+T = typing.NewType('T', str)
+typedload.load('ciao', T)
+```
+
+Allows the use of NewType to define already handled types.
+
 String constructed
 ------------------
 
