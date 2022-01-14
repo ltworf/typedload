@@ -1,9 +1,9 @@
-typedload (2.15-1) UNRELEASED; urgency=low
+typedload (2.15-1) unstable; urgency=low
 
   * New upstream release
   * Add -doc package that contains the html documentation
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Wed, 15 Dec 2021 00:37:30 +0100
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Fri, 14 Jan 2022 10:50:01 +0100
 
 typedload (2.14-2) unstable; urgency=high
 
