@@ -1,3 +1,9 @@
+typedload (2.15-3) unstable; urgency=medium
+
+  * Fix Breaks and Replace version (Closes: #1004013)
+
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Thu, 20 Jan 2022 19:40:49 +0100
+
 typedload (2.15-2) unstable; urgency=low
 
   * Add Breaks and Replace fields to prevent doc package to be installed
