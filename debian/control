@@ -18,6 +18,7 @@ Rules-Requires-Root: no
 Package: python3-typedload
 Architecture: all
 Depends: ${misc:Depends}, ${python3:Depends}
+Suggests: python3-typedload-doc
 Description: Load and dump json-like data into typed data structures in Python3
  This module provides an API to load dictionaries and lists (usually loaded
  from json) into Python's NamedTuples, dataclass, sets, enums, and various
@@ -34,6 +35,8 @@ Package: python3-typedload-doc
 Architecture: all
 Section: doc
 Recommends: python3-typedload
+Replaces: python3-typedload (<< 2.5)
+Breaks: python3-typedload (<< 2.5)
 Depends: ${mkdocs:Depends}, ${misc:Depends}
 Description: Documentation and examples for python3-typedload
  This module provides an API to load dictionaries and lists (usually loaded

@@ -10,6 +10,5 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	done
 endif
 
-override_dh_installdocs:
+execute_before_dh_installdocs:
 	make html
-	dh_installdocs
