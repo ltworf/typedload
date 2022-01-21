@@ -1,3 +1,9 @@
+typedload (2.16-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Thu, 20 Jan 2022 21:41:50 +0100
+
 typedload (2.15-3) unstable; urgency=medium
 
   * Fix Breaks and Replace version (Closes: #1004013)
