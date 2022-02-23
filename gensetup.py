@@ -90,6 +90,6 @@ setup(
     ],
     keywords='typing types mypy json',
     packages=['typedload'],
-    package_data={{"typedload": ["py.typed"]}},
+    package_data={{"typedload": ["py.typed", "__init__.pyi"]}},
 )'''
 )
