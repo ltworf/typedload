@@ -1,5 +1,6 @@
 2.16
 ====
+* Add is_optional function
 
 2.15
 ====

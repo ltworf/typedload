@@ -100,6 +100,16 @@ class TestChecks(unittest.TestCase):
         assert typechecks.is_union(Optional[str])
         assert typechecks.is_union(Union[bytes, str])
         assert typechecks.is_union(Union[str, int, float])
+        assert not typechecks.is_union(FrozenSet[int])
+        assert not typechecks.is_union(int)
+
+    def test_is_optional(self):
+        assert typechecks.is_optional(Optional[int])
+        assert typechecks.is_optional(Optional[str])
+        assert not typechecks.is_optional(Union[bytes, str])
+        assert not typechecks.is_optional(Union[str, int, float])
+        assert not typechecks.is_union(FrozenSet[int])
+        assert not typechecks.is_union(int)
 
     def test_is_nonetype(self):
         assert typechecks.is_nonetype(type(None))
