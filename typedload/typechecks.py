@@ -53,6 +53,7 @@ __all__ = [
     'is_union',
     'is_typeddict',
     'is_newtype',
+    'is_optional',
     'uniontypes',
     'literalvalues',
     'NONETYPE',
@@ -116,6 +117,22 @@ def is_union(type_: Type[Any]) -> bool:
     Optional[A]
     '''
     return getattr(type_, '__origin__', None) == Union
+
+
+def is_optional(type_: Type[Any]) -> bool:
+    '''
+    Optional[int]
+
+    Note that Optional is just a Union, so if is_optional is True then
+    also is_union will be True
+    '''
+    u = is_union(type_)
+    if not u:
+        return False
+    types = uniontypes(type_)
+    if len(types) != 2:
+        return False
+    return NONETYPE in types
 
 
 def is_nonetype(type_: Type[Any]) -> bool:
