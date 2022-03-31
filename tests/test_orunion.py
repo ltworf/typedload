@@ -17,7 +17,6 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
-from typing import Literal
 import unittest
 
 from typedload import dataloader, load, dump, typechecks
@@ -33,3 +32,17 @@ class TestOrUnion(unittest.TestCase):
     def test_typechecker(self):
         assert typechecks.is_union(int | str)
         assert not typechecks.is_union(2 | 1)
+
+    def test_uniontypes(self):
+        u = int | str | float
+        assert int in typechecks.uniontypes(u)
+        assert str in typechecks.uniontypes(u)
+        assert float in typechecks.uniontypes(u)
+        assert bytes not in typechecks.uniontypes(u)
+        assert bool not in typechecks.uniontypes(u)
+
+    def test_loadnewunion(self):
+        t = list[int] | str
+        assert load('ciao', t) == 'ciao'
+        assert load(['1', 1.0, 0], t) == [1, 1, 0]
+        assert load(('1', 1.0, 0), t) == [1, 1, 0]
