@@ -77,6 +77,13 @@ try:
 except ImportError:
     pass
 
+UnionType = None  # type: Any
+try:
+    # Since 3.10
+    from types import UnionType  # type: ignore
+except:
+    pass
+
 
 def _issubclass(t1, t2) -> bool:
     """
@@ -116,7 +123,9 @@ def is_union(type_: Type[Any]) -> bool:
     Union
     Optional[A]
     '''
-    return getattr(type_, '__origin__', None) == Union
+
+    # Uniontype is 3.10 defined on 3.10 and None otherwise
+    return getattr(type_, '__origin__', None) == Union or (UnionType and getattr(type_, '__class__', None) == UnionType)
 
 
 def is_optional(type_: Type[Any]) -> bool:

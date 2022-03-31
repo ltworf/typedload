@@ -1,6 +1,7 @@
 2.16
 ====
 * Add is_optional function
+* Support new style union (A | B)
 
 2.15
 ====
