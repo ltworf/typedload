@@ -80,7 +80,7 @@ except ImportError:
 UnionType = None  # type: Any
 try:
     # Since 3.10
-    from types import UnionType
+    from types import UnionType  # type: ignore
 except:
     pass
 
