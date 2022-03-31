@@ -34,6 +34,7 @@ different versions of Python.
 import sys
 from enum import Enum
 from typing import Any, Tuple, Union, Set, List, Dict, Type, FrozenSet, NewType
+from types import UnionType
 
 
 __all__ = [
@@ -116,7 +117,7 @@ def is_union(type_: Type[Any]) -> bool:
     Union
     Optional[A]
     '''
-    return getattr(type_, '__origin__', None) == Union
+    return getattr(type_, '__origin__', None) == Union or getattr(type_, '__class__', None) == UnionType
 
 
 def is_optional(type_: Type[Any]) -> bool:
