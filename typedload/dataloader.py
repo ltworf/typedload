@@ -131,6 +131,16 @@ class Loader:
         Reusing the same loader object on unrelated types might cause
         failures, if the types are different but use the same names.
 
+    pep563: Set to true to use __future__.annotations
+        WARNING: DEPRECATED Support for this might be removed in any future
+        release without notice.
+
+        This will make typedload much slower.
+
+        This PEP is broken and superseeded by PEP649.
+
+        Do not report bugs about this "feature". It's not here to stay.
+
     These parameters can be set as named arguments in the constructor
     or they can be set later on.
 
@@ -180,6 +190,9 @@ class Loader:
             ipaddress.IPv4Interface,
             ipaddress.IPv6Interface
         }
+
+        # Bah
+        self.pep563 = False
 
         # The list of handlers to use to load the data.
         # It gets iterated in order, and the first condition
@@ -443,7 +456,10 @@ def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
                         v.init == True and
                         isinstance(v.default, DT_MISSING_TYPE) and
                         isinstance(v.default_factory, DT_MISSING_TYPE)}
-    type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
+    if l.pep563:
+        type_hints = get_type_hints(type_)
+    else:
+        type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
 
     #Name mangling
 
@@ -536,9 +552,12 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Any:
     """
     This loads a Dict[str, Any] into a NamedTuple.
     """
-    fields = set(type_.__annotations__.keys())
+    if l.pep563:
+        type_hints = get_type_hints(type_)
+    else:
+        type_hints = type_.__annotations__
+    fields = set(type_hints.keys())
     optional_fields = set(getattr(type_, '_field_defaults', {}).keys())
-    type_hints = type_.__annotations__
     necessary_fields = fields.difference(optional_fields)
 
     return _objloader(l, fields, necessary_fields, type_hints, value, type_)
@@ -548,8 +567,11 @@ def _typeddictload(l: Loader, value: Dict[str, Any], type_) -> Any:
     """
     This loads a Dict[str, Any] into a NamedTuple.
     """
-    fields = set(type_.__annotations__.keys())
-    type_hints = type_.__annotations__
+    if l.pep563:
+        type_hints = get_type_hints(type_)
+    else:
+        type_hints = type_.__annotations__
+    fields = set(type_hints.keys())
 
     if hasattr(type_, '__required_keys__') and hasattr(type_, '__optional_keys__'):
         # TypedDict, since 3.9
