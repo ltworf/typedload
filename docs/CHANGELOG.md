@@ -2,6 +2,8 @@
 ====
 * Add is_optional function
 * Support new style union (A | B)
+* Experimental support for PEP563 `__future__.annotations`.
+  **READ ABOUT DEFERRED EVALUATION IN THE DOCUMENTATION.**
 
 2.15
 ====
