@@ -135,6 +135,8 @@ class Loader:
         WARNING: DEPRECATED Support for this might be removed in any future
         release without notice.
 
+        Check deferred evaluation in the documentation for more details.
+
         This will make typedload much slower.
 
         This PEP is broken and superseeded by PEP649.
