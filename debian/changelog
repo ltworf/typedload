@@ -1,6 +1,8 @@
 typedload (2.16-1) UNRELEASED; urgency=medium
 
   * New upstream release
+  * Remove duplicate changelog from documentation
+  * Remove duplicate gpl logo image from documentation
 
  -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Thu, 20 Jan 2022 21:41:50 +0100
 
