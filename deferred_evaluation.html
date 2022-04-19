@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>" />
       <link rel="shortcut icon" href="img/favicon.ico" />
-    <title>Security Policy - typedload</title>
+    <title>Deferred evaluation of types - typedload</title>
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Security Policy";
-        var mkdocs_page_input_path = "SECURITY.md";
+        var mkdocs_page_name = "Deferred evaluation of types";
+        var mkdocs_page_input_path = "deferred_evaluation.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -53,14 +53,16 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Using typedload</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="supported_types.html">Supported types</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="deferred_evaluation.html">Deferred evaluation of types</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="deferred_evaluation.html">Deferred evaluation of types</a>
+    <ul class="current">
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Contriutors</span></p>
@@ -106,7 +108,8 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html" class="icon icon-home" alt="Docs"></a> &raquo;</li><li>Security Policy</li>
+    <li><a href="index.html" class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Using typedload &raquo;</li><li>Deferred evaluation of types</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -116,18 +119,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="security-policy">Security Policy</h1>
-<p>I do not expect any security issues in this package, but just to make
-github happy.</p>
-<h2 id="supported-versions">Supported Versions</h2>
-<p>Only the latest release is supported. I will not backport fixes.</p>
-<h2 id="reporting-a-vulnerability">Reporting a Vulnerability</h2>
-<p>Contact me at tiposchi@tiscali.it</p>
-<p>My PGP key is on this file, on git.
-debian/upstream/signing-key.asc</p>
+                <h1 id="deferred-evaluation">Deferred evaluation</h1>
+<p><a href="https://peps.python.org/pep-0563/">PEP 563</a> defines deferred evaluation of types.</p>
+<p>It will most likely be superseeded by <a href="https://peps.python.org/pep-0649/">PEP 649</a> because of the following issues:</p>
+<ul>
+<li><code>eval()</code> is slow</li>
+<li><code>eval()</code> might not be present to save space</li>
+<li>only works for types defined at module level</li>
+</ul>
+<p>It is enabled with <code>from __future__ import annotations</code>.</p>
+<p>When it is enabled you must set <code>pep563=True</code> in your loader object, to (hopefully) make it keep working (it will not work in many corner cases).</p>
+<pre><code class="language-python">from __future__ import annotations
+
+class A(NamedTuple):
+    a: Optional[int]
+
+
+load({'a':1}, A)
+# TypedloadValueError: ForwardRef 'Optional[int]' unknown
+
+load({'a':1}, A, pep563=True)
+# A(a=1)
+</code></pre>
+<p>If you have such a simple case it will work fine. In more complicated cases it will not work. In those cases the solution is to not do the import.</p>
+<p>This feature will most likely be removed once the decision for the newer PEP is settled.</p>
+<p>It is not part of Python and you should not expect that typedload will keep it.</p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="errors.html" class="btn btn-neutral float-left" title="Errors"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="CONTRIBUTING.html" class="btn btn-neutral float-right" title="Contributing">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -150,6 +173,10 @@ debian/upstream/signing-key.asc</p>
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
+      <span><a href="errors.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="CONTRIBUTING.html" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
