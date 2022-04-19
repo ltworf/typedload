@@ -12,7 +12,7 @@ mypy:
 	mypy --python-version=$(MINIMUM_PYTHON_VERSION) --config-file mypy.conf typedload
 	mypy --python-version=3.7 example.py
 
-setup.py:
+setup.py: docs/CHANGELOG.md 
 	./gensetup.py > setup.py
 	chmod u+x setup.py
 
