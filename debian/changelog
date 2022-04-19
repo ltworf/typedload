@@ -1,4 +1,4 @@
-typedload (2.16-1) UNRELEASED; urgency=medium
+typedload (2.16-1) unstable; urgency=low
 
   * New upstream release
   * Remove duplicate changelog from documentation
