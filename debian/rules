@@ -12,3 +12,6 @@ endif
 
 execute_before_dh_installdocs:
 	make html
+
+override_dh_installdocs:
+	dh_installdocs --exclude=CHANGELOG.md
