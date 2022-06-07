@@ -55,6 +55,7 @@ __all__ = [
     'is_newtype',
     'is_optional',
     'is_notrequired',
+    'notrequiredtype',
     'uniontypes',
     'literalvalues',
     'NONETYPE',
@@ -293,3 +294,10 @@ def is_notrequired(type_: Type[Any]) -> bool:
     Check if it's typing.NotRequired or typing_extensions.NotRequired
     '''
     return getattr(type_, '__origin__', None) == NotRequired and NotRequired is not None
+
+
+def notrequiredtype(type_: Type[Any]) -> Type[Any]:
+    '''
+    Return the type wrapped by NotRequired
+    '''
+    return type_.__args__[0]
