@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,6 +27,22 @@ from typedload import typechecks
 
 
 class TestChecks(unittest.TestCase):
+
+    def test_is_not_required(self):
+        if sys.version_info.minor >= 11:
+            from typing import NotRequired
+            assert typechecks.is_notrequired(NotRequired[int])
+            assert typechecks.is_notrequired(NotRequired[str])
+            assert typechecks.is_notrequired(NotRequired[Union[int, str]])
+        assert (not typechecks.is_notrequired(None))
+
+    def test_not_required(self):
+        if sys.version_info.minor < 11:
+            # Only from 3.11
+            return
+        from typing import NotRequired
+        assert int == typechecks.notrequiredtype(NotRequired[int])
+
 
     def test_is_literal(self):
         if sys.version_info.minor >= 8:

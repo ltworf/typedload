@@ -1,5 +1,6 @@
 2.17
 ====
+* Support for NotRequired
 
 2.16
 ====

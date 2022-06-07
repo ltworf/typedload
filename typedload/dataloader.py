@@ -577,12 +577,18 @@ def _typeddictload(l: Loader, value: Dict[str, Any], type_) -> Any:
 
     if hasattr(type_, '__required_keys__') and hasattr(type_, '__optional_keys__'):
         # TypedDict, since 3.9
-        necessary_fields = type_.__required_keys__
+        necessary_fields = set(type_.__required_keys__)
     elif getattr(type_, '__total__', True) == False:
         # TypedDict, only for 3.8
         necessary_fields = set()
     else:
         necessary_fields = fields
+
+    # Resolve the NotRequired stuff
+    for k, v in type_hints.items():
+        if is_notrequired(v):
+            type_hints[k] = notrequiredtype(v)
+            necessary_fields.discard(k)
 
     return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 

@@ -311,6 +311,17 @@ In : typedload.load({}, A)
 Out: {}
 ```
 
+**NotRequired** can also be used (since 2.17).
+
+```python
+class A(TypedDict):
+    val: str
+    vol: NotRequired[int]
+
+In : typedload.load({'val': 'a'}, A)
+Out: {'val': 'a'}
+```
+
 typing.Set, typing.Frozenset
 ----------------------------
 
