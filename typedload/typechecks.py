@@ -71,13 +71,19 @@ except ImportError:
     from typing import _ForwardRef as ForwardRef  # type: ignore
 
 
-Literal = None  # type: Any
-_TypedDictMeta = None  # type: Any
 try:
     # Since 3.8
-    from typing import Literal, _TypedDictMeta  # type: ignore
+    from typing import Literal  # type: ignore
 except ImportError:
-    pass
+    Literal = None
+
+
+try:
+    # Since 3.8
+    from typing import _TypedDictMeta  # type: ignore
+except ImportError:
+    _TypedDictMeta = None
+
 
 UnionType = None  # type: Any
 try:
