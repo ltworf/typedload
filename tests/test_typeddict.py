@@ -36,8 +36,10 @@ class A(TypedDict):
 class B(TypedDict, total=False):
     val: str
 
+
 class C(A, total=False):
     vel: int
+
 
 class TestTypeddictLoad(unittest.TestCase):
 
@@ -84,3 +86,44 @@ class TestTypeddictLoad(unittest.TestCase):
         assert typechecks.is_typeddict(A)
         assert typechecks.is_typeddict(Person)
         assert typechecks.is_typeddict(B)
+
+
+if sys.version_info.minor >= 11:
+    # NotRequired is present from 3.11
+    from typing import NotRequired
+
+    class TestNotRequired(unittest.TestCase):
+
+        def test_standard(self):
+
+            class A(TypedDict):
+                i: int
+                o: NotRequired[int]
+
+            assert load({'i': 1}, A) == {'i': 1}
+            assert load({'i': 1, 'o': 2}, A) == {'i': 1, 'o': 2}
+
+        def test_nontotal(self):
+
+            class A(TypedDict, total = False):
+                i: int
+                o: NotRequired[int]
+
+            assert load({}, A) == {}
+            assert load({'i': 1}, A) == {'i': 1}
+            assert load({'i': 1, 'o': 2}, A) == {'i': 1, 'o': 2}
+
+        def test_mixtotal(self):
+
+            class A(TypedDict):
+                a: int
+                b: NotRequired[int]
+
+            class B(A, total=False):
+                c: int
+                d: NotRequired[int]
+
+            with self.assertRaises(ValueError):
+                load({}, B)
+            assert load({'a': 1}, B) == {'a': 1}
+            assert load({'a': 1, 'd':12}, B) == {'a': 1, 'd': 12}
