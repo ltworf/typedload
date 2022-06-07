@@ -15,7 +15,7 @@ protects the user from the ever changing internal representation used in
 different versions of Python.
 """
 
-# Copyright (C) 2019-2021 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2019-2022 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ __all__ = [
     'is_typeddict',
     'is_newtype',
     'is_optional',
+    'is_notrequired',
     'uniontypes',
     'literalvalues',
     'NONETYPE',
@@ -83,6 +84,13 @@ try:
     from types import UnionType  # type: ignore
 except:
     pass
+
+
+try:
+    # Since 3.11
+    from typing import NotRequired  # type: ignore
+except ImportError:
+    NotRequired = None
 
 
 def _issubclass(t1, t2) -> bool:
@@ -278,3 +286,10 @@ def is_any(type_: Type[Any]) -> bool:
     Check if it is a typing.Any
     '''
     return type_ == Any
+
+
+def is_notrequired(type_: Type[Any]) -> bool:
+    '''
+    Check if it's typing.NotRequired or typing_extensions.NotRequired
+    '''
+    return getattr(type_, '__origin__', None) == NotRequired and NotRequired is not None
