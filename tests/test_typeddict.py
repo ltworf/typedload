@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2019-2021 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2019-2022 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
