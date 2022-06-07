@@ -307,8 +307,8 @@ It also supports non-total TypedDict (since 2.7).
 class A(TypedDict, total=False):
     val: str
 
-In [5]: typedload.load({}, A)
-Out[5]: {}
+In : typedload.load({}, A)
+Out: {}
 ```
 
 typing.Set, typing.Frozenset
