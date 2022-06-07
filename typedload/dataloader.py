@@ -584,6 +584,12 @@ def _typeddictload(l: Loader, value: Dict[str, Any], type_) -> Any:
     else:
         necessary_fields = fields
 
+    # Resolve the NotRequired stuff
+    for k, v in type_hints.items():
+        if is_notrequired(v):
+            type_hints[k] = notrequiredtype(v)
+            necessary_fields.discard(k)
+
     return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
 
