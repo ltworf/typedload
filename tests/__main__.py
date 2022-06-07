@@ -29,11 +29,11 @@ if sys.version_info.minor > 5:
     from .test_datadumper import *
     from .test_dumpload import *
     from .test_exceptions import *
+    from .test_literal import *
 if sys.version_info.minor >= 7:
     from .test_dataclass import *
     from .test_deferred import *
 if sys.version_info.minor >= 8:
-    from .test_literal import *
     from .test_typeddict import *
 if sys.version_info.minor >= 10:
     from .test_orunion import *
