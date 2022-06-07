@@ -16,14 +16,29 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
+from typing import List
 
-from typing import Literal
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
 import unittest
 
 from typedload import dataloader, load, dump, typechecks
 
 
 class TestLiteralLoad(unittest.TestCase):
+
+    def test_is_literal(self):
+        l = Literal[1, 2, 3]
+        assert typechecks.is_literal(l)
+
+        assert not typechecks.is_literal(3)
+        assert not typechecks.is_literal(int)
+        assert not typechecks.is_literal(str)
+        assert not typechecks.is_literal(None)
+        assert not typechecks.is_literal(List[int])
 
     def test_literalvalues(self):
         assert isinstance(typechecks.literalvalues(Literal[1]), set)

@@ -20,9 +20,6 @@ from typing import Dict, FrozenSet, List, NamedTuple, Optional, Set, Tuple, Unio
 import unittest
 import sys
 
-if sys.version_info.minor >= 8 :
-    from typing import Literal
-
 from typedload import typechecks
 
 
@@ -42,18 +39,6 @@ class TestChecks(unittest.TestCase):
             return
         from typing import NotRequired
         assert int == typechecks.notrequiredtype(NotRequired[int])
-
-
-    def test_is_literal(self):
-        if sys.version_info.minor >= 8:
-            l = Literal[1, 2, 3]
-            assert typechecks.is_literal(l)
-
-        assert not typechecks.is_literal(3)
-        assert not typechecks.is_literal(int)
-        assert not typechecks.is_literal(str)
-        assert not typechecks.is_literal(None)
-        assert not typechecks.is_literal(List[int])
 
     def test_is_not_typeddict(self):
         assert not typechecks.is_typeddict(int)
