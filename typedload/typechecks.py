@@ -75,7 +75,10 @@ try:
     # Since 3.8
     from typing import Literal  # type: ignore
 except ImportError:
-    Literal = None
+    try:
+        from typing_extensions import Literal
+    except ImportError:
+        Literal = None
 
 
 try:
