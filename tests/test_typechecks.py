@@ -36,6 +36,13 @@ class TestChecks(unittest.TestCase):
             assert typechecks.is_notrequired(NotRequired[Union[int, str]])
         assert (not typechecks.is_notrequired(None))
 
+    def test_not_required(self):
+        if sys.version_info.minor < 11:
+            # Only from 3.11
+            return
+        from typing import NotRequired
+        assert int == typechecks.notrequiredtype(NotRequired[int])
+
 
     def test_is_literal(self):
         if sys.version_info.minor >= 8:
