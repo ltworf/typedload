@@ -1,6 +1,7 @@
 2.17
 ====
 * Support for NotRequired
+* Support Literal from typing-extensions
 
 2.16
 ====
