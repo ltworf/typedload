@@ -19,15 +19,7 @@
 from typing import List, NamedTuple
 import sys
 
-from typedload import load
-import apischema
-import pydantic
-
 from common import timeit
-
-
-class DataPy(pydantic.BaseModel):
-    data: List[int]
 
 
 class Data(NamedTuple):
@@ -38,8 +30,13 @@ data = {'data': list(range(3000000))}
 
 
 if sys.argv[1] == '--typedload':
+    from typedload import load
     print(timeit(lambda: load(data, Data)))
 elif sys.argv[1] == '--pydantic':
+    import pydantic
+    class DataPy(pydantic.BaseModel):
+        data: List[int]
     print(timeit(lambda: DataPy(**data)))
 elif sys.argv[1] == '--apischema':
+    import apischema
     print(timeit(lambda: apischema.deserialize(Data, data)))
