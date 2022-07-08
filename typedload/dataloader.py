@@ -399,7 +399,21 @@ def _setload(l: Loader, value, type_) -> Set:
     if isinstance(value, dict):
         raise TypedloadTypeError('Unable to load dictionary as a set', value=value, type_=type_)
     t = type_.__args__[0]
-    return {l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value)}
+    try:
+        f = l.handlers[l.index(t)][1]
+    except ValueError:
+        raise TypedloadTypeError(
+            'Cannot deal with value of type %s' % tname(type_),
+            value=value,
+            type_=type_
+        )
+    try:
+        # Hopeful load
+        return {f(l, v, t) for v in value}
+    except TypedloadException:
+        # A failure, reload with annotations
+        # See _listload for more details
+        return {l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value)}
 
 
 def _frozensetload(l: Loader, value, type_) -> FrozenSet:
@@ -409,7 +423,20 @@ def _frozensetload(l: Loader, value, type_) -> FrozenSet:
     if isinstance(value, dict):
         raise TypedloadTypeError('Unable to load dictionary as a frozenset', value=value, type_=type_)
     t = type_.__args__[0]
-    return frozenset(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
+    try:
+        f = l.handlers[l.index(t)][1]
+    except ValueError:
+        raise TypedloadTypeError(
+            'Cannot deal with value of type %s' % tname(type_),
+            value=value,
+            type_=type_
+        )
+    try:
+        return frozenset(f(l, v, t) for v in value)
+    except TypedloadException:
+        # A failure, reload with annotations
+        # See _listload for more details
+        return frozenset(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
 
 
 def _tupleload(l: Loader, value, type_) -> Tuple:
@@ -424,7 +451,21 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
         args = type_.__tuple_params__
 
     if len(args) == 2 and args[1] == ...: # Tuple[something, ...]
-        return tuple(l.load(v, args[0], annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
+        t = args[0]
+        try:
+            f = l.handlers[l.index(t)][1]
+        except ValueError:
+            raise TypedloadTypeError(
+                'Cannot deal with value of type %s' % tname(type_),
+                value=value,
+                type_=type_
+            )
+        try:
+            return tuple(f(l, v, t) for v in value)
+        except ValueError:
+            # A failure, reload with annotations
+            # See _listload for more details
+            return tuple(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
     else: # Tuple[something, something, somethingelse]
         if l.failonextra and len(value) > len(args):
             raise TypedloadValueError('Value is too long for type %s' % tname(type_), value=value, type_=type_)
