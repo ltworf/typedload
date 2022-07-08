@@ -70,27 +70,27 @@ def main():
     plotcmd = []
     maxtime = 0
 
-    for i in tests:
-        print(f'Now running: {i}')
+    for i, t in enumerate(tests):
+        print(f'Now running: {t} {i}/{len(tests)}')
 
-        with open(outdir / f'{i}.dat', 'wt') as f:
+        with open(outdir / f'{t}.dat', 'wt') as f:
             counter = 0
 
             for library in extlibs:
                 print(f'\tRunning test with {library}')
-                library_time, maxduration = parse_performance(['python3', f'{tempdir}/{i}.py', f'--{library}'])
+                library_time, maxduration = parse_performance(['python3', f'{tempdir}/{t}.py', f'--{library}'])
                 maxtime = maxtime if maxtime > maxduration else maxduration
                 f.write(f'{counter} "{library}" {library_time} {maxduration}\n')
                 counter += 1
             for branch in tags[len(tags) - 10:]:
                 print(f'\tRunning test with {branch}')
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
-                typedload_time, maxduration = parse_performance(['python3', f'{tempdir}/{i}.py', '--typedload'])
+                typedload_time, maxduration = parse_performance(['python3', f'{tempdir}/{t}.py', '--typedload'])
                 f.write(f'{counter} "{branch}" {typedload_time} {maxduration}\n')
                 maxtime = maxtime if maxtime > maxduration else maxduration
                 counter += 1
 
-        plotcmd.append(f'"{i}.dat" using 1:3:4 with filledcurves title "", "" using 1:3:xtic(2) with linespoint title "{i}"')
+        plotcmd.append(f'"{t}.dat" using 1:3:4 with filledcurves title "", "" using 1:3:xtic(2) with linespoint title "{t}"')
     rmtree(tempdir)
 
     gnuplot_script = outdir / 'perf.p'
