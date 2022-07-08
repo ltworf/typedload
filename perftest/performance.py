@@ -21,6 +21,7 @@
 from subprocess import check_output, DEVNULL
 from tempfile import mkdtemp
 from shutil import copy, rmtree
+import sys
 from pathlib import Path
 
 
@@ -38,6 +39,12 @@ def main():
         'load list of attrs objects',
         'realistic union of objects as namedtuple',
     ]
+
+    #FIXME apischema doesn't work in python 3.11
+    if sys.version_info.minor < 11:
+        extlibs = ('apischema', 'pydantic')
+    else:
+        extlibs = ('pydantic',)
 
     outdir = Path('perftest.output')
     if not outdir.exists():
@@ -69,7 +76,7 @@ def main():
         with open(outdir / f'{i}.dat', 'wt') as f:
             counter = 0
 
-            for library in ('apischema', 'pydantic'):
+            for library in extlibs:
                 print(f'\tRunning test with {library}')
                 library_time, maxduration = parse_performance(['python3', f'{tempdir}/{i}.py', f'--{library}'])
                 maxtime = maxtime if maxtime > maxduration else maxduration
