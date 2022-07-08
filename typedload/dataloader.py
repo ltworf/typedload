@@ -3,7 +3,7 @@ typedload
 Module to load data into typed data structures
 """
 
-# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -354,11 +354,16 @@ def _listload(l: Loader, value, type_) -> List:
     if isinstance(value, dict):
         raise TypedloadTypeError('Unable to load dictionary as a list', value=value, type_=type_)
     t = type_.__args__[0]
+    f = l.handlers[l.index(t)][1]
     try:
+        # Hopeful load calling the handler directly, skipping load()
+        return [f(l, v, t) for v in value]
+    except TypedloadException as e:
+        # FIXME Once 3.8 is the lowest supported version, I can use := to export the index where the
+        # error happened, removing the need to redo the entire loading of the list in the slow way
+        # A nested error happened, reload everything with load() so we get the detailed exception with path
         return [l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value)]
     except TypeError as e:
-        if isinstance(e, TypedloadException):
-            raise
         raise TypedloadTypeError(str(e), value=value, type_=type_)
 
 
