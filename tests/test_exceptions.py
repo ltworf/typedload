@@ -117,3 +117,13 @@ class TestExceptionsStr(unittest.TestCase):
         with self.assertRaises(exceptions.TypedloadException):
             load([[1]], List[FrozenSet[bytes]])
 
+    def test_notiterable_exception(self):
+        loader = dataloader.Loader()
+        with self.assertRaises(exceptions.TypedloadTypeError):
+            loader.load(None, List[int])
+        with self.assertRaises(exceptions.TypedloadTypeError):
+            loader.load(None, Tuple[int, ...])
+        with self.assertRaises(exceptions.TypedloadTypeError):
+            loader.load(None, Set[int])
+        with self.assertRaises(exceptions.TypedloadTypeError):
+            loader.load(None, FrozenSet[int])
