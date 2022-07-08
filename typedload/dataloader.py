@@ -414,6 +414,8 @@ def _setload(l: Loader, value, type_) -> Set:
         # A failure, reload with annotations
         # See _listload for more details
         return {l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value)}
+    except TypeError as e:
+        raise TypedloadTypeError(str(e), value=value, type_=type_)
 
 
 def _frozensetload(l: Loader, value, type_) -> FrozenSet:
@@ -437,6 +439,8 @@ def _frozensetload(l: Loader, value, type_) -> FrozenSet:
         # A failure, reload with annotations
         # See _listload for more details
         return frozenset(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
+    except TypeError as e:
+        raise TypedloadTypeError(str(e), value=value, type_=type_)
 
 
 def _tupleload(l: Loader, value, type_) -> Tuple:
@@ -462,10 +466,12 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
             )
         try:
             return tuple(f(l, v, t) for v in value)
-        except ValueError:
+        except TypedloadException:
             # A failure, reload with annotations
             # See _listload for more details
             return tuple(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
+        except TypeError as e:
+            raise TypedloadTypeError(str(e), value=value, type_=type_)
     else: # Tuple[something, something, somethingelse]
         if l.failonextra and len(value) > len(args):
             raise TypedloadValueError('Value is too long for type %s' % tname(type_), value=value, type_=type_)
