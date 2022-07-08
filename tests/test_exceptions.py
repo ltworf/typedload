@@ -18,7 +18,7 @@
 
 
 import enum
-from typing import List, NamedTuple, Optional, Tuple
+from typing import List, NamedTuple, Optional, Tuple, Set, FrozenSet
 import unittest
 
 from typedload import dataloader, load, dump, typechecks, exceptions
@@ -106,4 +106,14 @@ class TestExceptionsStr(unittest.TestCase):
                 load(i, Enumeration, basiccast=False, failonextra=True)
             except Exception as e:
                 str(e)
+
+    def test_nested_wrong_type(self):
+        with self.assertRaises(exceptions.TypedloadException):
+            load([[1]], List[List[bytes]])
+        with self.assertRaises(exceptions.TypedloadException):
+            load([[1]], List[Tuple[bytes, ...]])
+        with self.assertRaises(exceptions.TypedloadException):
+            load([[1]], List[Set[bytes]])
+        with self.assertRaises(exceptions.TypedloadException):
+            load([[1]], List[FrozenSet[bytes]])
 
