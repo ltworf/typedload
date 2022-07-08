@@ -327,11 +327,6 @@ class TestExceptions(unittest.TestCase):
         with self.assertRaises(exceptions.TypedloadTypeError):
             loader.load({1: 1}, Set[int])
 
-    def test_list_exception(self):
-        loader = dataloader.Loader()
-        with self.assertRaises(exceptions.TypedloadTypeError):
-            loader.load(None, List[int])
-
     def test_dict_exception(self):
         loader = dataloader.Loader()
         with self.assertRaises(exceptions.TypedloadAttributeError):
