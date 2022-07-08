@@ -77,15 +77,17 @@ def main():
             counter = 0
 
             for library in extlibs:
-                print(f'\tRunning test with {library}')
+                print(f'\tRunning test with {library}', end='\t', flush=True)
                 library_time, maxduration = parse_performance(['python3', f'{tempdir}/{t}.py', f'--{library}'])
+                print(library_time, maxduration)
                 maxtime = maxtime if maxtime > maxduration else maxduration
                 f.write(f'{counter} "{library}" {library_time} {maxduration}\n')
                 counter += 1
             for branch in tags[len(tags) - 10:]:
-                print(f'\tRunning test with {branch}')
+                print(f'\tRunning test with {branch}', end='\t', flush=True)
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
                 typedload_time, maxduration = parse_performance(['python3', f'{tempdir}/{t}.py', '--typedload'])
+                print(typedload_time, maxduration)
                 f.write(f'{counter} "{branch}" {typedload_time} {maxduration}\n')
                 maxtime = maxtime if maxtime > maxduration else maxduration
                 counter += 1
