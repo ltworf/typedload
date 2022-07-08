@@ -2,6 +2,7 @@
 ====
 * Support for NotRequired
 * Document performance testing
+* Improve performances when loading iterables
 
 2.16
 ====
