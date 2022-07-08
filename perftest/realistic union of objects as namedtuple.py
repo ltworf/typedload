@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2021 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2021-2022 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,36 +20,7 @@ from typing import Tuple, Union, Literal, NamedTuple
 import sys
 from dataclasses import dataclass
 
-from typedload import load
-import apischema
-import pydantic
-
 from common import timeit
-
-class EventMessagePy(pydantic.BaseModel):
-    timestamp: float
-    type: Literal['message']
-    text: str
-    sender: str
-    receiver: str
-
-class EventFilePy(pydantic.BaseModel):
-    timestamp: float
-    type: Literal['file']
-    filename: str
-    sender: str
-    receiver: str
-    url: str
-
-class EventPingPy(pydantic.BaseModel):
-    timestamp: float
-    type: Literal['ping']
-
-
-EventPy = Union[EventMessagePy, EventPingPy, EventFilePy]
-
-class EventListPy(pydantic.BaseModel):
-    data: Tuple[EventPy, ...]
 
 
 class EventMessage(NamedTuple):
@@ -104,12 +75,35 @@ data = {'data': events}
 
 
 if sys.argv[1] == '--typedload':
+    from typedload import load
     print(timeit(lambda: load(data, EventList)))
 elif sys.argv[1] == '--pydantic':
+    import pydantic
+    class EventMessagePy(pydantic.BaseModel):
+        timestamp: float
+        type: Literal['message']
+        text: str
+        sender: str
+        receiver: str
+    class EventFilePy(pydantic.BaseModel):
+        timestamp: float
+        type: Literal['file']
+        filename: str
+        sender: str
+        receiver: str
+        url: str
+    class EventPingPy(pydantic.BaseModel):
+        timestamp: float
+        type: Literal['ping']
+    EventPy = Union[EventMessagePy, EventPingPy, EventFilePy]
+    class EventListPy(pydantic.BaseModel):
+        data: Tuple[EventPy, ...]
     print(timeit(lambda: EventListPy(**data)))
 elif sys.argv[1] == '--apischema':
+    import apischema
     print(timeit(lambda: apischema.deserialize(EventList, data)))
 if sys.argv[1] == '--apischema-discriminator':
+    import apischema
     try:
         from typing import Annotated
     except ImportError:

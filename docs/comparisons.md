@@ -10,7 +10,7 @@ In general, the advantages of typedload over competing libraries are:
 * Supports Union
 * Works on python 3.5
 * Mypy and similar work without plugins
-* Can use camelCase and snake_case
+* Can use and convert camelCase and snake_case
 * Functional approach
 
 ### It works with existing codebase
@@ -43,7 +43,7 @@ pydantic
 
 Found [here](https://pydantic-docs.helpmanual.io/)
 
-* Slower than typedload for complex data (but faster for simple non-nested data)
+* Slower than typedload
 * Requires all the classes to derive from a superclass
 * Does not work with mypy:
     * [Abuses python typing annotation to mean something different, breaking linters](https://pydantic-docs.helpmanual.io/usage/models/#required-optional-fields)

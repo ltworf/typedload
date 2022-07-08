@@ -9,23 +9,21 @@ nav:
     - Home: README.md
     #- Origin story: origin_story.md
     - Changelog: CHANGELOG.md
-    - Comparisons: comparisons.md
     - Using typedload:
         - Examples: examples.md
         - Supported types: supported_types.md
         - Errors: errors.md
         - Deferred evaluation of types: deferred_evaluation.md
-    #- Tutorial:
-    - Contriutors:
+    - Comparisons:
+        - Why typedload: comparisons.md
+        - Performance: performance.md
+    - Contributors:
         - Contributing: CONTRIBUTING.md
         - Code of conduct: CODE_OF_CONDUCT.md
     - Links:
         - Git: https://github.com/ltworf/typedload/
         - Downloads: https://github.com/ltworf/typedload/releases
         - Bug reports: https://github.com/ltworf/typedload/issues
-        - External resources:
-            - Debian: https://packages.debian.org/search?keywords=python3-typedload
-            - Pypi: https://pypi.org/project/typedload/
-            - Pypi stats: https://pypistats.org/packages/typedload
-            - Snyk: https://snyk.io/advisor/python/typedload
-            - Python Pkg Wiki: https://package.wiki/typedload
+        - Debian package: https://packages.debian.org/search?keywords=python3-typedload
+        - Pypi package: https://pypi.org/project/typedload/
+        - Pypi stats: https://pypistats.org/packages/typedload

@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2021 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2021-2022 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,18 +20,7 @@ from typing import List, NamedTuple
 import sys
 from dataclasses import dataclass
 
-from typedload import load
-import apischema
-import pydantic
-
 from common import timeit
-
-class ChildPy(pydantic.BaseModel):
-    value: int
-
-
-class DataPy(pydantic.BaseModel):
-    data: List[ChildPy]
 
 
 @dataclass
@@ -47,8 +36,15 @@ data = {'data': [{'value': i} for i in range(300000)]}
 
 
 if sys.argv[1] == '--typedload':
+    from typedload import load
     print(timeit(lambda: load(data, Data)))
 elif sys.argv[1] == '--pydantic':
+    import pydantic
+    class ChildPy(pydantic.BaseModel):
+        value: int
+    class DataPy(pydantic.BaseModel):
+        data: List[ChildPy]
     print(timeit(lambda: DataPy(**data)))
 elif sys.argv[1] == '--apischema':
+    import apischema
     print(timeit(lambda: apischema.deserialize(Data, data)))

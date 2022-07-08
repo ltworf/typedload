@@ -16,24 +16,17 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
-from typing import List, NamedTuple, Sequence, Union
+from typing import Set, NamedTuple, Union
 import sys
-
-import attrs
 
 from common import timeit
 
 
-@attrs.define
-class Child:
-    value: int
-
-
 class Data(NamedTuple):
-    data: List[Child]
+    data: Set[Union[int, float]]
 
 
-data = {'data': [{'value': i} for i in range(300000)]}
+data = {'data': [i if i % 2 else float(i) for i in range(3000000)]}
 
 
 if sys.argv[1] == '--typedload':
@@ -41,29 +34,9 @@ if sys.argv[1] == '--typedload':
     print(timeit(lambda: load(data, Data)))
 elif sys.argv[1] == '--pydantic':
     import pydantic
-    class ChildPy(pydantic.BaseModel):
-        value: int
     class DataPy(pydantic.BaseModel):
-        data: List[ChildPy]
+        data: Set[Union[int, float]]
     print(timeit(lambda: DataPy(**data)))
 elif sys.argv[1] == '--apischema':
     import apischema
-    ##### apischema attrs support #####
-    prev_default_object_fields = apischema.settings.default_object_fields
-
-
-    def attrs_fields(cls: type) -> Union[Sequence[apischema.objects.ObjectField], None]:
-        if hasattr(cls, "__attrs_attrs__"):
-            return [
-                apischema.objects.ObjectField(
-                    a.name, a.type, required=a.default == attrs.NOTHING, default=a.default
-                )
-                for a in getattr(cls, "__attrs_attrs__")
-            ]
-        else:
-            return prev_default_object_fields(cls)
-
-
-    apischema.settings.default_object_fields = attrs_fields
-    #####
     print(timeit(lambda: apischema.deserialize(Data, data)))

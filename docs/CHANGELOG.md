@@ -1,6 +1,7 @@
 2.17
 ====
 * Support for NotRequired
+* Document performance testing
 
 2.16
 ====

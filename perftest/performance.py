@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # typedload
-# Copyright (C) 2021 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2021-2022 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 from subprocess import check_output, DEVNULL
 from tempfile import mkdtemp
 from shutil import copy, rmtree
+import sys
 from pathlib import Path
 
 
@@ -33,11 +34,19 @@ def main():
     tests = [
         'load list of ints',
         'load list of floats and ints',
+        'load set of floats and ints',
+        'load tuple of floats and ints',
         'load list of NamedTuple objects',
         'load list of dataclass objects',
         'load list of attrs objects',
         'realistic union of objects as namedtuple',
     ]
+
+    #FIXME apischema doesn't work in python 3.11
+    if sys.version_info.minor < 11:
+        extlibs = ('apischema', 'pydantic')
+    else:
+        extlibs = ('pydantic',)
 
     outdir = Path('perftest.output')
     if not outdir.exists():
@@ -63,27 +72,29 @@ def main():
     plotcmd = []
     maxtime = 0
 
-    for i in tests:
-        print(f'Now running: {i}')
+    for i, t in enumerate(tests):
+        print(f'Now running: {t} {i}/{len(tests)}')
 
-        with open(outdir / f'{i}.dat', 'wt') as f:
+        with open(outdir / f'{t}.dat', 'wt') as f:
             counter = 0
 
-            for library in ('apischema', 'pydantic'):
-                print(f'\tRunning test with {library}')
-                library_time, maxduration = parse_performance(['python3', f'{tempdir}/{i}.py', f'--{library}'])
+            for library in extlibs:
+                print(f'\tRunning test with {library}', end='\t', flush=True)
+                library_time, maxduration = parse_performance(['python3', f'{tempdir}/{t}.py', f'--{library}'])
+                print(library_time, maxduration)
                 maxtime = maxtime if maxtime > maxduration else maxduration
                 f.write(f'{counter} "{library}" {library_time} {maxduration}\n')
                 counter += 1
             for branch in tags[len(tags) - 10:]:
-                print(f'\tRunning test with {branch}')
+                print(f'\tRunning test with {branch}', end='\t', flush=True)
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
-                typedload_time, maxduration = parse_performance(['python3', f'{tempdir}/{i}.py', '--typedload'])
+                typedload_time, maxduration = parse_performance(['python3', f'{tempdir}/{t}.py', '--typedload'])
+                print(typedload_time, maxduration)
                 f.write(f'{counter} "{branch}" {typedload_time} {maxduration}\n')
                 maxtime = maxtime if maxtime > maxduration else maxduration
                 counter += 1
 
-        plotcmd.append(f'"{i}.dat" using 1:3:4 with filledcurves title "", "" using 1:3:xtic(2) with linespoint title "{i}"')
+        plotcmd.append(f'"{t}.dat" using 1:3:4 with filledcurves title "", "" using 1:3:xtic(2) with linespoint title "{t}"')
     rmtree(tempdir)
 
     gnuplot_script = outdir / 'perf.p'
