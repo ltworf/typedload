@@ -354,7 +354,14 @@ def _listload(l: Loader, value, type_) -> List:
     if isinstance(value, dict):
         raise TypedloadTypeError('Unable to load dictionary as a list', value=value, type_=type_)
     t = type_.__args__[0]
-    f = l.handlers[l.index(t)][1]
+    try:
+        f = l.handlers[l.index(t)][1]
+    except ValueError:
+        raise TypedloadTypeError(
+            'Cannot deal with value of type %s' % tname(type_),
+            value=value,
+            type_=type_
+        )
     try:
         # Hopeful load calling the handler directly, skipping load()
         return [f(l, v, t) for v in value]
