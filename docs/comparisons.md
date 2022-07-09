@@ -12,6 +12,7 @@ In general, the advantages of typedload over competing libraries are:
 * Mypy and similar work without plugins
 * Can use and convert camelCase and snake_case
 * Functional approach
+* Pure Python, no compiling
 
 ### It works with existing codebase
 
@@ -38,6 +39,16 @@ Seems to be very rare in this domain, but unions are very common in real world d
 You can load a `List[YourType]`, while pydantic can only load a single object that then will contain the list.
 
 
+apischema
+---------
+
+Found [here](https://github.com/wyfo/apischema)
+
+* It reuses the same objects in the output, so changing the data might result in subtle bugs if the input data is used again
+* Doesn't support as many python versions as typedload (currently no 3.11 and no 3.5)
+* No native support for attrs
+
+
 pydantic
 --------
 
@@ -49,6 +60,7 @@ Found [here](https://pydantic-docs.helpmanual.io/)
     * [Abuses python typing annotation to mean something different, breaking linters](https://pydantic-docs.helpmanual.io/usage/models/#required-optional-fields)
     * [Uses float=None without using Optional in its own documentation](https://pydantic-docs.helpmanual.io/usage/models/#recursive-models).
 * Union might do casting when casting is not needed.
+
 
 dataclasses-json
 ----------------
