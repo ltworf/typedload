@@ -58,7 +58,7 @@ def main():
 
     tags = check_output(['git', 'tag', '--list'], encoding='ascii').strip().split('\n')
     # Skip minor versions
-    tags = [i for i in tags if '-' not in i and ',' not in i]
+    tags = [i for i in tags if '-' not in i and ',' not in i and len(i.split('.')) <= 2]
     # Sort by version
     tags.sort(key=lambda i: tuple(int(j) for j in i.split('.')))
 
