@@ -58,7 +58,7 @@ def main():
 
     tags = check_output(['git', 'tag', '--list'], encoding='ascii').strip().split('\n')
     # Skip minor versions
-    tags = [i for i in tags if '-' not in i and ',' not in i]
+    tags = [i for i in tags if '-' not in i and ',' not in i and len(i.split('.')) <= 2]
     # Sort by version
     tags.sort(key=lambda i: tuple(int(j) for j in i.split('.')))
 
@@ -85,7 +85,7 @@ def main():
                 maxtime = maxtime if maxtime > maxduration else maxduration
                 f.write(f'{counter} "{library}" {library_time} {maxduration}\n')
                 counter += 1
-            for branch in tags[len(tags) - 10:]:
+            for branch in tags[-6:]:
                 print(f'\tRunning test with {branch}', end='\t', flush=True)
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
                 typedload_time, maxduration = parse_performance(['python3', f'{tempdir}/{t}.py', '--typedload'])
@@ -102,7 +102,7 @@ def main():
         print('set style fill transparent solid 0.2 noborder', file=f)
         print('set ylabel "seconds"', file=f)
         print('set xlabel "package"', file=f)
-        print(f'set title "typedload performance test"', file=f)
+        print(f'set title "typedload performance test {sys.version}"', file=f)
         print(f'set yrange [0:{maxtime}]', file=f)
         print('plot ' + ','.join(plotcmd), file=f)
     print(f'Gnuplot script generated in {gnuplot_script}. You can execute')
