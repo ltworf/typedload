@@ -681,7 +681,7 @@ def _unionload(l: Loader, value, type_) -> Any:
         sorted_args = list(args)  # type: List[Type]
         sorted_args.sort(key=lambda i: i in l.basictypes)
         sortedargscache[type_] = sorted_args
-        l._union_sortedargscache = sortedargscache
+        setattr(l, '_union_sortedargscache', sortedargscache)
 
     # Try all types
     loaded_count = 0
