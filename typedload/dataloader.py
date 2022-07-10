@@ -672,9 +672,16 @@ def _unionload(l: Loader, value, type_) -> Any:
 
     exceptions = []
 
-    # Give a score to the types
-    sorted_args = list(args)  # type: List[Type]
-    sorted_args.sort(key=lambda i: i in l.basictypes)
+    # Give a score to the types (and cache the sorting)
+    sortedargscache = getattr(l, '_union_sortedargscache', {})
+    maybe_sorted_args = sortedargscache.get(type_)
+    if maybe_sorted_args:
+        sorted_args = maybe_sorted_args
+    else:
+        sorted_args = list(args)  # type: List[Type]
+        sorted_args.sort(key=lambda i: i in l.basictypes)
+        sortedargscache[type_] = sorted_args
+        l._union_sortedargscache = sortedargscache
 
     # Try all types
     loaded_count = 0
