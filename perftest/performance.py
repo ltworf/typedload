@@ -85,7 +85,7 @@ def main():
                 maxtime = maxtime if maxtime > maxduration else maxduration
                 f.write(f'{counter} "{library}" {library_time} {maxduration}\n')
                 counter += 1
-            for branch in tags[len(tags) - 10:]:
+            for branch in tags[-10:]:
                 print(f'\tRunning test with {branch}', end='\t', flush=True)
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
                 typedload_time, maxduration = parse_performance(['python3', f'{tempdir}/{t}.py', '--typedload'])
