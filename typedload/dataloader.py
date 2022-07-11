@@ -229,7 +229,7 @@ class Loader:
 
         self._indexcache = {}  # type: Dict[Type, int]
 
-        self._unionload_discriminatorcache = {}  # type: Dict[Type, Tuple[str, Dict]]
+        self._unionload_discriminatorcache = {}  # type: Dict[Type, Tuple[Optional[str], Optional[Dict[Any, Type]]]]
 
     def index(self, type_: Type[T]) -> int:
         """
@@ -685,7 +685,7 @@ def _unionload(l: Loader, value, type_) -> Any:
     if hasattr(value, 'get'):
         # Seems we have an object
         # Bump up if the Literal field matches
-        discriminatorscache = l._unionload_discriminatorcache.get(type_)
+        discriminatorscache = l._unionload_discriminatorcache.get(type_)  # type: Optional[Tuple[Optional[str], Optional[Dict[Any, Type]]]]
 
         # First time generate the deep inspection for literal
         if discriminatorscache is None:
@@ -707,12 +707,12 @@ def _unionload(l: Loader, value, type_) -> Any:
 
         # Cache is created, use it
         # It's a tuple key, {value: type}
-        if discriminatorscache[0]:
-            t = discriminatorscache[1].get(value.get(discriminatorscache[0]))
-            if t:
+        if discriminatorscache[1]:
+            preferredtype = discriminatorscache[1].get(value.get(discriminatorscache[0]))
+            if preferredtype:
                 # Place best value on top
-                sorted_args.remove(t)
-                sorted_args.insert(0, t)
+                sorted_args.remove(preferredtype)
+                sorted_args.insert(0, preferredtype)
 
     # Try all types
     loaded_count = 0
