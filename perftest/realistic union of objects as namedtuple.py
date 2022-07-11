@@ -42,7 +42,21 @@ class EventPing(NamedTuple):
     timestamp: float
     type: Literal['ping']
 
-Event = Union[EventMessage, EventPing, EventFile]
+@dataclass
+class EventEnter:
+    type: Literal['enter']
+    timestamp: float
+    sender: str
+    room: int
+
+@dataclass
+class EventExit:
+    type: Literal['exit']
+    timestamp: float
+    sender: str
+    room: int
+
+Event = Union[EventMessage, EventPing, EventFile, EventEnter, EventExit]
 
 
 class EventList(NamedTuple):
@@ -50,6 +64,18 @@ class EventList(NamedTuple):
 
 
 events = [
+    {
+        'timestamp': 13,
+        'type': 'exit',
+        'sender': 'asdsd',
+        'room': 42,
+    },
+    {
+        'timestamp': 11,
+        'type': 'enter',
+        'sender': 'asdasd',
+        'room': 42,
+    },
     {
         'timestamp': 44.3,
         'type': 'message',
@@ -95,7 +121,17 @@ elif sys.argv[1] == '--pydantic':
     class EventPingPy(pydantic.BaseModel):
         timestamp: float
         type: Literal['ping']
-    EventPy = Union[EventMessagePy, EventPingPy, EventFilePy]
+    class EventEnterPy(pydantic.BaseModel):
+        type: Literal['enter']
+        timestamp: float
+        sender: str
+        room: int
+    class EventExitPy(pydantic.BaseModel):
+        type: Literal['exit']
+        timestamp: float
+        sender: str
+        room: int
+    EventPy = Union[EventExitPy, EventEnterPy,EventMessagePy, EventPingPy, EventFilePy]
     class EventListPy(pydantic.BaseModel):
         data: Tuple[EventPy, ...]
     print(timeit(lambda: EventListPy(**data)))
