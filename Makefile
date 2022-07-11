@@ -44,6 +44,7 @@ dist: clean setup.py
 		typedload/Makefile \
 		typedload/tests \
 		typedload/docs \
+		typedload/docgen \
 		typedload/mkdocs.yml \
 		typedload/LICENSE \
 		typedload/CONTRIBUTING.md \
