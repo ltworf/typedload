@@ -1,6 +1,7 @@
 typedload (2.17-1) UNRELEASED; urgency=medium
 
   * New upstream release
+  * Bump Standards-Version: 4.6.1.0
 
  -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Tue, 19 Apr 2022 22:03:24 +0200
 
