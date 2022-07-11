@@ -1,0 +1,42 @@
+#!/usr/bin/python3
+import sys
+import os
+
+pname = sys.argv[1]
+
+fname = os.path.basename(pname).replace('_docgen.md', '')
+
+with open(pname, 'wt') as f:
+    locals= {}
+    exec(f'''
+import {fname}
+doc = {fname}.__doc__
+
+functions = []
+classes = []
+
+for name in getattr({fname}, '__all__', []):
+    try:
+        item = getattr({fname}, name)
+    except Exception:
+        continue
+
+    if "<function" in str(item):
+        functions.append(item)
+    elif '<class' in str(item):
+        classes.append(item)
+
+if functions:
+    doc += '\\nFunctions\\n=========\\n'
+    for i in functions:
+        if not i.__doc__: continue
+        doc += '\\n' + i.__name__ + '\\n' + '-' * len(i.__name__) + '\\n' + i.__doc__
+
+if classes:
+    doc += '\\nClasses\\n=======\\n'
+    for i in classes:
+        if not i.__doc__: continue
+        doc += '\\n' + i.__name__ + '\\n' + '-' * len(i.__name__) + '\\n' + i.__doc__
+''', None, locals)
+    f.write(locals['doc'])
+
