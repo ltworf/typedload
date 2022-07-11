@@ -36,62 +36,61 @@ __all__ = [
 
 
 class Dumper:
+    """
+    This dumps data structures recursively using only
+    basic types, lists and dictionaries.
 
-    def __init__(self, **kwargs):
-        """
-        This dumps data structures recursively using only
-        basic types, lists and dictionaries.
+    A value dumped in this way from a typed data structure
+    can be loaded back using dataloader.
 
-        A value dumped in this way from a typed data structure
-        can be loaded back using dataloader.
+    hidedefault: Enabled by default.
+        When enabled, does not include fields that have the
+        same value as the default in the dump.
 
-        hidedefault: Enabled by default.
-            When enabled, does not include fields that have the
-            same value as the default in the dump.
+    raiseconditionerrors: Enabled by default.
+        Raises exceptions when evaluating a condition from an
+        handler. When disabled, the exceptions are not raised
+        and the condition is considered False.
 
-        raiseconditionerrors: Enabled by default.
-            Raises exceptions when evaluating a condition from an
-            handler. When disabled, the exceptions are not raised
-            and the condition is considered False.
+    mangle_key: Defaults to 'name'
+        Specifies which key is used into the metadata dictionaries
+        to perform name-mangling.
 
-        mangle_key: Defaults to 'name'
-            Specifies which key is used into the metadata dictionaries
-            to perform name-mangling.
-
-        handlers: This is the list that the dumper uses to
-            perform its task.
-            The type is:
-            List[
-                Tuple[
-                    Callable[[Any], bool],
-                    Callable[['Dumper', Any], Any]
-                ]
+    handlers: This is the list that the dumper uses to
+        perform its task.
+        The type is:
+        List[
+            Tuple[
+                Callable[[Any], bool],
+                Callable[['Dumper', Any], Any]
             ]
-            The elements are: Tuple[Condition, Dumper]
-            Condition(value) -> Bool
-            Dumper(dumper, value) -> simpler_value
+        ]
+        The elements are: Tuple[Condition, Dumper]
+        Condition(value) -> Bool
+        Dumper(dumper, value) -> simpler_value
 
-            In most cases, it is sufficient to append new elements
-            at the end, to handle more types.
+        In most cases, it is sufficient to append new elements
+        at the end, to handle more types.
 
-        strconstructed: Set of types to dump to a string.
+    strconstructed: Set of types to dump to a string.
 
-        These parameters can be set as named arguments in the constructor
-        or they can be set later on.
+    These parameters can be set as named arguments in the constructor
+    or they can be set later on.
 
-        The constructor will accept any named argument, but only the documented
-        ones have any effect. This is to allow custom handlers to have their
-        own parameters as well.
+    The constructor will accept any named argument, but only the documented
+    ones have any effect. This is to allow custom handlers to have their
+    own parameters as well.
 
-        There is support for:
-            * Basic python types (int, str, bool, float, NoneType)
-            * NamedTuple
-            * Enum
-            * List[SomeType]
-            * Dict[TypeA, TypeB]
-            * Tuple[TypeA, TypeB, TypeC]
-            * Set[SomeType]
-        """
+    There is support for:
+        * Basic python types (int, str, bool, float, NoneType)
+        * NamedTuple
+        * Enum
+        * List[SomeType]
+        * Dict[TypeA, TypeB]
+        * Tuple[TypeA, TypeB, TypeC]
+        * Set[SomeType]
+    """
+    def __init__(self, **kwargs):
         self.basictypes = {int, bool, float, str, NONETYPE}
 
         self.hidedefault = True
