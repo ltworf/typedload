@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2019 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2019-2022 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
-
+from dataclasses import dataclass
 from typing import Literal, NamedTuple, TypedDict
 import unittest
 
@@ -77,6 +77,29 @@ class TestLiteralLoad(unittest.TestCase):
             i: int
 
         class C(TypedDict):
+            t: Literal['a']
+            i: int
+
+        assert typechecks.discriminatorliterals(A) == {'t': {'a', 'b'}}
+        assert typechecks.discriminatorliterals(B) == {'t': {33,}, 'q': {12,}}
+        assert typechecks.discriminatorliterals(C) == {'t': {'a', }}
+
+
+    def test_discriminatorliterals_dataclass(self):
+        @dataclass
+        class A:
+            t: Literal['a', 'b']
+            i: int
+            q: str
+
+        @dataclass
+        class B:
+            t: Literal[33]
+            q: Literal[12]
+            i: int
+
+        @dataclass
+        class C:
             t: Literal['a']
             i: int
 
