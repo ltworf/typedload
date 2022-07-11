@@ -17,7 +17,7 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
-from typing import Literal, NamedTuple
+from typing import Literal, NamedTuple, TypedDict
 import unittest
 
 from typedload import dataloader, load, dump, typechecks
@@ -57,6 +57,26 @@ class TestLiteralLoad(unittest.TestCase):
             i: int
 
         class C(NamedTuple):
+            t: Literal['a']
+            i: int
+
+        assert typechecks.discriminatorliterals(A) == {'t': {'a', 'b'}}
+        assert typechecks.discriminatorliterals(B) == {'t': {33,}, 'q': {12,}}
+        assert typechecks.discriminatorliterals(C) == {'t': {'a', }}
+
+
+    def test_discriminatorliterals_typeddict(self):
+        class A(TypedDict):
+            t: Literal['a', 'b']
+            i: int
+            q: str
+
+        class B(TypedDict):
+            t: Literal[33]
+            q: Literal[12]
+            i: int
+
+        class C(TypedDict):
             t: Literal['a']
             i: int
 
