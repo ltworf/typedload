@@ -30,6 +30,9 @@ __all__ = [
     'TypedloadValueError',
     'TypedloadTypeError',
     'TypedloadAttributeError',
+    'AnnotationType',
+    'Annotation',
+    'TraceItem',
 ]
 
 class AnnotationType(Enum):
