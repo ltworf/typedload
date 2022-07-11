@@ -3,6 +3,7 @@
 * Support for NotRequired
 * Document performance testing
 * Improve performances when loading iterables
+* Greatly improve performances when loading `Union` of objects that are `Literal` annotated
 
 2.16
 ====
