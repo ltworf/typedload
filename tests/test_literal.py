@@ -17,7 +17,7 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 from dataclasses import dataclass
-from typing import Literal, NamedTuple, TypedDict
+from typing import Literal, NamedTuple, TypedDict, Union
 import unittest
 
 from typedload import dataloader, load, dump, typechecks
@@ -64,7 +64,6 @@ class TestLiteralLoad(unittest.TestCase):
         assert typechecks.discriminatorliterals(B) == {'t': {33,}, 'q': {12,}}
         assert typechecks.discriminatorliterals(C) == {'t': {'a', }}
 
-
     def test_discriminatorliterals_typeddict(self):
         class A(TypedDict):
             t: Literal['a', 'b']
@@ -83,7 +82,6 @@ class TestLiteralLoad(unittest.TestCase):
         assert typechecks.discriminatorliterals(A) == {'t': {'a', 'b'}}
         assert typechecks.discriminatorliterals(B) == {'t': {33,}, 'q': {12,}}
         assert typechecks.discriminatorliterals(C) == {'t': {'a', }}
-
 
     def test_discriminatorliterals_dataclass(self):
         @dataclass
@@ -106,7 +104,6 @@ class TestLiteralLoad(unittest.TestCase):
         assert typechecks.discriminatorliterals(A) == {'t': {'a', 'b'}}
         assert typechecks.discriminatorliterals(B) == {'t': {33,}, 'q': {12,}}
         assert typechecks.discriminatorliterals(C) == {'t': {'a', }}
-
 
     def test_discriminatorliterals_attr(self):
         try:
@@ -134,3 +131,15 @@ class TestLiteralLoad(unittest.TestCase):
         assert typechecks.discriminatorliterals(A) == {'t': {'a', 'b'}}
         assert typechecks.discriminatorliterals(B) == {'t': {33,}, 'q': {12,}}
         assert typechecks.discriminatorliterals(C) == {'t': {'a', }}
+
+    def test_literal_sorting(self):
+        class A(NamedTuple):
+            t: Literal[1]
+            i: int
+        class B(NamedTuple):
+            t: Literal[2, 3]
+            i: int
+
+        assert load({'t': 1, 'i': 12}, Union[A, B]) == A(1, 12)
+        assert load({'t': 2, 'i': 12}, Union[A, B]) == B(2, 12)
+        assert load({'t': 3, 'i': 12}, Union[A, B]) == B(3, 12)
