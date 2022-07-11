@@ -106,3 +106,31 @@ class TestLiteralLoad(unittest.TestCase):
         assert typechecks.discriminatorliterals(A) == {'t': {'a', 'b'}}
         assert typechecks.discriminatorliterals(B) == {'t': {33,}, 'q': {12,}}
         assert typechecks.discriminatorliterals(C) == {'t': {'a', }}
+
+
+    def test_discriminatorliterals_attr(self):
+        try:
+            from attr import attrs, attrib
+        except ImportError:
+            return
+
+        @attrs
+        class A:
+            t: Literal['a', 'b'] = attrib()
+            i: int = attrib()
+            q: str = attrib()
+
+        @attrs
+        class B:
+            t: Literal[33] = attrib()
+            q: Literal[12] = attrib()
+            i: int = attrib()
+
+        @attrs
+        class C:
+            t: Literal['a'] = attrib()
+            i: int = attrib()
+
+        assert typechecks.discriminatorliterals(A) == {'t': {'a', 'b'}}
+        assert typechecks.discriminatorliterals(B) == {'t': {33,}, 'q': {12,}}
+        assert typechecks.discriminatorliterals(C) == {'t': {'a', }}
