@@ -141,4 +141,6 @@ Used by
 
 As dependency, typedload is used by those entities. Feel free to add to the list.
 
-* Several universities around the world
+* Several universities around the world (via [Relational](https://ltworf.github.io/relational/))
+* People who love IRC (via [localslackirc](https://github.com/ltworf/localslackirc))
+* No clue but it gets thousands of downloads per day [according to mypy](https://pypistats.org/packages/typedload)

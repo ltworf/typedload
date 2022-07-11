@@ -35,6 +35,7 @@ clean:
 	$(RM) setup.py
 	$(RM) -r html
 	$(RM) -r perftest.output
+	$(RM) docs/*_docgen.md
 
 .PHONY: dist
 dist: clean setup.py
@@ -68,7 +69,27 @@ deb-pkg: dist
 	$(RM) -r /tmp/typedload
 	lintian --pedantic -E --color auto -i -I deb-pkg/*.changes deb-pkg/*.deb
 
+docs/typedload_docgen.md: typedload/__init__.py
+	./docgen $@
+
+docs/typedload.dataloader_docgen.md: typedload/dataloader.py
+	./docgen $@
+
+docs/typedload.datadumper_docgen.md: typedload/datadumper.py
+	./docgen $@
+
+docs/typedload.exceptions_docgen.md: typedload/exceptions.py
+	./docgen $@
+
+docs/typedload.typechecks_docgen.md: typedload/typechecks.py
+	./docgen $@
+
 html: \
+		docs/typedload_docgen.md \
+		docs/typedload.dataloader_docgen.md \
+		docs/typedload.datadumper_docgen.md \
+		docs/typedload.exceptions_docgen.md \
+		docs/typedload.typechecks_docgen.md \
 		mkdocs.yml \
 		docs/CHANGELOG.md \
 		docs/comparisons.md \

@@ -22,6 +22,7 @@ Module to load data into typed data structures
 
 
 import datetime
+from enum import Enum
 import ipaddress
 from pathlib import Path
 from typing import *
