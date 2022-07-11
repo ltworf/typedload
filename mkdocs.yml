@@ -14,6 +14,12 @@ nav:
         - Supported types: supported_types.md
         - Errors: errors.md
         - Deferred evaluation of types: deferred_evaluation.md
+    - Docstrings:
+        - typedload: typedload_docgen.md
+        - typedload.dataloader: typedload.dataloader_docgen.md
+        - typedload.datadumper: typedload.datadumper_docgen.md
+        - typedload.typechecks: typedload.typechecks_docgen.md
+        - typedload.exceptions: typedload.exceptions_docgen.md
     - Comparisons:
         - Why typedload: comparisons.md
         - Performance: performance.md
