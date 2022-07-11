@@ -73,7 +73,7 @@ def main():
     maxtime = 0
 
     for i, t in enumerate(tests):
-        print(f'Now running: {t} {i}/{len(tests)}')
+        print(f'Now running: {t} {i+1}/{len(tests)}')
 
         with open(outdir / f'{t}.dat', 'wt') as f:
             counter = 0
