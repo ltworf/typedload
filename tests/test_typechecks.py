@@ -20,7 +20,7 @@ from typing import Dict, FrozenSet, List, NamedTuple, Optional, Set, Tuple, Unio
 import unittest
 import sys
 
-if sys.version_info.minor >= 8 :
+if sys.version_info.minor >= 8:
     from typing import Literal
 
 from typedload import typechecks

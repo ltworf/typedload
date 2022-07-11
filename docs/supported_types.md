@@ -62,6 +62,8 @@ This is normally used in objects, to decide the correct type in a `Union`.
 
 It is very common to use Literal to disambiguate objects in a Union. [See example](examples.md#object-type-in-value)
 
+*This is very fast, because typedload will internally use the `Literal` values to try the best type in the union first.*
+
 enum.Enum
 ---------
 

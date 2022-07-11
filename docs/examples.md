@@ -272,6 +272,8 @@ Let's assume that our json objects contain a *type* field that names the object 
 
 This makes conflicts impossible and so in the union the correct type will always be picked.
 
+*This is very fast, because typedload will internally use the `Literal` values to try the best type in the union first.*
+
 Slack sends events in this way.
 
 ```python
