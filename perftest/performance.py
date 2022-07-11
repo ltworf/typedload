@@ -32,13 +32,13 @@ def parse_performance(cmd: list[str]) -> tuple[float, float]:
 
 def main():
     tests = [
-        'load list of ints',
+        #'load list of ints',
         'load list of floats and ints',
-        'load set of floats and ints',
-        'load tuple of floats and ints',
+        #'load set of floats and ints',
+        #'load tuple of floats and ints',
         'load list of NamedTuple objects',
-        'load list of dataclass objects',
-        'load list of attrs objects',
+        #'load list of dataclass objects',
+        #'load list of attrs objects',
         'realistic union of objects as namedtuple',
     ]
 
@@ -73,7 +73,7 @@ def main():
     maxtime = 0
 
     for i, t in enumerate(tests):
-        print(f'Now running: {t} {i}/{len(tests)}')
+        print(f'Now running: {t} {i+1}/{len(tests)}')
 
         with open(outdir / f'{t}.dat', 'wt') as f:
             counter = 0
