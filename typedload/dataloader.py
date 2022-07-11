@@ -24,11 +24,13 @@ Module to load data into typed data structures
 import datetime
 from enum import Enum
 import ipaddress
+from functools import reduce
 from pathlib import Path
 from typing import *
 
 from .exceptions import *
 from .typechecks import *
+from .typechecks import discriminatorliterals
 from .helpers import tname
 
 
@@ -226,6 +228,8 @@ class Loader:
             setattr(self, k, v)
 
         self._indexcache = {}  # type: Dict[Type, int]
+
+        self._unionload_discriminatorcache = {}  # type: Dict[Type, Tuple[str, Dict]]
 
     def index(self, type_: Type[T]) -> int:
         """
@@ -676,6 +680,39 @@ def _unionload(l: Loader, value, type_) -> Any:
     # Give a score to the types
     sorted_args = list(args)  # type: List[Type]
     sorted_args.sort(key=lambda i: i in l.basictypes)
+
+    # For object types, bump up the type whose literal is matching
+    if hasattr(value, 'get'):
+        # Seems we have an object
+        # Bump up if the Literal field matches
+        discriminatorscache = l._unionload_discriminatorcache.get(type_)
+
+        # First time generate the deep inspection for literal
+        if discriminatorscache is None:
+            # type → {key: valueset}
+            data = {t: discriminatorliterals(t) for t in args}
+            # shared keys that have literals in every object of the union
+            keys = reduce(lambda a, b: a.union(b), (set(v.keys()) for v in data.values()))  # type: Set[str]
+
+            cachedict = {}
+            if keys:
+                key = keys.pop()
+                for t, d in data.items():
+                    for literal in d[key]:
+                        cachedict[literal] = t
+                discriminatorscache = key, cachedict
+            else:
+                discriminatorscache = None, None
+            l._unionload_discriminatorcache[type_] = discriminatorscache
+
+        # Cache is created, use it
+        # It's a tuple key, {value: type}
+        if discriminatorscache[0]:
+            t = discriminatorscache[1].get(value.get(discriminatorscache[0]))
+            if t:
+                # Place best value on top
+                sorted_args.remove(t)
+                sorted_args.insert(0, t)
 
     # Try all types
     loaded_count = 0
