@@ -42,11 +42,17 @@ def main():
         'realistic union of objects as namedtuple',
     ]
 
-    #FIXME apischema doesn't work in python 3.11
-    if sys.version_info.minor < 11:
-        extlibs = ('apischema', 'pydantic')
-    else:
-        extlibs = ('pydantic',)
+    extlibs = []
+    try:
+        import pydantic
+        extlibs.append('pydantic')
+    except ImportError:
+        pass
+    try:
+        import apischema
+        extlibs.append('apischema')
+    except ImportError:
+        pass
 
     outdir = Path('perftest.output')
     if not outdir.exists():
