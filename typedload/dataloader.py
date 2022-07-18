@@ -692,7 +692,7 @@ def _unionload(l: Loader, value, type_) -> Any:
             # type → {key: valueset}
             data = {t: discriminatorliterals(t) for t in args}
             # shared keys that have literals in every object of the union
-            keys = reduce(lambda a, b: a.union(b), (set(v.keys()) for v in data.values()))  # type: Set[str]
+            keys = reduce(lambda a, b: a.intersection(b), (set(v.keys()) for v in data.values()))  # type: Set[str]
 
             cachedict = {}
             if keys:

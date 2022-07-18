@@ -143,3 +143,13 @@ class TestLiteralLoad(unittest.TestCase):
         assert load({'t': 1, 'i': 12}, Union[A, B]) == A(1, 12)
         assert load({'t': 2, 'i': 12}, Union[A, B]) == B(2, 12)
         assert load({'t': 3, 'i': 12}, Union[A, B]) == B(3, 12)
+
+    def test_multiple_literal_sorting(self):
+        class A(NamedTuple):
+            t: Literal[1]
+            u: Literal[1]
+        class B(NamedTuple):
+            t: Literal[2]
+            i: int
+        assert load({'t': 1, 'u': 1}, Union[A, B]) == A(1, 1)
+        assert load({'t': 2, 'i': 12}, Union[A, B]) == B(2, 12)
