@@ -16,3 +16,5 @@ The module in fact worked so nicely that I wanted to use it in my personal proje
 So, I just wrote a stand alone library outside of work to do the exact same thing, but in a more generic and flexible way, rather than tied to the specific software we had at $DAYJOB.
 
 The result of writing the same library twice was that the second time around it came out better, and so the original version got completely discarded and at $DAYJOB typedload is now in use.
+
+At the time pydantic existed but it was not available on any distribution and was not production quality.

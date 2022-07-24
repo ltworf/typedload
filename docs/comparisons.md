@@ -54,6 +54,7 @@ pydantic
 
 Found [here](https://pydantic-docs.helpmanual.io/)
 
+* [They change API all the time, between minor releases.](https://pypi.org/project/pydantic/1.9.1/)
 * Slower than typedload
 * Requires all the classes to derive from a superclass
 * Does not work with mypy:
