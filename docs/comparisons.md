@@ -7,6 +7,7 @@ In general, the advantages of typedload over competing libraries are:
 
 * Works with existing codebase and uses standard types. No inheritance or decorators
 * Easy to extend, even with objects from 3rd party libraries
+* Stable API, breaking changes only happen on major releases
 * Supports Union
 * Works on python 3.5
 * Mypy and similar work without plugins
@@ -54,6 +55,7 @@ pydantic
 
 Found [here](https://pydantic-docs.helpmanual.io/)
 
+* [They change API all the time, between minor releases.](https://pypi.org/project/pydantic/1.9.1/)
 * Slower than typedload
 * Requires all the classes to derive from a superclass
 * Does not work with mypy:
