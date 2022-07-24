@@ -7,6 +7,7 @@ In general, the advantages of typedload over competing libraries are:
 
 * Works with existing codebase and uses standard types. No inheritance or decorators
 * Easy to extend, even with objects from 3rd party libraries
+* Stable API, breaking changes only happen on major releases
 * Supports Union
 * Works on python 3.5
 * Mypy and similar work without plugins
