@@ -106,8 +106,11 @@ html: \
 	mkdocs build
 
 .PHONY: publish_html
-publish_html: html
-	mkdocs gh-deploy
+publish_html: deb-pkg
+	rm -rf /tmp/typedloaddoc; mkdir /tmp/typedloaddoc; cp deb-pkg/python3-typedload-doc*.deb /tmp/typedloaddoc
+	cd /tmp/typedloaddoc; ar -xf *deb; tar -xf data.tar.xz
+
+
 
 perftest.output/perf.p:
 	perftest/performance.py
