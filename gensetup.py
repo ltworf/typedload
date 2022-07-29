@@ -52,7 +52,11 @@ if argv[1] == '--setup.py':
 f'''#!/usr/bin/python3
 # This file is auto generated. Do not modify
 from setuptools import setup
+
+from Cython.Build import cythonize
+
 setup(
+    ext_modules = cythonize(["typedload/dataloader.py", "typedload/typechecks.py",  "typedload/exceptions.py"]),
     name='typedload',
     version={load_version()!r},
     description='{DESCRIPTION}',
