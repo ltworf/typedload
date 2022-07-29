@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>" />
       <link rel="shortcut icon" href="img/favicon.ico" />
-    <title>Errors - typedload</title>
+    <title>typedload.datadumper - typedload</title>
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Errors";
-        var mkdocs_page_input_path = "errors.md";
+        var mkdocs_page_name = "typedload.datadumper";
+        var mkdocs_page_input_path = "typedload.datadumper_docgen.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -49,33 +49,27 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Using typedload</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="supported_types.html">Supported types</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="errors.html">Errors</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#string-trace">String trace</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#trace">Trace</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#union">Union</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#raise-exceptions-in-custom-handlers">Raise exceptions in custom handlers</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="deferred_evaluation.html">Deferred evaluation of types</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Docstrings</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="typedload_docgen.html">typedload</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="typedload.dataloader_docgen.html">typedload.dataloader</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="typedload.datadumper_docgen.html">typedload.datadumper</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="typedload.datadumper_docgen.html">typedload.datadumper</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#dumper">Dumper</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="typedload.typechecks_docgen.html">typedload.typechecks</a>
                   </li>
@@ -125,7 +119,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="index.html" class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>Using typedload &raquo;</li><li>Errors</li>
+          <li>Docstrings &raquo;</li><li>typedload.datadumper</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -135,72 +129,70 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="errors-in-typedload">Errors in typedload</h1>
-<p>All exceptions are subclasses of <code>TypedloadException</code>.</p>
-<p>To make sure of that, there is an assertion in place that will fail if a type handler is misbehaving and raising the wrong type of exception.</p>
-<p>The exceptions have a clear user message, but they offer an API to expose precise knowledge of the problem.</p>
-<h2 id="string-trace">String trace</h2>
-<p>By default when an error occurrs the path within the data structure is shown.</p>
-<pre><code class="language-python">from typing import *
-import typedload
+                <p>typedload
+This module is the inverse of dataloader. It converts typed
+data structures to things that json can serialize.</p>
+<h1 id="classes">Classes</h1>
+<h2 id="dumper">Dumper</h2>
+<pre><code>This dumps data structures recursively using only
+basic types, lists and dictionaries.
 
-class Thing(NamedTuple):
-    value: int
+A value dumped in this way from a typed data structure
+can be loaded back using dataloader.
 
-class Data(NamedTuple):
-    field1: List[Thing]
-    field2: Tuple[Thing, ...]
+hidedefault: Enabled by default.
+    When enabled, does not include fields that have the
+    same value as the default in the dump.
 
+raiseconditionerrors: Enabled by default.
+    Raises exceptions when evaluating a condition from an
+    handler. When disabled, the exceptions are not raised
+    and the condition is considered False.
 
-typedload.load({'field1': [{'value': 12}, {'value': 'a'}], 'field2': []}, Data)
-</code></pre>
-<pre><code class="language-python">TypedloadValueError: invalid literal for int() with base 10: 'a'
-Path: .field1.[1].value
-</code></pre>
-<p>The path in the string description tells where the wrong value was found.</p>
-<h2 id="trace">Trace</h2>
-<p>To be able to locate where in the data an exception happened, <code>TypedloadException</code> has the <code>trace</code> property, which contains a list <code>TraceItem</code>, which help to track where the exception happened.</p>
-<p>This can be useful to do more clever error handling.</p>
-<p>For example:</p>
-<pre><code class="language-python">try:
-    typedload.load([1, 2, 'a'], List[int])
-except Exception as e:
-    print(e.trace[-1])
-</code></pre>
-<p>Will raise an exception and print the last element in the trace</p>
-<pre><code class="language-python">TraceItem(value='a', type_=&lt;class 'int'&gt;, annotation=Annotation(annotation_type=&lt;AnnotationType.INDEX: 'index'&gt;, value=2))
-</code></pre>
-<p>Another example, with an object:</p>
-<pre><code class="language-python">
-class O(NamedTuple):
-    data: List[int]
+mangle_key: Defaults to 'name'
+    Specifies which key is used into the metadata dictionaries
+    to perform name-mangling.
 
-try:
-    typedload.load({'data': [1, 2, 'a']}, O)
-except Exception as e:
-    for i in e.trace:
-        print(i)
+handlers: This is the list that the dumper uses to
+    perform its task.
+    The type is:
+    List[
+        Tuple[
+            Callable[[Any], bool],
+            Callable[['Dumper', Any], Any]
+        ]
+    ]
+    The elements are: Tuple[Condition, Dumper]
+    Condition(value) -&gt; Bool
+    Dumper(dumper, value) -&gt; simpler_value
+
+    In most cases, it is sufficient to append new elements
+    at the end, to handle more types.
+
+strconstructed: Set of types to dump to a string.
+
+These parameters can be set as named arguments in the constructor
+or they can be set later on.
+
+The constructor will accept any named argument, but only the documented
+ones have any effect. This is to allow custom handlers to have their
+own parameters as well.
+
+There is support for:
+    * Basic python types (int, str, bool, float, NoneType)
+    * NamedTuple
+    * Enum
+    * List[SomeType]
+    * Dict[TypeA, TypeB]
+    * Tuple[TypeA, TypeB, TypeC]
+    * Set[SomeType]
 </code></pre>
-<p>Will print the entire trace:</p>
-<pre><code class="language-python">TraceItem(value={'data': [1, 2, 'a']}, type_=&lt;class '__main__.O'&gt;, annotation=None)
-TraceItem(value=[1, 2, 'a'], type_=typing.List[int], annotation=Annotation(annotation_type=&lt;AnnotationType.FIELD: 'field'&gt;, value='data'))
-TraceItem(value='a', type_=&lt;class 'int'&gt;, annotation=Annotation(annotation_type=&lt;AnnotationType.INDEX: 'index'&gt;, value=2))
-</code></pre>
-<p>And checking the <code>annotation</code> field it is possible to find out that the issue happened in <em>data</em> at index <em>2</em>.</p>
-<h2 id="union">Union</h2>
-<p>Because it is normal for a union of n types to generate n-1 exceptions, a union which fails generated n exceptions.</p>
-<p>Typedload has no way of knowing which of those is the important exception that was expected to succeed and instead puts all the exceptions inside the <code>exception</code> field of the parent exception.</p>
-<p>So all the sub exceptions can be investigated to decide which one is the most relevant one.</p>
-<h2 id="raise-exceptions-in-custom-handlers">Raise exceptions in custom handlers</h2>
-<p>To find the path where the wrong value was found, typedload needs to trace the execution by using annotations.</p>
-<p>This is used in handlers that do recursive calls to the loader.</p>
-<p>See the source code of the handlers for Union and NamedTuple to see how this is done.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="supported_types.html" class="btn btn-neutral float-left" title="Supported types"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="deferred_evaluation.html" class="btn btn-neutral float-right" title="Deferred evaluation of types">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="typedload.dataloader_docgen.html" class="btn btn-neutral float-left" title="typedload.dataloader"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="typedload.typechecks_docgen.html" class="btn btn-neutral float-right" title="typedload.typechecks">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -224,10 +216,10 @@ TraceItem(value='a', type_=&lt;class 'int'&gt;, annotation=Annotation(annotation
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="supported_types.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="typedload.dataloader_docgen.html" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="deferred_evaluation.html" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="typedload.typechecks_docgen.html" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

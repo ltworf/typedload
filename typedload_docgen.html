@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>" />
       <link rel="shortcut icon" href="img/favicon.ico" />
-    <title>Errors - typedload</title>
+    <title>typedload - typedload</title>
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Errors";
-        var mkdocs_page_input_path = "errors.md";
+        var mkdocs_page_name = "typedload";
+        var mkdocs_page_input_path = "typedload_docgen.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -49,29 +49,21 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Using typedload</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="supported_types.html">Supported types</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="errors.html">Errors</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#string-trace">String trace</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#trace">Trace</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#union">Union</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#raise-exceptions-in-custom-handlers">Raise exceptions in custom handlers</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="deferred_evaluation.html">Deferred evaluation of types</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Docstrings</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="typedload_docgen.html">typedload</a>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="typedload_docgen.html">typedload</a>
+    <ul class="current">
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="typedload.dataloader_docgen.html">typedload.dataloader</a>
                   </li>
@@ -125,7 +117,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="index.html" class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>Using typedload &raquo;</li><li>Errors</li>
+          <li>Docstrings &raquo;</li><li>typedload</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -135,72 +127,135 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="errors-in-typedload">Errors in typedload</h1>
-<p>All exceptions are subclasses of <code>TypedloadException</code>.</p>
-<p>To make sure of that, there is an assertion in place that will fail if a type handler is misbehaving and raising the wrong type of exception.</p>
-<p>The exceptions have a clear user message, but they offer an API to expose precise knowledge of the problem.</p>
-<h2 id="string-trace">String trace</h2>
-<p>By default when an error occurrs the path within the data structure is shown.</p>
-<pre><code class="language-python">from typing import *
-import typedload
+                <h1 id="typedload">typedload</h1>
+<p>This library loads Python data structures into
+typed data structures, enforcing a schema.</p>
+<p>The main purpose is to load things that come from
+json, bson or similar into NamedTuple or Dataclass.</p>
+<p>For example this Json:
+   {
+       'users': [
+           {
+               'username': 'salvo',
+               'shell': 'bash',
+               'sessions': ['pts/4', 'tty7', 'pts/6']
+           },
+           {
+               'username': 'lop'
+           }
+       ],
+   }</p>
+<p>Can be treated more easily if loaded into this:</p>
+<p>class User(NamedTuple):
+   username: str
+   shell: str = 'bash'
+   sessions: List[str] = []</p>
+<p>class Logins(NamedTuple):
+   users: List[User]</p>
+<p>And can then be loaded with</p>
+<p>typedload.load(data, Logins)</p>
+<h1 id="simple-api">Simple API</h1>
+<p>typedload.load() and typedload.dump() are functions to quickly load and dump
+data using the default objects.</p>
+<p>They create a new loader/dumper object with default parameters, and
+discard it after.</p>
+<h1 id="classes">Classes</h1>
+<p>The loader and dumper classes expose a number of attributes that can be
+customised to tweak their behaviour.</p>
+<h1 id="supported-datatypes">Supported datatypes</h1>
+<p>There is support for:
+    * Basic python types (int, str, bool, float, NoneType)
+    * NamedTuple
+    * Enum
+    * Optional[SomeType]
+    * List[SomeType]
+    * Dict[TypeA, TypeB]
+    * Tuple[TypeA, TypeB, TypeC]
+    * Tuple[SomeType, ...]
+    * Set[SomeType]
+    * Union[TypeA, TypeB]
+    * ForwardRef
+    * Literal
+    * Dataclass
+    * attrs
+    * TypedDict
+    * datetime
+    * Path
+    * IPv4Address, IPv6Address</p>
+<h1 id="handlers">Handlers</h1>
+<p>To work with other datatypes, handlers can be used.</p>
+<p>The handlers' list items are tuples for two functions. The signatures are
+different for loader or dumper.</p>
+<p>The first function returns a boolean, and if the value is true, the object
+will call the second function and return its result.</p>
+<p>Basically a loader and a dumper class have no functionality (but come with
+a default list of handlers).</p>
+<p>So, to add support for a new type, it is sufficient to write a function that
+outputs the desired value, and a function that decides when to call that.</p>
+<p>The index() function returns the position of handlers in the list, so that
+it is possible to remove them or add new handlers before or after a given
+handler.</p>
+<p>The pointer to the loader or dumper object is passed, so that the attributes
+in use for that particular object are available.</p>
+<p>For example, if we want to add a special loader that when loading the int 42
+into a string returns 'quarantadue', we can do this:</p>
+<p>from typedload.dataloader import Loader
+l = Loader()
+l.handlers.insert(
+    l.index(str), # This will place this entry before the string handler
+    (
+        lambda x: x == str,
+        lambda loader, value, type_: str(value) if value != 42 else 'quarantadue'
+    )
+)</p>
+<p>Then this will happen:</p>
+<p>In [15]: l.load(12, str)
+Out[15]: '12'</p>
+<p>In [16]: l.load(42, str)
+Out[16]: 'quarantadue'</p>
+<p>This can of course be used also for use cases that make sense.</p>
+<p>The handlers must generate exceptions from the typedload.exceptions
+module.</p>
+<p>Due to internal cache, it is not supported to modify the list of the
+handlers after the first call to dump/load.</p>
+<h1 id="name-mangling">Name mangling</h1>
+<p>Name mangling is supported in datatypes with metadata (dataclass, attrs) by
+having a 'name' key in the metadata.</p>
+<p>@attr.s
+class Example:
+    attribute = attr.ib(type=int, metadata={'name': 'att.rib.ute:name'}</p>
+<p>@dataclass
+class Example():
+  attribute: str = field(metadata={'name': 'att.rib.ute:name'})</p>
+<p>The dictionary key for 'attribute' will be 'att.rib.ute:name'.</p>
+<p>This is very useful for keys that use invalid or reserved characters that
+can't be used in variable names.
+Another common application is to convert camelCase into not_camel_case.</p>
+<p>It is implemented this way to avoid doing automatic name translations,
+that might introduce surprises.</p>
+<p>To use a metadata key different than 'name', set the mangle_key parameter
+to the loader/dumper.</p>
+<h1 id="functions">Functions</h1>
+<h2 id="load">load</h2>
+<pre><code>Quick function call to load data into a type.
 
-class Thing(NamedTuple):
-    value: int
+It is useful to avoid creating the Loader object,
+in case only the default parameters are used.
+</code></pre>
+<h2 id="dump">dump</h2>
+<pre><code>Quick function to dump a data structure into
+something that is compatible with json or
+other programs and languages.
 
-class Data(NamedTuple):
-    field1: List[Thing]
-    field2: Tuple[Thing, ...]
-
-
-typedload.load({'field1': [{'value': 12}, {'value': 'a'}], 'field2': []}, Data)
+It is useful to avoid creating the Dumper object,
+in case only the default parameters are used.
 </code></pre>
-<pre><code class="language-python">TypedloadValueError: invalid literal for int() with base 10: 'a'
-Path: .field1.[1].value
-</code></pre>
-<p>The path in the string description tells where the wrong value was found.</p>
-<h2 id="trace">Trace</h2>
-<p>To be able to locate where in the data an exception happened, <code>TypedloadException</code> has the <code>trace</code> property, which contains a list <code>TraceItem</code>, which help to track where the exception happened.</p>
-<p>This can be useful to do more clever error handling.</p>
-<p>For example:</p>
-<pre><code class="language-python">try:
-    typedload.load([1, 2, 'a'], List[int])
-except Exception as e:
-    print(e.trace[-1])
-</code></pre>
-<p>Will raise an exception and print the last element in the trace</p>
-<pre><code class="language-python">TraceItem(value='a', type_=&lt;class 'int'&gt;, annotation=Annotation(annotation_type=&lt;AnnotationType.INDEX: 'index'&gt;, value=2))
-</code></pre>
-<p>Another example, with an object:</p>
-<pre><code class="language-python">
-class O(NamedTuple):
-    data: List[int]
-
-try:
-    typedload.load({'data': [1, 2, 'a']}, O)
-except Exception as e:
-    for i in e.trace:
-        print(i)
-</code></pre>
-<p>Will print the entire trace:</p>
-<pre><code class="language-python">TraceItem(value={'data': [1, 2, 'a']}, type_=&lt;class '__main__.O'&gt;, annotation=None)
-TraceItem(value=[1, 2, 'a'], type_=typing.List[int], annotation=Annotation(annotation_type=&lt;AnnotationType.FIELD: 'field'&gt;, value='data'))
-TraceItem(value='a', type_=&lt;class 'int'&gt;, annotation=Annotation(annotation_type=&lt;AnnotationType.INDEX: 'index'&gt;, value=2))
-</code></pre>
-<p>And checking the <code>annotation</code> field it is possible to find out that the issue happened in <em>data</em> at index <em>2</em>.</p>
-<h2 id="union">Union</h2>
-<p>Because it is normal for a union of n types to generate n-1 exceptions, a union which fails generated n exceptions.</p>
-<p>Typedload has no way of knowing which of those is the important exception that was expected to succeed and instead puts all the exceptions inside the <code>exception</code> field of the parent exception.</p>
-<p>So all the sub exceptions can be investigated to decide which one is the most relevant one.</p>
-<h2 id="raise-exceptions-in-custom-handlers">Raise exceptions in custom handlers</h2>
-<p>To find the path where the wrong value was found, typedload needs to trace the execution by using annotations.</p>
-<p>This is used in handlers that do recursive calls to the loader.</p>
-<p>See the source code of the handlers for Union and NamedTuple to see how this is done.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="supported_types.html" class="btn btn-neutral float-left" title="Supported types"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="deferred_evaluation.html" class="btn btn-neutral float-right" title="Deferred evaluation of types">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="deferred_evaluation.html" class="btn btn-neutral float-left" title="Deferred evaluation of types"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="typedload.dataloader_docgen.html" class="btn btn-neutral float-right" title="typedload.dataloader">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -224,10 +279,10 @@ TraceItem(value='a', type_=&lt;class 'int'&gt;, annotation=Annotation(annotation
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="supported_types.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="deferred_evaluation.html" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="deferred_evaluation.html" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="typedload.dataloader_docgen.html" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

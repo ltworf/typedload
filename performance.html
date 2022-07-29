@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>" />
       <link rel="shortcut icon" href="img/favicon.ico" />
-    <title>Errors - typedload</title>
+    <title>Performance - typedload</title>
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Errors";
-        var mkdocs_page_input_path = "errors.md";
+        var mkdocs_page_name = "Performance";
+        var mkdocs_page_input_path = "performance.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -49,22 +49,12 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Using typedload</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="supported_types.html">Supported types</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="errors.html">Errors</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#string-trace">String trace</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#trace">Trace</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#union">Union</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#raise-exceptions-in-custom-handlers">Raise exceptions in custom handlers</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="deferred_evaluation.html">Deferred evaluation of types</a>
                   </li>
@@ -83,10 +73,18 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Comparisons</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="comparisons.html">Why typedload</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="performance.html">Performance</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#using-python-310">Using Python 3.10</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-python-311">Using Python 3.11</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#run-the-tests">Run the tests</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Contributors</span></p>
@@ -125,7 +123,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="index.html" class="icon icon-home" alt="Docs"></a> &raquo;</li>
-          <li>Using typedload &raquo;</li><li>Errors</li>
+          <li>Comparisons &raquo;</li><li>Performance</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -135,72 +133,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="errors-in-typedload">Errors in typedload</h1>
-<p>All exceptions are subclasses of <code>TypedloadException</code>.</p>
-<p>To make sure of that, there is an assertion in place that will fail if a type handler is misbehaving and raising the wrong type of exception.</p>
-<p>The exceptions have a clear user message, but they offer an API to expose precise knowledge of the problem.</p>
-<h2 id="string-trace">String trace</h2>
-<p>By default when an error occurrs the path within the data structure is shown.</p>
-<pre><code class="language-python">from typing import *
-import typedload
-
-class Thing(NamedTuple):
-    value: int
-
-class Data(NamedTuple):
-    field1: List[Thing]
-    field2: Tuple[Thing, ...]
-
-
-typedload.load({'field1': [{'value': 12}, {'value': 'a'}], 'field2': []}, Data)
+                <h1 id="performance">Performance</h1>
+<p>The tests are done on my PC.</p>
+<p><code>typedload</code> manages to win some benchmarks despite the competitors are compiled to binary <code>.so</code> files. Probably compiling it would make it win hands down. Feel free to help!</p>
+<h2 id="using-python-310">Using Python 3.10</h2>
+<p><img alt="performance chart" src="3.10.svg" title="Title" /></p>
+<p>It is possible to see that the latest version is always faster than <code>pydantic</code>, and can be slower or faster than <code>apischema</code> depending on the test.</p>
+<h2 id="using-python-311">Using Python 3.11</h2>
+<p><img alt="performance chart" src="3.11.svg" title="Title" /></p>
+<p>It is possible to see that the latest version is always faster than <code>pydantic</code>. There is no <code>apischema</code> because it doesn't run with Python 3.11.</p>
+<h2 id="run-the-tests">Run the tests</h2>
+<p>Generate the performance chart locally.</p>
+<pre><code class="language-bash">python3 -m venv perfvenv
+. perfvenv/bin/activate
+pip install apischema pydantic attrs
+export PYTHONPATH=$(pwd)
+make gnuplot
 </code></pre>
-<pre><code class="language-python">TypedloadValueError: invalid literal for int() with base 10: 'a'
-Path: .field1.[1].value
-</code></pre>
-<p>The path in the string description tells where the wrong value was found.</p>
-<h2 id="trace">Trace</h2>
-<p>To be able to locate where in the data an exception happened, <code>TypedloadException</code> has the <code>trace</code> property, which contains a list <code>TraceItem</code>, which help to track where the exception happened.</p>
-<p>This can be useful to do more clever error handling.</p>
-<p>For example:</p>
-<pre><code class="language-python">try:
-    typedload.load([1, 2, 'a'], List[int])
-except Exception as e:
-    print(e.trace[-1])
-</code></pre>
-<p>Will raise an exception and print the last element in the trace</p>
-<pre><code class="language-python">TraceItem(value='a', type_=&lt;class 'int'&gt;, annotation=Annotation(annotation_type=&lt;AnnotationType.INDEX: 'index'&gt;, value=2))
-</code></pre>
-<p>Another example, with an object:</p>
-<pre><code class="language-python">
-class O(NamedTuple):
-    data: List[int]
-
-try:
-    typedload.load({'data': [1, 2, 'a']}, O)
-except Exception as e:
-    for i in e.trace:
-        print(i)
-</code></pre>
-<p>Will print the entire trace:</p>
-<pre><code class="language-python">TraceItem(value={'data': [1, 2, 'a']}, type_=&lt;class '__main__.O'&gt;, annotation=None)
-TraceItem(value=[1, 2, 'a'], type_=typing.List[int], annotation=Annotation(annotation_type=&lt;AnnotationType.FIELD: 'field'&gt;, value='data'))
-TraceItem(value='a', type_=&lt;class 'int'&gt;, annotation=Annotation(annotation_type=&lt;AnnotationType.INDEX: 'index'&gt;, value=2))
-</code></pre>
-<p>And checking the <code>annotation</code> field it is possible to find out that the issue happened in <em>data</em> at index <em>2</em>.</p>
-<h2 id="union">Union</h2>
-<p>Because it is normal for a union of n types to generate n-1 exceptions, a union which fails generated n exceptions.</p>
-<p>Typedload has no way of knowing which of those is the important exception that was expected to succeed and instead puts all the exceptions inside the <code>exception</code> field of the parent exception.</p>
-<p>So all the sub exceptions can be investigated to decide which one is the most relevant one.</p>
-<h2 id="raise-exceptions-in-custom-handlers">Raise exceptions in custom handlers</h2>
-<p>To find the path where the wrong value was found, typedload needs to trace the execution by using annotations.</p>
-<p>This is used in handlers that do recursive calls to the loader.</p>
-<p>See the source code of the handlers for Union and NamedTuple to see how this is done.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="supported_types.html" class="btn btn-neutral float-left" title="Supported types"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="deferred_evaluation.html" class="btn btn-neutral float-right" title="Deferred evaluation of types">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="comparisons.html" class="btn btn-neutral float-left" title="Why typedload"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="CONTRIBUTING.html" class="btn btn-neutral float-right" title="Contributing">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -224,10 +179,10 @@ TraceItem(value='a', type_=&lt;class 'int'&gt;, annotation=Annotation(annotation
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="supported_types.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="comparisons.html" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="deferred_evaluation.html" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="CONTRIBUTING.html" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
