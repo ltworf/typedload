@@ -63,6 +63,33 @@ Found [here](https://pydantic-docs.helpmanual.io/)
     * [Uses float=None without using Optional in its own documentation](https://pydantic-docs.helpmanual.io/usage/models/#recursive-models).
 * Union might do casting when casting is not needed.
 
+jsons
+-----
+
+Found [here](https://github.com/ramonhagenaars/jsons)
+
+I was unable to run the full performance testsuite on this because it doesn't support some needed features, but my preliminary findings are that:
+
+* It is buggy:
+    * This returns an int `jsons.load(1.1, Union[int, float])`
+    * This raises an exception `jsons.load(1.0, int | float)`
+* [Does not support `Literal`](https://github.com/ramonhagenaars/jsons/issues/170)
+* Can't load iterables as lists
+* Exceptions do not have information to find the incorrect data
+* It is incredibly slow:
+
+```python
+# Needed because jsons can't load directly from range()
+data = [i for i in range(3000000)]
+
+# This took 2.5s with jsons and 200ms with typedload
+load(data, list[int])
+
+# This took 20s with jsons and 500ms with typedload
+load(data, list[Union[float,int]])
+```
+
+
 
 dataclasses-json
 ----------------
