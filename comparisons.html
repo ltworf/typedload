@@ -179,6 +179,29 @@
 </li>
 <li>Union might do casting when casting is not needed.</li>
 </ul>
+<h2 id="jsons">jsons</h2>
+<p>Found <a href="https://github.com/ramonhagenaars/jsons">here</a></p>
+<p>I was unable to run the full performance testsuite on this because it doesn't support some needed features, but my preliminary findings are that:</p>
+<ul>
+<li>It is buggy:<ul>
+<li>This returns an int <code>jsons.load(1.1, Union[int, float])</code></li>
+<li>This raises an exception <code>jsons.load(1.0, int | float)</code></li>
+</ul>
+</li>
+<li><a href="https://github.com/ramonhagenaars/jsons/issues/170">Does not support <code>Literal</code></a></li>
+<li>Can't load iterables as lists</li>
+<li>Exceptions do not have information to find the incorrect data</li>
+<li>It is incredibly slow:</li>
+</ul>
+<pre><code class="language-python"># Needed because jsons can't load directly from range()
+data = [i for i in range(3000000)]
+
+# This took 2.5s with jsons and 200ms with typedload
+load(data, list[int])
+
+# This took 20s with jsons and 500ms with typedload
+load(data, list[Union[float,int]])
+</code></pre>
 <h2 id="dataclasses-json">dataclasses-json</h2>
 <p>Found <a href="https://github.com/lidatong/dataclasses-json">here</a></p>
 <ul>
