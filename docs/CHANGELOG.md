@@ -1,3 +1,6 @@
+2.19
+====
+
 2.18
 ====
 * Fix bug with loading generators that raise exceptions
