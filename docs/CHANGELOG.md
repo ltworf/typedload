@@ -1,5 +1,6 @@
 2.18
 ====
+* Fix bug with loading generators that raise exceptions
 
 2.17
 ====
