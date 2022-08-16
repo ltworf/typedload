@@ -58,7 +58,7 @@ dist: clean setup.py
 
 .PHONY: upload
 upload: pypi
-	twine upload pypi/typedload-`./setup.py --version`.tar.gz
+	twine upload --username __token__ --password `cat .token` pypi/typedload-`./setup.py --version`.tar.gz
 
 deb-pkg: dist
 	mv typedload_`./setup.py --version`.orig.tar.gz* /tmp
