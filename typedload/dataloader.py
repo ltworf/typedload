@@ -753,7 +753,7 @@ def _newtypeload(l: Loader, value, type_):
     return l.load(value, type_.__supertype__)
 
 
-def _iterload(l: Loader, value, type_, function) -> List:
+def _iterload(l: Loader, value, type_, function):
     if isinstance(value, dict):
         raise TypedloadTypeError('Unable to load dictionary as an iterable', value=value, type_=type_)
     t = type_.__args__[0]
