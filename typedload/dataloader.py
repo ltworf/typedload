@@ -208,10 +208,10 @@ class Loader:
             (lambda type_: type_ in self.basictypes, _basicload),
             (is_enum, _enumload),
             (is_tuple, _tupleload),
-            (is_list, _listload),
+            (is_list, lambda l, value, type_: _iterload(l, value, type_, list)),
             (is_dict, _dictload),
-            (is_set, _setload),
-            (is_frozenset, _frozensetload),
+            (is_set, lambda l, value, type_: _iterload(l, value, type_, set)),
+            (is_frozenset, lambda l, value, type_: _iterload(l, value, type_, frozenset)),
             (is_namedtuple, _namedtupleload),
             (is_dataclass, _dataclassload),
             (is_forwardref, _forwardrefload),
@@ -352,33 +352,6 @@ def _basicload(l: Loader, value: Any, type_: type) -> Any:
     return value
 
 
-def _listload(l: Loader, value, type_) -> List:
-    """
-    This loads into something like List[int]
-    """
-    if isinstance(value, dict):
-        raise TypedloadTypeError('Unable to load dictionary as a list', value=value, type_=type_)
-    t = type_.__args__[0]
-    try:
-        f = l.handlers[l.index(t)][1]
-    except ValueError:
-        raise TypedloadTypeError(
-            'Cannot deal with value of type %s' % tname(type_),
-            value=value,
-            type_=type_
-        )
-    try:
-        # Hopeful load calling the handler directly, skipping load()
-        return [f(l, v, t) for v in value]
-    except TypedloadException as e:
-        # FIXME Once 3.8 is the lowest supported version, I can use := to export the index where the
-        # error happened, removing the need to redo the entire loading of the list in the slow way
-        # A nested error happened, reload everything with load() so we get the detailed exception with path
-        return [l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value)]
-    except TypeError as e:
-        raise TypedloadTypeError(str(e), value=value, type_=type_)
-
-
 def _dictload(l: Loader, value, type_) -> Dict:
     """
     This loads into something like Dict[str,str]
@@ -397,57 +370,6 @@ def _dictload(l: Loader, value, type_) -> Dict:
         raise TypedloadAttributeError(str(e), type_=type_, value=value)
 
 
-def _setload(l: Loader, value, type_) -> Set:
-    """
-    This loads into something like Set[int]
-    """
-    if isinstance(value, dict):
-        raise TypedloadTypeError('Unable to load dictionary as a set', value=value, type_=type_)
-    t = type_.__args__[0]
-    try:
-        f = l.handlers[l.index(t)][1]
-    except ValueError:
-        raise TypedloadTypeError(
-            'Cannot deal with value of type %s' % tname(type_),
-            value=value,
-            type_=type_
-        )
-    try:
-        # Hopeful load
-        return {f(l, v, t) for v in value}
-    except TypedloadException:
-        # A failure, reload with annotations
-        # See _listload for more details
-        return {l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value)}
-    except TypeError as e:
-        raise TypedloadTypeError(str(e), value=value, type_=type_)
-
-
-def _frozensetload(l: Loader, value, type_) -> FrozenSet:
-    """
-    This loads into something like FrozenSet[int]
-    """
-    if isinstance(value, dict):
-        raise TypedloadTypeError('Unable to load dictionary as a frozenset', value=value, type_=type_)
-    t = type_.__args__[0]
-    try:
-        f = l.handlers[l.index(t)][1]
-    except ValueError:
-        raise TypedloadTypeError(
-            'Cannot deal with value of type %s' % tname(type_),
-            value=value,
-            type_=type_
-        )
-    try:
-        return frozenset(f(l, v, t) for v in value)
-    except TypedloadException:
-        # A failure, reload with annotations
-        # See _listload for more details
-        return frozenset(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
-    except TypeError as e:
-        raise TypedloadTypeError(str(e), value=value, type_=type_)
-
-
 def _tupleload(l: Loader, value, type_) -> Tuple:
     """
     This loads into something like Tuple[int,str]
@@ -460,23 +382,7 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
         args = type_.__tuple_params__
 
     if len(args) == 2 and args[1] == ...: # Tuple[something, ...]
-        t = args[0]
-        try:
-            f = l.handlers[l.index(t)][1]
-        except ValueError:
-            raise TypedloadTypeError(
-                'Cannot deal with value of type %s' % tname(type_),
-                value=value,
-                type_=type_
-            )
-        try:
-            return tuple(f(l, v, t) for v in value)
-        except TypedloadException:
-            # A failure, reload with annotations
-            # See _listload for more details
-            return tuple(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
-        except TypeError as e:
-            raise TypedloadTypeError(str(e), value=value, type_=type_)
+        return _iterload(l, value, type_, tuple)
     else: # Tuple[something, something, somethingelse]
         if l.failonextra and len(value) > len(args):
             raise TypedloadValueError('Value is too long for type %s' % tname(type_), value=value, type_=type_)
@@ -845,3 +751,38 @@ def _strconstructload(l: Loader, value, type_):
 
 def _newtypeload(l: Loader, value, type_):
     return l.load(value, type_.__supertype__)
+
+
+def _iterload(l: Loader, value, type_, function):
+    if isinstance(value, dict):
+        raise TypedloadTypeError('Unable to load dictionary as an iterable', value=value, type_=type_)
+    t = type_.__args__[0]
+
+    # Fast loading only works if we can re-iterate
+    fast = hasattr(value, '__getitem__')
+
+    if fast:
+        try:
+            f = l.handlers[l.index(t)][1]
+        except ValueError:
+            raise TypedloadTypeError(
+                'Cannot deal with value of type %s' % tname(type_),
+                value=value,
+                type_=type_
+            )
+        try:
+            # Hopeful load calling the handler directly, skipping load()
+            return function(f(l, v, t) for v in value)
+        except TypedloadException:
+            # Fall back to the slow path
+            pass
+        except TypeError as e:
+            raise TypedloadTypeError(str(e), value=value, type_=type_)
+
+    # FIXME Once 3.8 is the lowest supported version, I can use := to export the index where the
+    # error happened, removing the need to redo the entire loading of the list in the slow way
+    # A nested error happened, reload everything with load() so we get the detailed exception with path
+    try:
+        return function(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
+    except TypeError as e:
+            raise TypedloadTypeError(str(e), value=value, type_=type_)
