@@ -22,7 +22,7 @@ import datetime
 from enum import Enum
 from ipaddress import IPv4Address, IPv6Address, IPv6Network, IPv4Network, IPv4Interface, IPv6Interface
 from pathlib import Path
-from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union, Any, NewType
+from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union, Any, NewType, FrozenSet
 import unittest
 
 from typedload import dataloader, load, exceptions
@@ -179,6 +179,36 @@ class TestUnion(unittest.TestCase):
         with self.assertRaises(TypeError):
             loader.load({'a': 1}, Union[A, B])
 
+
+class TestFastIterableLoad(unittest.TestCase):
+
+    def yielder(self):
+        yield from range(2)
+        yield "1"
+
+    def test_tupleload_from_generator_with_exception(self):
+        loader = dataloader.Loader(basiccast=False)
+
+        with self.assertRaises(exceptions.TypedloadValueError):
+            a = loader.load(self.yielder(), Tuple[int, ...])
+
+    def test_listload_from_generator_with_exception(self):
+        loader = dataloader.Loader(basiccast=False)
+
+        with self.assertRaises(exceptions.TypedloadValueError):
+            a = loader.load(self.yielder(), List[int])
+
+    def test_frozensetload_from_generator_with_exception(self):
+        loader = dataloader.Loader(basiccast=False)
+
+        with self.assertRaises(exceptions.TypedloadValueError):
+            a = loader.load(self.yielder(), FrozenSet[int])
+
+    def test_setload_from_generator_with_exception(self):
+        loader = dataloader.Loader(basiccast=False)
+
+        with self.assertRaises(exceptions.TypedloadValueError):
+            a = loader.load(self.yielder(), Set[int])
 
 class TestTupleLoad(unittest.TestCase):
 
