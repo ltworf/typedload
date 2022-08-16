@@ -208,10 +208,10 @@ class Loader:
             (lambda type_: type_ in self.basictypes, _basicload),
             (is_enum, _enumload),
             (is_tuple, _tupleload),
-            (is_list, _listload),
+            (is_list, lambda l, value, type_: _iterload(l, value, type_, list)),
             (is_dict, _dictload),
-            (is_set, _setload),
-            (is_frozenset, _frozensetload),
+            (is_set, lambda l, value, type_: _iterload(l, value, type_, set)),
+            (is_frozenset, lambda l, value, type_: _iterload(l, value, type_, frozenset)),
             (is_namedtuple, _namedtupleload),
             (is_dataclass, _dataclassload),
             (is_forwardref, _forwardrefload),
@@ -751,18 +751,6 @@ def _strconstructload(l: Loader, value, type_):
 
 def _newtypeload(l: Loader, value, type_):
     return l.load(value, type_.__supertype__)
-
-
-def _setload(l: Loader, value, type_) -> Set:
-    return _iterload(l, value, type_, set)
-
-
-def _frozensetload(l: Loader, value, type_) -> FrozenSet:
-    return _iterload(l, value, type_, frozenset)
-
-
-def _listload(l: Loader, value, type_) -> List:
-    return _iterload(l, value, type_, list)
 
 
 def _iterload(l: Loader, value, type_, function) -> List:
