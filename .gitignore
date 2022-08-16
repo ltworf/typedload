@@ -12,3 +12,4 @@ html/
 setup.py
 perftest.output
 docs/*_docgen.md
+.token
