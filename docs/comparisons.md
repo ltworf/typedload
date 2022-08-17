@@ -89,8 +89,6 @@ load(data, list[int])
 load(data, list[Union[float,int]])
 ```
 
-
-
 dataclasses-json
 ----------------
 
