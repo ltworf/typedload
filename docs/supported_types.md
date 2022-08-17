@@ -17,7 +17,7 @@ Basic types
 
 By default: `{int, bool, float, str, NONETYPE}`
 
-Those types are te basic building blocks and no operations are performed on them.
+Those types are the basic building blocks and no operations are performed on them.
 
 *NOTE*: If `basiccast=True` (the default) casting between them can still happen.
 
