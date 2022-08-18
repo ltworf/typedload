@@ -1,5 +1,6 @@
 2.19
 ====
+* Fix minor bug about exception raising from string constructed types
 
 2.18
 ====

@@ -746,7 +746,7 @@ def _strconstructload(l: Loader, value, type_):
     except TypeError as e:
         raise TypedloadTypeError(str(e), type_=type_, value=value)
     except Exception as e:
-        raise TypedloadException(str(e), type_=type, value=value)
+        raise TypedloadException(str(e), type_=type_, value=value)
 
 
 def _newtypeload(l: Loader, value, type_):
