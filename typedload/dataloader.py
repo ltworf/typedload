@@ -374,8 +374,6 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
     """
     This loads into something like Tuple[int,str]
     """
-    if isinstance(value, dict):
-        raise TypedloadTypeError('Unable to load dictionary as a tuple', value=value, type_=type_)
     if HAS_TUPLEARGS:
         args = type_.__args__
     else:
@@ -384,6 +382,8 @@ def _tupleload(l: Loader, value, type_) -> Tuple:
     if len(args) == 2 and args[1] == ...: # Tuple[something, ...]
         return _iterload(l, value, type_, tuple)
     else: # Tuple[something, something, somethingelse]
+        if isinstance(value, dict):
+            raise TypedloadTypeError('Unable to load dictionary as a tuple', value=value, type_=type_)
         if l.failonextra and len(value) > len(args):
             raise TypedloadValueError('Value is too long for type %s' % tname(type_), value=value, type_=type_)
         elif len(value) < len(args):
@@ -484,7 +484,7 @@ def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hin
             value = newvalue
             vfields = set(value.keys())
 
-    if necessary_fields.intersection(vfields) != necessary_fields:
+    if len(necessary_fields.intersection(vfields)) != len(necessary_fields):
         raise TypedloadValueError(
             'Value does not contain fields: %s which are necessary for type %s' % (
                 necessary_fields.difference(vfields),
@@ -754,6 +754,12 @@ def _newtypeload(l: Loader, value, type_):
 
 
 def _iterload(l: Loader, value, type_, function):
+    """
+    Generic code to load iterables.
+
+    function is for example list, tuple, set. The call to
+    generate the destination type from an iterable.
+    """
     if isinstance(value, dict):
         raise TypedloadTypeError('Unable to load dictionary as an iterable', value=value, type_=type_)
     t = type_.__args__[0]
