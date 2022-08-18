@@ -754,6 +754,12 @@ def _newtypeload(l: Loader, value, type_):
 
 
 def _iterload(l: Loader, value, type_, function):
+    """
+    Generic code to load iterables.
+
+    function is for example list, tuple, set. The call to
+    generate the destination type from an iterable.
+    """
     if isinstance(value, dict):
         raise TypedloadTypeError('Unable to load dictionary as an iterable', value=value, type_=type_)
     t = type_.__args__[0]
