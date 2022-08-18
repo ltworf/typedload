@@ -484,7 +484,7 @@ def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hin
             value = newvalue
             vfields = set(value.keys())
 
-    if necessary_fields.intersection(vfields) != necessary_fields:
+    if len(necessary_fields.intersection(vfields)) != len(necessary_fields):
         raise TypedloadValueError(
             'Value does not contain fields: %s which are necessary for type %s' % (
                 necessary_fields.difference(vfields),
