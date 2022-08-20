@@ -86,23 +86,29 @@ docs/typedload.typechecks_docgen.md: typedload/typechecks.py
 	./docgen $@
 
 html: \
-		docs/typedload_docgen.md \
-		docs/typedload.dataloader_docgen.md \
+		docs/3.10.svg \
+		docs/3.11.svg \
+		docs/CHANGELOG.md \
+		docs/CODE_OF_CONDUCT.md \
+		docs/comparisons.md \
+		docs/CONTRIBUTING.md \
+		docs/deferred_evaluation.md \
+		docs/docs \
+		docs/docs/gpl3logo.png \
+		docs/errors.md \
+		docs/examples.md \
+		docs/gpl3logo.png \
+		docs/origin_story.md \
+		docs/performance.md \
+		docs/README.md \
+		docs/SECURITY.md \
+		docs/supported_types.md \
 		docs/typedload.datadumper_docgen.md \
+		docs/typedload.dataloader_docgen.md \
+		docs/typedload_docgen.md \
 		docs/typedload.exceptions_docgen.md \
 		docs/typedload.typechecks_docgen.md \
-		mkdocs.yml \
-		docs/CHANGELOG.md \
-		docs/comparisons.md \
-		docs/errors.md \
-		docs/CONTRIBUTING.md \
-		docs/gpl3logo.png \
-		docs/CODE_OF_CONDUCT.md \
-		docs/examples.md \
-		docs/README.md \
-		docs/supported_types.md \
-		docs/SECURITY.md \
-		docs/origin_story.md
+		mkdocs.yml
 	mkdocs build
 
 .PHONY: publish_html
