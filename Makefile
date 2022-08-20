@@ -110,6 +110,16 @@ html: \
 		docs/typedload.typechecks_docgen.md \
 		mkdocs.yml
 	mkdocs build
+	# Download cloudflare crap
+	mkdir -p html/cdn
+	cd html/cdn; wget --continue `cat ../*html | grep cloudflare | grep min.css | sort | uniq | cut -d\" -f4`
+	cd html/cdn; wget --continue `cat ../*html | grep cloudflare | grep min.js | sort | uniq | cut -d\" -f2`
+	# Fix html pages
+	for page in html/*.html; do \
+		sed -i 's,https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css,cdn/github.min.css,g' $${page}; \
+		sed -i 's,https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js,cdn/highlight.min.js,g' $${page}; \
+		echo "<!-- Trackers stripped from mkdocs theme by me -_-' -->" >> $${page}; \
+	done
 
 .PHONY: publish_html
 publish_html: html
