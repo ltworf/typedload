@@ -86,28 +86,51 @@ docs/typedload.typechecks_docgen.md: typedload/typechecks.py
 	./docgen $@
 
 html: \
-		docs/typedload_docgen.md \
-		docs/typedload.dataloader_docgen.md \
+		docs/3.10.svg \
+		docs/3.11.svg \
+		docs/CHANGELOG.md \
+		docs/CODE_OF_CONDUCT.md \
+		docs/comparisons.md \
+		docs/CONTRIBUTING.md \
+		docs/deferred_evaluation.md \
+		docs/docs \
+		docs/docs/gpl3logo.png \
+		docs/errors.md \
+		docs/examples.md \
+		docs/gpl3logo.png \
+		docs/origin_story.md \
+		docs/performance.md \
+		docs/README.md \
+		docs/SECURITY.md \
+		docs/supported_types.md \
 		docs/typedload.datadumper_docgen.md \
+		docs/typedload.dataloader_docgen.md \
+		docs/typedload_docgen.md \
 		docs/typedload.exceptions_docgen.md \
 		docs/typedload.typechecks_docgen.md \
-		mkdocs.yml \
-		docs/CHANGELOG.md \
-		docs/comparisons.md \
-		docs/errors.md \
-		docs/CONTRIBUTING.md \
-		docs/gpl3logo.png \
-		docs/CODE_OF_CONDUCT.md \
-		docs/examples.md \
-		docs/README.md \
-		docs/supported_types.md \
-		docs/SECURITY.md \
-		docs/origin_story.md
+		mkdocs.yml
 	mkdocs build
+	# Download cloudflare crap
+	mkdir -p html/cdn
+	cd html/cdn; wget --continue `cat ../*html | grep cloudflare | grep min.css | sort | uniq | cut -d\" -f4`
+	cd html/cdn; wget --continue `cat ../*html | grep cloudflare | grep min.js | sort | uniq | cut -d\" -f2`
+	# Fix html pages
+	for page in html/*.html; do \
+		sed -i 's,https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css,cdn/github.min.css,g' $${page}; \
+		sed -i 's,https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js,cdn/highlight.min.js,g' $${page}; \
+		echo "<!-- Trackers stripped from mkdocs theme by me -_-' -->" >> $${page}; \
+	done
 
 .PHONY: publish_html
 publish_html: html
-	mkdocs gh-deploy
+	git checkout gh-pages
+	rm -rf cdn css docs fonts img js search
+	mv html/* .
+	git add cdn css docs fonts img js search
+	git add `git status  --porcelain | grep '^ M' | cut -d\  -f3`
+	git commit -m "Deployed manually to workaround MkDocs"
+	git push
+	git checkout -
 
 perftest.output/perf.p:
 	perftest/performance.py
