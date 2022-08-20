@@ -123,7 +123,14 @@ html: \
 
 .PHONY: publish_html
 publish_html: html
-	mkdocs gh-deploy
+	git checkout gh-pages
+	rm -rf cdn css docs fonts img js search
+	mv html/* .
+	git add cdn css docs fonts img js search
+	git add `git status  --porcelain | grep '^ M' | cut -d\  -f3`
+	git commit -m "Deployed manually to workaround MkDocs"
+	git push
+	git checkout -
 
 perftest.output/perf.p:
 	perftest/performance.py
