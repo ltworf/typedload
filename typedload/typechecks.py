@@ -109,19 +109,15 @@ NONETYPE = type(None)  # type: Type[Any]
 HAS_UNIONSUBCLASS = False
 
 
-def is_tuple(type_: Type[Any]) -> bool:
-    '''
-    Tuple[int, str]
-    Tuple
-    '''
-    if HAS_TUPLEARGS:
-        # The tuple, Tuple thing is a difference between 3.6 and 3.7
-        # In 3.6 and before, Tuple had an __extra__ field, while Tuple[something]
-        # would have the normal __origin__ field.
-        #
-        # Those apply for Dict, List, Set, Tuple
+if HAS_TUPLEARGS:
+    def is_tuple(type_: Type[Any]) -> bool:
+        '''
+        Tuple[int, str]
+        Tuple
+        '''
         return _generic_type_check(type_, tuple, Tuple)
-    else:
+else:
+    def is_tuple(type_: Type[Any]) -> bool:
         # Old python
         return _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
 
