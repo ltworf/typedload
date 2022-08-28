@@ -1,6 +1,7 @@
 2.19
 ====
 * Fix minor bug about exception raising from string constructed types
+* Simplify type checking functions, defining only the one for the current python version
 
 2.18
 ====
