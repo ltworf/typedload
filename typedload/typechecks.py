@@ -296,11 +296,19 @@ def is_any(type_: Type[Any]) -> bool:
     return type_ == Any
 
 
-def is_notrequired(type_: Type[Any]) -> bool:
-    '''
-    Check if it's typing.NotRequired or typing_extensions.NotRequired
-    '''
-    return getattr(type_, '__origin__', None) == NotRequired and NotRequired is not None
+if NotRequired:
+    def is_notrequired(type_: Type[Any]) -> bool:
+        '''
+        Check if it's typing.NotRequired or typing_extensions.NotRequired
+        '''
+        return getattr(type_, '__origin__', None) == NotRequired
+else:
+    def is_notrequired(type_: Type[Any]) -> bool:
+        '''
+        Returns False.
+        NotRequired is not defined on this platform.
+        '''
+        return False
 
 
 def notrequiredtype(type_: Type[Any]) -> Type[Any]:
