@@ -109,32 +109,39 @@ NONETYPE = type(None)  # type: Type[Any]
 HAS_UNIONSUBCLASS = False
 
 
-def is_tuple(type_: Type[Any]) -> bool:
-    '''
-    Tuple[int, str]
-    Tuple
-    '''
-    if HAS_TUPLEARGS:
-        # The tuple, Tuple thing is a difference between 3.6 and 3.7
-        # In 3.6 and before, Tuple had an __extra__ field, while Tuple[something]
-        # would have the normal __origin__ field.
-        #
-        # Those apply for Dict, List, Set, Tuple
+if HAS_TUPLEARGS:
+    def is_tuple(type_: Type[Any]) -> bool:
+        '''
+        Tuple[int, str]
+        Tuple
+        '''
         return _generic_type_check(type_, tuple, Tuple)
-    else:
+else:
+    def is_tuple(type_: Type[Any]) -> bool:
         # Old python
         return _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
 
 
-def is_union(type_: Type[Any]) -> bool:
-    '''
-    Union[A, B]
-    Union
-    Optional[A]
-    '''
-
+if UnionType:
     # Uniontype is 3.10 defined on 3.10 and None otherwise
-    return getattr(type_, '__origin__', None) == Union or (UnionType and getattr(type_, '__class__', None) == UnionType)
+    def is_union(type_: Type[Any]) -> bool:
+        '''
+        Union[A, B]
+        Union
+        Optional[A]
+        A | B
+        '''
+        return getattr(type_, '__origin__', None) == Union or getattr(type_, '__class__', None) == UnionType
+else:
+    def is_union(type_: Type[Any]) -> bool:
+        '''
+        Union[A, B]
+        Union
+        Optional[A]
+        '''
+
+        # Uniontype is 3.10 defined on 3.10 and None otherwise
+        return getattr(type_, '__origin__', None) == Union
 
 
 def is_optional(type_: Type[Any]) -> bool:
@@ -289,11 +296,19 @@ def is_any(type_: Type[Any]) -> bool:
     return type_ == Any
 
 
-def is_notrequired(type_: Type[Any]) -> bool:
-    '''
-    Check if it's typing.NotRequired or typing_extensions.NotRequired
-    '''
-    return getattr(type_, '__origin__', None) == NotRequired and NotRequired is not None
+if NotRequired:
+    def is_notrequired(type_: Type[Any]) -> bool:
+        '''
+        Check if it's typing.NotRequired or typing_extensions.NotRequired
+        '''
+        return getattr(type_, '__origin__', None) == NotRequired
+else:
+    def is_notrequired(type_: Type[Any]) -> bool:
+        '''
+        Returns False.
+        NotRequired is not defined on this platform.
+        '''
+        return False
 
 
 def notrequiredtype(type_: Type[Any]) -> Type[Any]:
