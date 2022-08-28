@@ -126,15 +126,26 @@ def is_tuple(type_: Type[Any]) -> bool:
         return _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
 
 
-def is_union(type_: Type[Any]) -> bool:
-    '''
-    Union[A, B]
-    Union
-    Optional[A]
-    '''
-
+if UnionType:
     # Uniontype is 3.10 defined on 3.10 and None otherwise
-    return getattr(type_, '__origin__', None) == Union or (UnionType and getattr(type_, '__class__', None) == UnionType)
+    def is_union(type_: Type[Any]) -> bool:
+        '''
+        Union[A, B]
+        Union
+        Optional[A]
+        A | B
+        '''
+        return getattr(type_, '__origin__', None) == Union or getattr(type_, '__class__', None) == UnionType
+else:
+    def is_union(type_: Type[Any]) -> bool:
+        '''
+        Union[A, B]
+        Union
+        Optional[A]
+        '''
+
+        # Uniontype is 3.10 defined on 3.10 and None otherwise
+        return getattr(type_, '__origin__', None) == Union
 
 
 def is_optional(type_: Type[Any]) -> bool:
