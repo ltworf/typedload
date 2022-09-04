@@ -2,6 +2,7 @@
 ====
 * Fix minor bug about exception raising from string constructed types
 * Simplify type checking functions, defining only the one for the current python version
+* Fix type definitions of some private functions for compatibility with cython
 
 2.18
 ====
