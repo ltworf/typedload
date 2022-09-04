@@ -227,7 +227,7 @@ class Loader:
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-        self._indexcache = {}  # type: Dict[Any, int]
+        self._indexcache = {}  # type: Dict[Any, Callable[[Loader, Any, Any], Any]]
 
         self._unionload_discriminatorcache = {}  # type: Dict[Type, Tuple[Optional[str], Optional[Dict[Any, Type]]]]
 
@@ -262,14 +262,13 @@ class Loader:
         It is only needed when calling load recursively from
         a custom handler.
         """
-        p_index = self._indexcache.get(type_)
+        cached_f = self._indexcache.get(type_)
 
-        if p_index is not None:
-            index = p_index
+        if cached_f is not None:
+            func = cached_f
         else:
             try:
                 index = self.index(type_)
-                self._indexcache[type_] = index
             except ValueError:
                 raise TypedloadTypeError(
                     'Cannot deal with value of type %s' % tname(type_),
@@ -277,13 +276,13 @@ class Loader:
                     type_=type_
                 )
 
+            func = self._indexcache[type_] = self.handlers[index][1]
+
             # Add type to known types, to resolve ForwardRef later on
             if self.frefs is not None and hasattr(type_, '__name__'):
                 typename = type_.__name__
                 if typename not in self.frefs:
                     self.frefs[typename] = type_
-
-        func = self.handlers[index][1]
 
         try:
             return func(self, value, type_)
@@ -360,7 +359,43 @@ def _dictload(l: Loader, value: Any, type_) -> Dict:
     """
     key_type, value_type = type_.__args__
 
+    key_handler = l._indexcache.get(key_type)
+    if key_handler is not None:
+        key_f = key_handler
+    else:
+        try:
+            key_f = l._indexcache[key_type] = l.handlers[l.index(key_type)][1]
+        except ValueError:
+            raise TypedloadValueError(
+                'Cannot deal with value of type %s (key of %s)' % (tname(key_type), tname(type_)),
+                value=value,
+                type_=key_type
+            )
+
+    # Same thing for the value
+    value_handler = l._indexcache.get(value_type)
+    if value_handler is not None:
+        value_f = value_handler
+    else:
+        try:
+            key_f = l._indexcache[value_type] = l.handlers[l.index(value_type)][1]
+        except ValueError:
+            raise TypedloadValueError(
+                'Cannot deal with value of type %s (value of %s)' % (tname(value_type), tname(type_)),
+                value=value,
+                type_=value_type
+            )
+
     value = _dictequivalence(l, value)
+
+    # Try fast load
+    try:
+        return {
+            key_f(l, k, key_type): value_f(l, v, value_type) for k, v in value.items()
+        }
+    except Exception:
+        # Failed, do the slow method with exception tracking
+        pass
 
     try:
         return {
@@ -768,14 +803,23 @@ def _iterload(l: Loader, value: Any, type_, function) -> Any:
     fast = hasattr(value, '__getitem__')
 
     if fast:
-        try:
-            f = l.handlers[l.index(t)][1]
-        except ValueError:
-            raise TypedloadTypeError(
-                'Cannot deal with value of type %s' % tname(type_),
-                value=value,
-                type_=type_
-            )
+
+        # Get function pointer for the handler
+        cached_f = l._indexcache.get(t)
+
+        if cached_f:
+            f = cached_f
+        else:
+            try:
+                f = l._indexcache[t] = l.handlers[l.index(t)][1]
+            except ValueError:
+                raise TypedloadTypeError(
+                    'Cannot deal with value of type %s' % tname(type_),
+                    value=value,
+                    type_=type_
+                )
+
+        # Use the handler
         try:
             # Hopeful load calling the handler directly, skipping load()
             return function(f(l, v, t) for v in value)
