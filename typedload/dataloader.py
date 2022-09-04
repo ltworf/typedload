@@ -222,12 +222,12 @@ class Loader:
             (is_attrs, _attrload),
             (is_any, _anyload),
             (is_newtype, _newtypeload),
-        ]  # type: List[Tuple[Callable[[Any], bool], Callable[[Loader, Any, Type], Any]]]
+        ]  # type: List[Tuple[Callable[[Any], bool], Callable[[Loader, Any, Any], Any]]]
 
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-        self._indexcache = {}  # type: Dict[Type, int]
+        self._indexcache = {}  # type: Dict[Any, int]
 
         self._unionload_discriminatorcache = {}  # type: Dict[Type, Tuple[Optional[str], Optional[Dict[Any, Type]]]]
 
