@@ -359,7 +359,43 @@ def _dictload(l: Loader, value: Any, type_) -> Dict:
     """
     key_type, value_type = type_.__args__
 
+    key_handler = l._indexcache.get(key_type)
+    if key_handler is not None:
+        key_f = key_handler
+    else:
+        try:
+            key_f = l._indexcache[key_type] = l.handlers[l.index(key_type)][1]
+        except ValueError:
+            raise TypedloadValueError(
+                'Cannot deal with value of type %s (key of %s)' % (tname(key_type), tname(type_)),
+                value=value,
+                type_=key_type
+            )
+
+    # Same thing for the value
+    value_handler = l._indexcache.get(value_type)
+    if value_handler is not None:
+        value_f = value_handler
+    else:
+        try:
+            key_f = l._indexcache[value_type] = l.handlers[l.index(value_type)][1]
+        except ValueError:
+            raise TypedloadValueError(
+                'Cannot deal with value of type %s (value of %s)' % (tname(value_type), tname(type_)),
+                value=value,
+                type_=value_type
+            )
+
     value = _dictequivalence(l, value)
+
+    # Try fast load
+    try:
+        return {
+            key_f(l, k, key_type): value_f(l, v, value_type) for k, v in value.items()
+        }
+    except Exception:
+        # Failed, do the slow method with exception tracking
+        pass
 
     try:
         return {
