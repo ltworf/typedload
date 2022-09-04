@@ -34,6 +34,7 @@ def main():
     tests = [
         #'load list of ints',
         'load list of floats and ints',
+        'load list of lists',
         #'load set of floats and ints',
         #'load tuple of floats and ints',
         'load list of NamedTuple objects',
