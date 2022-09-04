@@ -767,14 +767,23 @@ def _iterload(l: Loader, value: Any, type_, function) -> Any:
     fast = hasattr(value, '__getitem__')
 
     if fast:
-        try:
-            f = l.handlers[l.index(t)][1]
-        except ValueError:
-            raise TypedloadTypeError(
-                'Cannot deal with value of type %s' % tname(type_),
-                value=value,
-                type_=type_
-            )
+
+        # Get function pointer for the handler
+        cached_f = l._indexcache.get(t)
+
+        if cached_f:
+            f = cached_f
+        else:
+            try:
+                f = l._indexcache[t] = l.handlers[l.index(t)][1]
+            except ValueError:
+                raise TypedloadTypeError(
+                    'Cannot deal with value of type %s' % tname(type_),
+                    value=value,
+                    type_=type_
+                )
+
+        # Use the handler
         try:
             # Hopeful load calling the handler directly, skipping load()
             return function(f(l, v, t) for v in value)
