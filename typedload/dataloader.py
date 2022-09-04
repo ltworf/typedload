@@ -222,12 +222,12 @@ class Loader:
             (is_attrs, _attrload),
             (is_any, _anyload),
             (is_newtype, _newtypeload),
-        ]  # type: List[Tuple[Callable[[Any], bool], Callable[[Loader, Any, Type], Any]]]
+        ]  # type: List[Tuple[Callable[[Any], bool], Callable[[Loader, Any, Any], Any]]]
 
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-        self._indexcache = {}  # type: Dict[Type, int]
+        self._indexcache = {}  # type: Dict[Any, int]
 
         self._unionload_discriminatorcache = {}  # type: Dict[Type, Tuple[Optional[str], Optional[Dict[Any, Type]]]]
 
@@ -293,7 +293,7 @@ class Loader:
             raise e
 
 
-def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
+def _forwardrefload(l: Loader, value: Any, type_) -> Any:
     """
     This resolves a ForwardRef.
 
@@ -313,11 +313,11 @@ def _forwardrefload(l: Loader, value: Any, type_: type) -> Any:
     return l.load(value, t, annotation=Annotation(AnnotationType.FORWARDREF, tname))
 
 
-def _anyload(l: Loader, value: Any, type_: type) -> Any:
+def _anyload(l: Loader, value: Any, type_) -> Any:
     return value
 
 
-def _literalload(l: Loader, value: Any, type_: type) -> Any:
+def _literalload(l: Loader, value: Any, type_) -> Any:
     """
     Checks if the value is within the allowed literals and
     returns it.
@@ -327,7 +327,7 @@ def _literalload(l: Loader, value: Any, type_: type) -> Any:
     raise TypedloadValueError('Not one of the allowed values in %s' % tname(type_), value=value, type_=type_)
 
 
-def _basicload(l: Loader, value: Any, type_: type) -> Any:
+def _basicload(l: Loader, value: Any, type_) -> Any:
     """
     This converts a value into a basic type.
 
@@ -352,7 +352,7 @@ def _basicload(l: Loader, value: Any, type_: type) -> Any:
     return value
 
 
-def _dictload(l: Loader, value, type_) -> Dict:
+def _dictload(l: Loader, value: Any, type_) -> Dict:
     """
     This loads into something like Dict[str,str]
 
@@ -370,7 +370,7 @@ def _dictload(l: Loader, value, type_) -> Dict:
         raise TypedloadAttributeError(str(e), type_=type_, value=value)
 
 
-def _tupleload(l: Loader, value, type_) -> Tuple:
+def _tupleload(l: Loader, value: Any, type_) -> Tuple:
     """
     This loads into something like Tuple[int,str]
     """
@@ -453,7 +453,7 @@ def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
     return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
 
-def _dictequivalence(l: Loader, value: Any) -> Dict:
+def _dictequivalence(l: Loader, value: Any) -> Any:
     '''
     Helper function to convert classes that are functionally
     the same as a dict into a dict.
@@ -469,7 +469,7 @@ def _dictequivalence(l: Loader, value: Any) -> Dict:
     return value
 
 
-def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hints, value: Dict[str, Any], type_) -> Any:
+def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hints, value: Any, type_) -> Any:
     '''
     Helper function to load dict-like data into an object.
     '''
@@ -520,7 +520,7 @@ def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hin
         raise TypedloadValueError(e)
 
 
-def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Any:
+def _namedtupleload(l: Loader, value: Any, type_) -> Any:
     """
     This loads a Dict[str, Any] into a NamedTuple.
     """
@@ -535,7 +535,7 @@ def _namedtupleload(l: Loader, value: Dict[str, Any], type_) -> Any:
     return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
 
-def _typeddictload(l: Loader, value: Dict[str, Any], type_) -> Any:
+def _typeddictload(l: Loader, value: Any, type_) -> Any:
     """
     This loads a Dict[str, Any] into a NamedTuple.
     """
@@ -563,7 +563,7 @@ def _typeddictload(l: Loader, value: Dict[str, Any], type_) -> Any:
     return _objloader(l, fields, necessary_fields, type_hints, value, type_)
 
 
-def _unionload(l: Loader, value, type_) -> Any:
+def _unionload(l: Loader, value: Any, type_) -> Any:
     """
     Loads a value into a union.
 
@@ -654,7 +654,7 @@ def _unionload(l: Loader, value, type_) -> Any:
         )
 
 
-def _enumload(l: Loader, value, type_) -> Enum:
+def _enumload(l: Loader, value: Any, type_) -> Enum:
     """
     This loads something into an Enum.
 
@@ -692,7 +692,7 @@ def _enumload(l: Loader, value, type_) -> Enum:
     )
 
 
-def _noneload(l: Loader, value, type_) -> None:
+def _noneload(l: Loader, value: Any, type_) -> None:
     """
     Loads a value that can only be None,
     so it fails if it isn't
@@ -702,14 +702,14 @@ def _noneload(l: Loader, value, type_) -> None:
     raise TypedloadValueError('Not None', value=value, type_=type_)
 
 
-def _datetimeload(l: Loader, value, type_) -> Union[datetime.date, datetime.time, datetime.datetime]:
+def _datetimeload(l: Loader, value: Any, type_) -> Union[datetime.date, datetime.time, datetime.datetime]:
     try:
         return type_(*value)
     except TypeError as e:
         raise TypedloadTypeError(str(e), type_=type_, value=value)
 
 
-def _attrload(l, value, type_):
+def _attrload(l: Loader, value: Any, type_) -> Any:
     from attr._make import _Nothing as NOTHING
 
     fields = {i.name for i in type_.__attrs_attrs__}
@@ -749,11 +749,11 @@ def _strconstructload(l: Loader, value, type_):
         raise TypedloadException(str(e), type_=type_, value=value)
 
 
-def _newtypeload(l: Loader, value, type_):
+def _newtypeload(l: Loader, value: Any, type_) -> Any:
     return l.load(value, type_.__supertype__)
 
 
-def _iterload(l: Loader, value, type_, function):
+def _iterload(l: Loader, value: Any, type_, function) -> Any:
     """
     Generic code to load iterables.
 
