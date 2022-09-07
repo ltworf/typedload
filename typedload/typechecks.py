@@ -105,26 +105,26 @@ def _issubclass(t1, t2) -> bool:
 
 
 HAS_TUPLEARGS = hasattr(Tuple[int, int], '__args__')
-NONETYPE = type(None)  # type: Type[Any]
+NONETYPE = type(None)  # type: Any
 HAS_UNIONSUBCLASS = False
 
 
 if HAS_TUPLEARGS:
-    def is_tuple(type_: Type[Any]) -> bool:
+    def is_tuple(type_: Any) -> bool:
         '''
         Tuple[int, str]
         Tuple
         '''
         return _generic_type_check(type_, tuple, Tuple)
 else:
-    def is_tuple(type_: Type[Any]) -> bool:
+    def is_tuple(type_: Any) -> bool:
         # Old python
         return _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
 
 
 if UnionType:
     # Uniontype is 3.10 defined on 3.10 and None otherwise
-    def is_union(type_: Type[Any]) -> bool:
+    def is_union(type_: Any) -> bool:
         '''
         Union[A, B]
         Union
@@ -133,7 +133,7 @@ if UnionType:
         '''
         return getattr(type_, '__origin__', None) == Union or getattr(type_, '__class__', None) == UnionType
 else:
-    def is_union(type_: Type[Any]) -> bool:
+    def is_union(type_: Any) -> bool:
         '''
         Union[A, B]
         Union
@@ -144,7 +144,7 @@ else:
         return getattr(type_, '__origin__', None) == Union
 
 
-def is_optional(type_: Type[Any]) -> bool:
+def is_optional(type_: Any) -> bool:
     '''
     Optional[int]
 
@@ -160,18 +160,18 @@ def is_optional(type_: Type[Any]) -> bool:
     return NONETYPE in types
 
 
-def is_nonetype(type_: Type[Any]) -> bool:
+def is_nonetype(type_: Any) -> bool:
     '''
     type_ == type(None)
     '''
     return type_ == NONETYPE
 
 
-def _generic_type_check(type_: Type[Any], native, from_typing) -> bool:
+def _generic_type_check(type_: Any, native, from_typing) -> bool:
     return getattr(type_, '__origin__', None) in {native, from_typing} or getattr(type_, '__extra__', None) == native
 
 
-def is_list(type_: Type[Any]) -> bool:
+def is_list(type_: Any) -> bool:
     '''
     List[A]
     List
@@ -179,7 +179,7 @@ def is_list(type_: Type[Any]) -> bool:
     return _generic_type_check(type_, list, List)
 
 
-def is_dict(type_: Type[Any]) -> bool:
+def is_dict(type_: Any) -> bool:
     '''
     Dict[A, B]
     Dict
@@ -187,7 +187,7 @@ def is_dict(type_: Type[Any]) -> bool:
     return _generic_type_check(type_, dict, Dict)
 
 
-def is_set(type_: Type[Any]) -> bool:
+def is_set(type_: Any) -> bool:
     '''
     Set[A]
     Set
@@ -195,7 +195,7 @@ def is_set(type_: Type[Any]) -> bool:
     return _generic_type_check(type_, set, Set)
 
 
-def is_frozenset(type_: Type[Any]) -> bool:
+def is_frozenset(type_: Any) -> bool:
     '''
     FrozenSet[A]
     FrozenSet
@@ -203,28 +203,28 @@ def is_frozenset(type_: Type[Any]) -> bool:
     return _generic_type_check(type_, frozenset, FrozenSet)
 
 
-def is_enum(type_: Type[Any]) -> bool:
+def is_enum(type_: Any) -> bool:
     '''
     Check if the class is a subclass of Enum
     '''
     return _issubclass(type_, Enum)
 
 
-def is_namedtuple(type_: Type[Any]) -> bool:
+def is_namedtuple(type_: Any) -> bool:
     '''
     Generated with typing.NamedTuple
     '''
     return _issubclass(type_, tuple) and hasattr(type_, '__annotations__') and hasattr(type_, '_fields')
 
 
-def is_dataclass(type_: Type[Any]) -> bool:
+def is_dataclass(type_: Any) -> bool:
     '''
     dataclass (Introduced in Python3.7
     '''
     return hasattr(type_, '__dataclass_fields__')
 
 
-def is_forwardref(type_: Type[Any]) -> bool:
+def is_forwardref(type_: Any) -> bool:
     '''
     Check if it's a ForwardRef.
 
@@ -234,7 +234,7 @@ def is_forwardref(type_: Type[Any]) -> bool:
     return type(type_) == ForwardRef
 
 
-def is_attrs(type_: Type[Any]) -> bool:
+def is_attrs(type_: Any) -> bool:
     '''
     Check if the type is obtained with an
     @attr.s decorator
@@ -243,15 +243,15 @@ def is_attrs(type_: Type[Any]) -> bool:
 
 
 if sys.version_info > (3, 10, 0):
-    def is_newtype(type_: Type[Any]) -> bool:
+    def is_newtype(type_: Any) -> bool:
         return type(type_) == NewType
 
 else:
-    def is_newtype(type_: Type[Any]) -> bool:
+    def is_newtype(type_: Any) -> bool:
         return hasattr(type_, '__supertype__')
 
 
-def uniontypes(type_: Type[Any]) -> Tuple[Type[Any], ...]:
+def uniontypes(type_: Any) -> Tuple[Type[Any], ...]:
     '''
     Returns the types of a Union.
     '''
@@ -262,7 +262,7 @@ def uniontypes(type_: Type[Any]) -> Tuple[Type[Any], ...]:
         return type_.__union_params__
 
 
-def literalvalues(type_: Type[Any]) -> Set[Any]:
+def literalvalues(type_: Any) -> Set[Any]:
     '''
     Returns the values of a Literal
 
@@ -273,14 +273,14 @@ def literalvalues(type_: Type[Any]) -> Set[Any]:
     return set(type_.__args__)
 
 
-def is_literal(type_: Type[Any]) -> bool:
+def is_literal(type_: Any) -> bool:
     '''
     Check if the type is a typing.Literal
     '''
     return getattr(type_, '__origin__', None) == Literal and Literal is not None
 
 
-def is_typeddict(type_: Type[Any]) -> bool:
+def is_typeddict(type_: Any) -> bool:
     '''
     Check if it is a typing.TypedDict
     '''
@@ -289,7 +289,7 @@ def is_typeddict(type_: Type[Any]) -> bool:
     return False
 
 
-def is_any(type_: Type[Any]) -> bool:
+def is_any(type_: Any) -> bool:
     '''
     Check if it is a typing.Any
     '''
@@ -297,13 +297,13 @@ def is_any(type_: Type[Any]) -> bool:
 
 
 if NotRequired:
-    def is_notrequired(type_: Type[Any]) -> bool:
+    def is_notrequired(type_: Any) -> bool:
         '''
         Check if it's typing.NotRequired or typing_extensions.NotRequired
         '''
         return getattr(type_, '__origin__', None) == NotRequired
 else:
-    def is_notrequired(type_: Type[Any]) -> bool:
+    def is_notrequired(type_: Any) -> bool:
         '''
         Returns False.
         NotRequired is not defined on this platform.
@@ -311,7 +311,7 @@ else:
         return False
 
 
-def notrequiredtype(type_: Type[Any]) -> Type[Any]:
+def notrequiredtype(type_: Any) -> Type[Any]:
     '''
     Return the type wrapped by NotRequired
     '''
@@ -319,7 +319,7 @@ def notrequiredtype(type_: Type[Any]) -> Type[Any]:
 
 
 if sys.version_info >= (3, 8):
-    def discriminatorliterals(type_: Type[Any]) -> Dict[str, Set[Any]]:
+    def discriminatorliterals(type_: Any) -> Dict[str, Set[Any]]:
         """
         Takes an object type (NamedTuple, TypedDict, attrs, dataclass)
         and returns which fields take a literal and which values are
@@ -344,5 +344,5 @@ if sys.version_info >= (3, 8):
             r[k] = literalvalues(v)
         return r
 else:
-   def discriminatorliterals(type_: Type[Any]) -> Dict[str, Set[Any]]:
+   def discriminatorliterals(type_: Any) -> Dict[str, Set[Any]]:
        return {}
