@@ -28,7 +28,7 @@ from pathlib import Path
 
 def parse_performance(cmd: list[str]) -> tuple[float, float]:
     try:
-        out = check_output(cmd).replace(b'(', b'').replace(b')', b'').replace(b' ', b'')
+        out = check_output(cmd, stderr=DEVNULL).replace(b'(', b'').replace(b')', b'').replace(b' ', b'')
         return tuple(float(i) for i in out.split(b',', 1))
     except Exception:
         return -1, -1
@@ -36,7 +36,7 @@ def parse_performance(cmd: list[str]) -> tuple[float, float]:
 
 def main():
     tests = [
-        'load list of ints',
+        #'load list of ints',
         'load list of floats and ints',
         'load list of lists',
         'load big dictionary',
