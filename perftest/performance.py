@@ -27,8 +27,11 @@ from pathlib import Path
 
 
 def parse_performance(cmd: list[str]) -> tuple[float, float]:
-    out = check_output(cmd).replace(b'(', b'').replace(b')', b'').replace(b' ', b'')
-    return tuple(float(i) for i in out.split(b',', 1))
+    try:
+        out = check_output(cmd).replace(b'(', b'').replace(b')', b'').replace(b' ', b'')
+        return tuple(float(i) for i in out.split(b',', 1))
+    except Exception:
+        return -1, -1
 
 
 def main():
