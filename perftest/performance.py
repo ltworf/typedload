@@ -40,8 +40,6 @@ def main():
         'load list of floats and ints',
         'load list of lists',
         'load big dictionary',
-        #'load set of floats and ints',
-        #'load tuple of floats and ints',
         'load list of NamedTuple objects',
         #'load list of dataclass objects',
         #'load list of attrs objects',
