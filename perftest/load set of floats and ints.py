@@ -40,3 +40,11 @@ elif sys.argv[1] == '--pydantic':
 elif sys.argv[1] == '--apischema':
     import apischema
     print(timeit(lambda: apischema.deserialize(Data, data)))
+elif sys.argv[1] == '--dataclass_json':
+    from dataclasses import dataclass
+    from dataclasses_json import dataclass_json
+    @dataclass_json
+    @dataclass
+    class Data:
+        data: Set[Union[int, float]]
+    print(timeit(lambda: Data.from_dict(data)))

@@ -36,7 +36,7 @@ def parse_performance(cmd: list[str]) -> tuple[float, float]:
 
 def main():
     tests = [
-        #'load list of ints',
+        'load list of ints',
         'load list of floats and ints',
         'load list of lists',
         'load big dictionary',
@@ -57,6 +57,11 @@ def main():
     try:
         import apischema
         extlibs.append('apischema')
+    except ImportError:
+        pass
+    try:
+        from dataclasses_json import dataclass_json
+        extlibs.append('dataclass_json')
     except ImportError:
         pass
 

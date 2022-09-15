@@ -22,15 +22,16 @@ from dataclasses import dataclass
 
 from common import timeit
 
-
-class EventMessage(NamedTuple):
+@dataclass(frozen=True)
+class EventMessage:
     timestamp: float
     type: Literal['message']
     text: str
     sender: str
     receiver: str
 
-class EventFile(NamedTuple):
+@dataclass(frozen=True)
+class EventFile:
     timestamp: float
     type: Literal['file']
     filename: str
@@ -38,7 +39,8 @@ class EventFile(NamedTuple):
     receiver: str
     url: str
 
-class EventPing(NamedTuple):
+@dataclass(frozen=True)
+class EventPing:
     timestamp: float
     type: Literal['ping']
 
@@ -138,7 +140,14 @@ elif sys.argv[1] == '--pydantic':
 elif sys.argv[1] == '--apischema':
     import apischema
     print(timeit(lambda: apischema.deserialize(EventList, data)))
-if sys.argv[1] == '--apischema-discriminator':
+elif sys.argv[1] == '--dataclass_json':
+    from dataclasses_json import dataclass_json
+    @dataclass_json
+    @dataclass
+    class EventList:
+        data: Tuple[Event, ...]
+    print(timeit(lambda: EventList.from_dict(data)))
+elif sys.argv[1] == '--apischema-discriminator':
     import apischema
     try:
         from typing import Annotated

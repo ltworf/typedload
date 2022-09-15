@@ -28,7 +28,7 @@ Generate the performance chart locally.
 ```bash
 python3 -m venv perfvenv
 . perfvenv/bin/activate
-pip install apischema pydantic attrs
+pip install apischema pydantic attrs dataclasses-json
 export PYTHONPATH=$(pwd)
 make gnuplot
 ```

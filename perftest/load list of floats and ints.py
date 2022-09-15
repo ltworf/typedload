@@ -43,3 +43,11 @@ elif sys.argv[1] == '--apischema':
     # that can lead to data corruption, but makes it very fast
     # so level the field by copying the list
     print(timeit(lambda: list(apischema.deserialize(Data, data))))
+elif sys.argv[1] == '--dataclass_json':
+    from dataclasses import dataclass
+    from dataclasses_json import dataclass_json
+    @dataclass_json
+    @dataclass
+    class Data:
+        data: List[Union[int, float]]
+    print(timeit(lambda: Data.from_dict(data)))
