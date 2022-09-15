@@ -48,7 +48,7 @@ elif sys.argv[1] == '--apischema':
     # so level the field by copying the list
     def f():
         r = apischema.deserialize(Data, data)
-        r.data.copy()
+        d = [i.copy() for i in r.data]
         return r
     assert f().data[0][0] == 1
     print(timeit(f))
