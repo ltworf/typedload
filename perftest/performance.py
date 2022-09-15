@@ -124,7 +124,7 @@ def main():
                 counter += 1
         with Popen(['gnuplot'], stdin=PIPE, encoding='ascii') as p:
             f = p.stdin
-            print('set style fill transparent solid 0.2 noborder', file=f)
+            print('set style fill solid 0.2 noborder', file=f)
             print('set ylabel "seconds"', file=f)
             print('set xlabel "package"', file=f)
             print(f'set title "typedload performance test {sys.version}"', file=f)
