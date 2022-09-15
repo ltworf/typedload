@@ -46,7 +46,7 @@ elif sys.argv[1] == '--apischema':
     # apischema will return a pointer to the same list, which is a bug
     # that can lead to data corruption, but makes it very fast
     # so level the field by copying the list
-    f = lambda: list(apischema.deserialize(Data, data))
+    f = lambda: apischema.deserialize(Data, data)
     assert f().data[1] == 1
     print(timeit(f))
 elif sys.argv[1] == '--dataclass_json':
