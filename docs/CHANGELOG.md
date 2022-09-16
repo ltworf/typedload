@@ -5,6 +5,8 @@
 * Fix type definitions of some private functions for compatibility with cython
 * Improved loading speed for dictionaries
 * Improved loading speed for iterators
+* Improved documentation
+* Improved performance testing code
 
 2.18
 ====

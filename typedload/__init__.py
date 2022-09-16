@@ -194,6 +194,9 @@ def load(value: Any, type_: Type[T], **kwargs) -> T:
 
     It is useful to avoid creating the Loader object,
     in case only the default parameters are used.
+
+    For repeated calls this function will be slower than re-using
+    a loader object.
     """
     from . import dataloader
     loader = dataloader.Loader(**kwargs)
