@@ -36,7 +36,7 @@ def parse_performance(cmd: list[str]) -> tuple[float, float]:
 
 def main():
     tests = [
-        #'load list of ints',
+        'load list of ints',
         'load list of floats and ints',
         'load list of lists',
         'load big dictionary',
