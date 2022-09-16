@@ -22,6 +22,7 @@ from subprocess import check_output, DEVNULL
 from tempfile import mkdtemp
 from shutil import copy, rmtree
 import sys
+import os
 from pathlib import Path
 
 
@@ -70,12 +71,22 @@ def main():
     # Sort by version
     tags.sort(key=lambda i: tuple(int(j) for j in i.split('.')))
 
+    # Keep only recent versions
+    tags = tags[-3:]
+
     # Add current branch and master
     current = check_output(['git', 'branch', '--show-current'], encoding='ascii').strip()
     if current != 'master':
         tags += ['master', current]
+    elif current == '':
+        pass
     else:
         tags.append('master')
+
+    if 'MOREVERSIONS' in os.environ:
+        #TODO add 2.19
+        toadd =  [i for i in ['1.20', '2.0', '2.13', '2.15', '2.17'] if i not in tags]
+        tags = toadd + tags
 
     plotcmd = []
     maxtime = 0
@@ -93,7 +104,7 @@ def main():
                 maxtime = maxtime if maxtime > maxduration else maxduration
                 f.write(f'{counter} "{library}" {library_time} {maxduration}\n')
                 counter += 1
-            for branch in tags[-6:]:
+            for branch in tags:
                 print(f'\tRunning test with {branch}', end='\t', flush=True)
                 check_output(['git', 'checkout', branch], stderr=DEVNULL)
                 typedload_time, maxduration = parse_performance(['python3', f'{tempdir}/{t}.py', '--typedload'])

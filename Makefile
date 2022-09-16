@@ -133,6 +133,7 @@ publish_html: html
 	git checkout -
 
 perftest.output/perf.p:
+	@echo export MOREVERSIONS=1 to compare more versions
 	perftest/performance.py
 
 .PHONY: gnuplot
