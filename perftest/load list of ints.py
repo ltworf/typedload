@@ -34,6 +34,11 @@ if sys.argv[1] == '--typedload':
     f = lambda: load(data, Data)
     assert f().data[1] == 1
     print(timeit(f))
+elif sys.argv[1] == '--jsons':
+    from jsons import load
+    f = lambda: load(data, Data)
+    assert f().data[1] == 1
+    print(timeit(f))
 elif sys.argv[1] == '--pydantic':
     import pydantic
     class DataPy(pydantic.BaseModel):

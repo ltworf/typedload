@@ -62,6 +62,11 @@ def main():
         extlibs.append('dataclass_json')
     except ImportError:
         pass
+    try:
+        import jsons
+        extlibs.append('jsons')
+    except ImportError:
+        pass
 
     outdir = Path('perftest.output')
     if not outdir.exists():
