@@ -18,7 +18,7 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
-from subprocess import check_output, DEVNULL
+from subprocess import check_output, DEVNULL, PIPE, Popen
 from tempfile import mkdtemp
 from shutil import copy, rmtree
 import sys
@@ -27,8 +27,11 @@ from pathlib import Path
 
 
 def parse_performance(cmd: list[str]) -> tuple[float, float]:
-    out = check_output(cmd).replace(b'(', b'').replace(b')', b'').replace(b' ', b'')
-    return tuple(float(i) for i in out.split(b',', 1))
+    try:
+        out = check_output(cmd, stderr=DEVNULL).replace(b'(', b'').replace(b')', b'').replace(b' ', b'')
+        return tuple(float(i) for i in out.split(b',', 1))
+    except Exception:
+        return -1, -1
 
 
 def main():
@@ -37,8 +40,6 @@ def main():
         'load list of floats and ints',
         'load list of lists',
         'load big dictionary',
-        #'load set of floats and ints',
-        #'load tuple of floats and ints',
         'load list of NamedTuple objects',
         #'load list of dataclass objects',
         #'load list of attrs objects',
@@ -54,6 +55,11 @@ def main():
     try:
         import apischema
         extlibs.append('apischema')
+    except ImportError:
+        pass
+    try:
+        from dataclasses_json import dataclass_json
+        extlibs.append('dataclass_json')
     except ImportError:
         pass
 
@@ -94,6 +100,8 @@ def main():
     for i, t in enumerate(tests):
         print(f'Now running: {t} {i+1}/{len(tests)}')
 
+        test_maxtime = 0
+
         with open(outdir / f'{t}.dat', 'wt') as f:
             counter = 0
 
@@ -101,6 +109,7 @@ def main():
                 print(f'\tRunning test with {library}', end='\t', flush=True)
                 library_time, maxduration = parse_performance(['python3', f'{tempdir}/{t}.py', f'--{library}'])
                 print(library_time, maxduration)
+                test_maxtime = test_maxtime if test_maxtime > maxduration else maxduration
                 maxtime = maxtime if maxtime > maxduration else maxduration
                 f.write(f'{counter} "{library}" {library_time} {maxduration}\n')
                 counter += 1
@@ -110,8 +119,21 @@ def main():
                 typedload_time, maxduration = parse_performance(['python3', f'{tempdir}/{t}.py', '--typedload'])
                 print(typedload_time, maxduration)
                 f.write(f'{counter} "{branch}" {typedload_time} {maxduration}\n')
+                test_maxtime = test_maxtime if test_maxtime > maxduration else maxduration
                 maxtime = maxtime if maxtime > maxduration else maxduration
                 counter += 1
+        with Popen(['gnuplot'], stdin=PIPE, encoding='ascii') as p:
+            f = p.stdin
+            print('set style fill solid 0.2 noborder', file=f)
+            print('set ylabel "seconds"', file=f)
+            print('set xlabel "package"', file=f)
+            print(f'set title "typedload performance test {sys.version}"', file=f)
+            print(f'set yrange [-0.2:{test_maxtime}]', file=f)
+            print('set term svg', file=f)
+            print(f'set output "{outdir}/{t}.svg"', file=f)
+            print(f'plot "{outdir}/{t}.dat" using 1:3:xtic(2) with boxes title "{t}"', file=f)
+            f.close()
+
 
         plotcmd.append(f'"{t}.dat" using 1:3:4 with filledcurves title "", "" using 1:3:xtic(2) with linespoint title "{t}"')
     rmtree(tempdir)

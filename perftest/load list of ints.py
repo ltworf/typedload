@@ -31,15 +31,34 @@ data = {'data': list(range(3000000))}
 
 if sys.argv[1] == '--typedload':
     from typedload import load
-    print(timeit(lambda: load(data, Data)))
+    f = lambda: load(data, Data)
+    assert f().data[1] == 1
+    print(timeit(f))
 elif sys.argv[1] == '--pydantic':
     import pydantic
     class DataPy(pydantic.BaseModel):
         data: List[int]
-    print(timeit(lambda: DataPy(**data)))
+    f = lambda: DataPy(**data)
+    assert f().data[1] == 1
+    print(timeit(f))
 elif sys.argv[1] == '--apischema':
     import apischema
     # apischema will return a pointer to the same list, which is a bug
     # that can lead to data corruption, but makes it very fast
     # so level the field by copying the list
-    print(timeit(lambda: list(apischema.deserialize(Data, data))))
+    def f():
+        r = apischema.deserialize(Data, data)
+        r.data.copy()
+        return r
+    assert f().data[1] == 1
+    print(timeit(f))
+elif sys.argv[1] == '--dataclass_json':
+    from dataclasses import dataclass
+    from dataclasses_json import dataclass_json
+    @dataclass_json
+    @dataclass
+    class Data:
+        data: List[int]
+    f = lambda: Data.from_dict(data)
+    assert f().data[1] == 1
+    print(timeit(f))

@@ -36,15 +36,35 @@ data = {'data': [{'value': i} for i in range(300000)]}
 
 if sys.argv[1] == '--typedload':
     from typedload import load
-    print(timeit(lambda: load(data, Data)))
+    f = lambda: load(data, Data)
+    assert f().data[1].value == 1
+    print(timeit(f))
 elif sys.argv[1] == '--pydantic':
     import pydantic
     class ChildPy(pydantic.BaseModel):
         value: int
     class DataPy(pydantic.BaseModel):
         data: List[ChildPy]
-    print(timeit(lambda: DataPy(**data)))
+    f = lambda: DataPy(**data)
+    assert f().data[1].value == 1
+    print(timeit(f))
 elif sys.argv[1] == '--apischema':
     import apischema
-    print(timeit(lambda: apischema.deserialize(Data, data)))
+    f = lambda: apischema.deserialize(Data, data)
+    assert f().data[1].value == 1
+    print(timeit(f))
+elif sys.argv[1] == '--dataclass_json':
+    from dataclasses import dataclass
+    from dataclasses_json import dataclass_json
 
+    @dataclass_json
+    @dataclass
+    class Child:
+        value: int
+    @dataclass_json
+    @dataclass
+    class Data:
+        data: List[Child]
+    f = lambda: Data.from_dict(data)
+    assert f().data[1].value == 1
+    print(timeit(f))

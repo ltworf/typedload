@@ -22,15 +22,16 @@ from dataclasses import dataclass
 
 from common import timeit
 
-
-class EventMessage(NamedTuple):
+@dataclass(frozen=True)
+class EventMessage:
     timestamp: float
     type: Literal['message']
     text: str
     sender: str
     receiver: str
 
-class EventFile(NamedTuple):
+@dataclass(frozen=True)
+class EventFile:
     timestamp: float
     type: Literal['file']
     filename: str
@@ -38,7 +39,8 @@ class EventFile(NamedTuple):
     receiver: str
     url: str
 
-class EventPing(NamedTuple):
+@dataclass(frozen=True)
+class EventPing:
     timestamp: float
     type: Literal['ping']
 
@@ -102,7 +104,9 @@ data = {'data': events}
 
 if sys.argv[1] == '--typedload':
     from typedload import load
-    print(timeit(lambda: load(data, EventList)))
+    f = lambda: load(data, EventList)
+    assert f().data[2].sender == '3141'
+    print(timeit(f))
 elif sys.argv[1] == '--pydantic':
     import pydantic
     class EventMessagePy(pydantic.BaseModel):
@@ -134,11 +138,24 @@ elif sys.argv[1] == '--pydantic':
     EventPy = Union[EventExitPy, EventEnterPy,EventMessagePy, EventPingPy, EventFilePy]
     class EventListPy(pydantic.BaseModel):
         data: Tuple[EventPy, ...]
-    print(timeit(lambda: EventListPy(**data)))
+    f = lambda: EventListPy(**data)
+    assert f().data[2].sender == '3141'
+    print(timeit(f))
 elif sys.argv[1] == '--apischema':
     import apischema
-    print(timeit(lambda: apischema.deserialize(EventList, data)))
-if sys.argv[1] == '--apischema-discriminator':
+    f = lambda: apischema.deserialize(EventList, data)
+    assert f().data[2].sender == '3141'
+    print(timeit(f))
+elif sys.argv[1] == '--dataclass_json':
+    from dataclasses_json import dataclass_json
+    @dataclass_json
+    @dataclass
+    class EventList:
+        data: Tuple[Event, ...]
+    f = lambda: EventList.from_dict(data)
+    assert f().data[2].sender == '3141'
+    print(timeit(f))
+elif sys.argv[1] == '--apischema-discriminator':
     import apischema
     try:
         from typing import Annotated
@@ -150,5 +167,7 @@ if sys.argv[1] == '--apischema-discriminator':
         )
         class DiscriminatedEventList(NamedTuple):
             data: Tuple[Annotated[Event, discriminator], ...]
-        print(timeit(lambda: apischema.deserialize(DiscriminatedEventList, data)))
+        f = lambda: apischema.deserialize(DiscriminatedEventList, data)
+        assert f().data[2].sender == '3141'
+        print(timeit(f))
 
