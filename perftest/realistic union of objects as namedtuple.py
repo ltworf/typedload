@@ -107,6 +107,11 @@ if sys.argv[1] == '--typedload':
     f = lambda: load(data, EventList)
     assert f().data[2].sender == '3141'
     print(timeit(f))
+elif sys.argv[1] == '--jsons':
+    from jsons import load
+    f = lambda: load(data, EventList)
+    assert f().data[2].sender == '3141'
+    print(timeit(f))
 elif sys.argv[1] == '--pydantic':
     import pydantic
     class EventMessagePy(pydantic.BaseModel):

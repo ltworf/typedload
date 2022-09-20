@@ -35,6 +35,11 @@ if sys.argv[1] == '--typedload':
     f = lambda: load(data, Data)
     assert reduce(lambda i,j: i and j, map(lambda i,j: type(i) == type(j), f().data[0:4], [0.0, 1, 2.0, 3]), True)
     print(timeit(f))
+if sys.argv[1] == '--jsons':
+    from jsons import load
+    f = lambda: load(data, Data)
+    assert reduce(lambda i,j: i and j, map(lambda i,j: type(i) == type(j), f().data[0:4], [0.0, 1, 2.0, 3]), True)
+    print(timeit(f))
 elif sys.argv[1] == '--pydantic':
     import pydantic
     class DataPy(pydantic.BaseModel):
