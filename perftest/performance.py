@@ -132,6 +132,8 @@ def main():
             print('set style fill solid 0.2 noborder', file=f)
             print('set ylabel "seconds"', file=f)
             print('set xlabel "package"', file=f)
+            print('set boxwidth 0.8', file=f)
+            print('set style fill solid 1.0', file=f)
             print(f'set title "typedload performance test {sys.version}"', file=f)
             print(f'set yrange [-0.2:{test_maxtime}]', file=f)
             print('set term svg', file=f)
