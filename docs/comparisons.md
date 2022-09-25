@@ -7,8 +7,8 @@ In general, the advantages of typedload over competing libraries are:
 
 * Works with existing codebase and uses standard types. No inheritance or decorators
 * Easy to extend, even with objects from 3rd party libraries
-* Stable API, breaking changes only happen on major releases
-* Supports Union
+* Stable API, breaking changes only happen on major releases (it has happened once since 2018)
+* Supports Union properly
 * Works on python 3.5
 * Mypy and similar work without plugins
 * Can use and convert camelCase and snake_case
@@ -33,7 +33,7 @@ Since there can be situations that are highly domain specific, typedload allows 
 
 ### Support of Union
 
-Seems to be very rare in this domain, but unions are very common in real world datasets.
+Other libraries tend to either be very slow or just give completely wrong results when Union are involved.
 
 # Functional approach
 
@@ -44,6 +44,8 @@ apischema
 ---------
 
 Found [here](https://github.com/wyfo/apischema)
+
+It's the only viable alternative to typedload that I've encountered.
 
 * It reuses the same objects in the output, so changing the data might result in subtle bugs if the input data is used again
 * Doesn't support as many python versions as typedload (currently no 3.11 and no 3.5)
@@ -67,8 +69,6 @@ jsons
 -----
 
 Found [here](https://github.com/ramonhagenaars/jsons)
-
-I was unable to run the full performance testsuite on this because it doesn't support some needed features, but my preliminary findings are that:
 
 * It is buggy:
     * This returns an int `jsons.load(1.1, Union[int, float])`
