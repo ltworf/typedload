@@ -26,6 +26,9 @@ import os
 from pathlib import Path
 
 
+PYVER = '.'.join(str(i) for i in sys.version_info[0:3])
+
+
 def parse_performance(cmd: list[str]) -> tuple[float, float]:
     try:
         out = check_output(cmd, stderr=DEVNULL).replace(b'(', b'').replace(b')', b'').replace(b' ', b'')
@@ -137,7 +140,7 @@ def main():
             print(f'set title "typedload performance test {sys.version}"', file=f)
             print(f'set yrange [-0.2:{test_maxtime}]', file=f)
             print('set term svg', file=f)
-            print(f'set output "{outdir}/{t}.svg"', file=f)
+            print(f'set output "{outdir}/{PYVER}_{t}.svg"', file=f)
             print(f'plot "{outdir}/{t}.dat" using 1:3:xtic(2) with boxes title "{t}"', file=f)
             f.close()
 
