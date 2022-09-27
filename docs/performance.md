@@ -3,7 +3,9 @@ Performance
 
 The tests are done on my PC.
 
-`typedload` manages to win some benchmarks despite the competitors are compiled to binary `.so` files. Probably compiling it would make it win hands down. Feel free to help!
+`typedload` manages to win quite a few benchmarks despite the competitors are compiled to binary `.so` files. Probably compiling it would make it win hands down. Feel free to help!
+
+Negative values mean that the library could not do the test or returned incorrect values.
 
 Using Python 3.10
 -----------------
