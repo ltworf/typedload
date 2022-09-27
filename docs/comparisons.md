@@ -6,6 +6,7 @@ In this section we compare typedload to other similar libraries.
 In general, the advantages of typedload over competing libraries are:
 
 * Works with existing codebase and uses standard types. No inheritance or decorators
+* Easy to use
 * Easy to extend, even with objects from 3rd party libraries
 * Stable API, breaking changes only happen on major releases (it has happened once since 2018)
 * Supports Union properly
@@ -49,7 +50,8 @@ It's the only viable alternative to typedload that I've encountered.
 
 * It reuses the same objects in the output, so changing the data might result in subtle bugs if the input data is used again
 * Doesn't support as many python versions as typedload (currently no 3.11 and no 3.5)
-* No native support for attrs
+* No native support for attrs (but can be manually added by the user)
+* Faster than typedload in most cases
 
 
 pydantic
@@ -63,7 +65,6 @@ Found [here](https://pydantic-docs.helpmanual.io/)
 * Does not work with mypy:
     * [Abuses python typing annotation to mean something different, breaking linters](https://pydantic-docs.helpmanual.io/usage/models/#required-optional-fields)
     * [Uses float=None without using Optional in its own documentation](https://pydantic-docs.helpmanual.io/usage/models/#recursive-models).
-* Union might do casting when casting is not needed.
 
 jsons
 -----
@@ -72,11 +73,14 @@ Found [here](https://github.com/ramonhagenaars/jsons)
 
 * It is buggy:
     * This returns an int `jsons.load(1.1, Union[int, float])`
+    * This returns a string `jsons.load(1, Union[str, int])`
     * This raises an exception `jsons.load(1.0, int | float)`
+* It is incredibly slow (40x slower in certain cases)
 * [Does not support `Literal`](https://github.com/ramonhagenaars/jsons/issues/170)
 * Can't load iterables as lists
 * Exceptions do not have information to find the incorrect data
-* It is incredibly slow:
+
+#### Quick test
 
 ```python
 # Needed because jsons can't load directly from range()
@@ -86,6 +90,7 @@ data = [i for i in range(3000000)]
 load(data, list[int])
 
 # This took 20s with jsons and 500ms with typedload
+# And it converted all the ints to float!
 load(data, list[Union[float,int]])
 ```
 
@@ -94,10 +99,24 @@ dataclasses-json
 
 Found [here](https://github.com/lidatong/dataclasses-json)
 
-* 20x slower than typedload
-* Does not check types
+* It is incredibly slow (20x slower in certain cases)
+* It's buggy (it will be happy to load whatever inside an int field)
 * Requires to decorate all the classes
 * It is not extensible
-* Doesn't support Union (and other types)
 * Has dependencies (marshmallow, marshmallow-enum, typing-inspect)
 * Very complicated way for doing lists
+
+#### Quick test
+
+```python
+# Just to show how unreliable this is
+@dataclass_json
+@dataclass
+class Data:
+    data: list[int]
+
+Data.from_dict({'data': ["4", None, ..., ('qwe',), 1.1]})
+# This returns:
+# Data(data=['4', None, Ellipsis, ('qwe',), 1.1])
+# despite data is supposed to be a list of int
+```
