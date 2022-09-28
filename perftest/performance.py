@@ -49,27 +49,7 @@ def main():
         'realistic union of objects as namedtuple',
     ]
 
-    extlibs = []
-    try:
-        import pydantic
-        extlibs.append('pydantic')
-    except ImportError:
-        pass
-    try:
-        import apischema
-        extlibs.append('apischema')
-    except ImportError:
-        pass
-    try:
-        from dataclasses_json import dataclass_json
-        extlibs.append('dataclass_json')
-    except ImportError:
-        pass
-    try:
-        import jsons
-        extlibs.append('jsons')
-    except ImportError:
-        pass
+    extlibs = ['pydantic', 'apischema', 'dataclass_json', 'jsons']
 
     outdir = Path('perftest.output')
     if not outdir.exists():
