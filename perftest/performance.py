@@ -26,7 +26,7 @@ import os
 from pathlib import Path
 
 
-PYVER = '.'.join(str(i) for i in sys.version_info[0:3])
+PYVER = '.'.join(str(i) for i in sys.version_info[0:2])
 
 
 def parse_performance(cmd: list[str]) -> tuple[float, float]:
@@ -119,7 +119,7 @@ def main():
                 print(library_time, maxduration)
                 test_maxtime = test_maxtime if test_maxtime > maxduration else maxduration
                 maxtime = maxtime if maxtime > maxduration else maxduration
-                f.write(f'{counter} "{library}" {library_time} {maxduration}\n')
+                f.write(f'{counter} "{library.replace("_", "-")}" {library_time} {maxduration}\n')
                 counter += 1
             for branch in tags:
                 print(f'\tRunning test with {branch}', end='\t', flush=True)
@@ -140,7 +140,7 @@ def main():
             print(f'set title "typedload performance test {sys.version}"', file=f)
             print(f'set yrange [-0.2:{test_maxtime}]', file=f)
             print('set term svg', file=f)
-            print(f'set output "{outdir}/{PYVER}_{t}.svg"', file=f)
+            print(f'set output "{outdir}/{PYVER}_{t.replace(" ", "_")}.svg"', file=f)
             print(f'plot "{outdir}/{t}.dat" using 1:3:xtic(2) with boxes title "{t}"', file=f)
             f.close()
 
