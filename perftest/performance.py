@@ -26,6 +26,9 @@ import os
 from pathlib import Path
 
 
+PYVER = '.'.join(str(i) for i in sys.version_info[0:2])
+
+
 def parse_performance(cmd: list[str]) -> tuple[float, float]:
     try:
         out = check_output(cmd, stderr=DEVNULL).replace(b'(', b'').replace(b')', b'').replace(b' ', b'')
@@ -46,27 +49,7 @@ def main():
         'realistic union of objects as namedtuple',
     ]
 
-    extlibs = []
-    try:
-        import pydantic
-        extlibs.append('pydantic')
-    except ImportError:
-        pass
-    try:
-        import apischema
-        extlibs.append('apischema')
-    except ImportError:
-        pass
-    try:
-        from dataclasses_json import dataclass_json
-        extlibs.append('dataclass_json')
-    except ImportError:
-        pass
-    try:
-        import jsons
-        extlibs.append('jsons')
-    except ImportError:
-        pass
+    extlibs = ['pydantic', 'apischema', 'dataclass_json', 'jsons']
 
     outdir = Path('perftest.output')
     if not outdir.exists():
@@ -87,10 +70,10 @@ def main():
 
     # Add current branch and master
     current = check_output(['git', 'branch', '--show-current'], encoding='ascii').strip()
-    if current != 'master':
-        tags += ['master', current]
-    elif current == '':
+    if current == '':
         pass
+    elif current != 'master':
+        tags += ['master', current]
     else:
         tags.append('master')
 
@@ -98,6 +81,7 @@ def main():
         #TODO add 2.19
         toadd =  [i for i in ['1.20', '2.0', '2.13', '2.15', '2.17'] if i not in tags]
         tags = toadd + tags
+    print('Testing tags:', ' '.join(tags))
 
     plotcmd = []
     maxtime = 0
@@ -116,7 +100,7 @@ def main():
                 print(library_time, maxduration)
                 test_maxtime = test_maxtime if test_maxtime > maxduration else maxduration
                 maxtime = maxtime if maxtime > maxduration else maxduration
-                f.write(f'{counter} "{library}" {library_time} {maxduration}\n')
+                f.write(f'{counter} "{library.replace("_", "-")}" {library_time} {maxduration}\n')
                 counter += 1
             for branch in tags:
                 print(f'\tRunning test with {branch}', end='\t', flush=True)
@@ -132,10 +116,13 @@ def main():
             print('set style fill solid 0.2 noborder', file=f)
             print('set ylabel "seconds"', file=f)
             print('set xlabel "package"', file=f)
+            print('set boxwidth 0.8', file=f)
+            print('set xlabel "x-units" font "Times-Roman,12"', file=f)
+            print('set style fill solid 1.0', file=f)
             print(f'set title "typedload performance test {sys.version}"', file=f)
-            print(f'set yrange [-0.2:{test_maxtime}]', file=f)
+            print(f'set yrange [-0.5:{test_maxtime}]', file=f)
             print('set term svg', file=f)
-            print(f'set output "{outdir}/{t}.svg"', file=f)
+            print(f'set output "{outdir}/{PYVER}_{t.replace(" ", "_")}.svg"', file=f)
             print(f'plot "{outdir}/{t}.dat" using 1:3:xtic(2) with boxes title "{t}"', file=f)
             f.close()
 
