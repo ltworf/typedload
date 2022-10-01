@@ -70,10 +70,10 @@ def main():
 
     # Add current branch and master
     current = check_output(['git', 'branch', '--show-current'], encoding='ascii').strip()
-    if current != 'master':
-        tags += ['master', current]
-    elif current == '':
+    if current == '':
         pass
+    elif current != 'master':
+        tags += ['master', current]
     else:
         tags.append('master')
 
@@ -81,6 +81,7 @@ def main():
         #TODO add 2.19
         toadd =  [i for i in ['1.20', '2.0', '2.13', '2.15', '2.17'] if i not in tags]
         tags = toadd + tags
+    print('Testing tags:', ' '.join(tags))
 
     plotcmd = []
     maxtime = 0
