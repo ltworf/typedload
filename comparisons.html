@@ -109,6 +109,11 @@
                   <li class="toctree-l1"><a class="" href="https://pypistats.org/packages/typedload">Pypi stats</a>
                   </li>
               </ul>
+              <p class="caption"><span class="caption-text">Other</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="version_numbers.html">Versioning scheme</a>
+                  </li>
+              </ul>
       </div>
     </div>
     </nav>
@@ -138,9 +143,10 @@
 <p>In general, the advantages of typedload over competing libraries are:</p>
 <ul>
 <li>Works with existing codebase and uses standard types. No inheritance or decorators</li>
+<li>Easy to use</li>
 <li>Easy to extend, even with objects from 3rd party libraries</li>
-<li>Stable API, breaking changes only happen on major releases</li>
-<li>Supports Union</li>
+<li>Stable API, breaking changes only happen on major releases (it has happened once since 2018)</li>
+<li>Supports Union properly</li>
 <li>Works on python 3.5</li>
 <li>Mypy and similar work without plugins</li>
 <li>Can use and convert camelCase and snake_case</li>
@@ -156,15 +162,17 @@
 <h3 id="it-is-easy-to-extend">It is easy to extend</h3>
 <p>Since there can be situations that are highly domain specific, typedload allows to extend its functionality to support more types or replace the existing code to handle special cases.</p>
 <h3 id="support-of-union">Support of Union</h3>
-<p>Seems to be very rare in this domain, but unions are very common in real world datasets.</p>
+<p>Other libraries tend to either be very slow or just give completely wrong results when Union are involved.</p>
 <h1 id="functional-approach">Functional approach</h1>
 <p>You can load a <code>List[YourType]</code>, while pydantic can only load a single object that then will contain the list.</p>
 <h2 id="apischema">apischema</h2>
 <p>Found <a href="https://github.com/wyfo/apischema">here</a></p>
+<p>It's the only viable alternative to typedload that I've encountered.</p>
 <ul>
 <li>It reuses the same objects in the output, so changing the data might result in subtle bugs if the input data is used again</li>
 <li>Doesn't support as many python versions as typedload (currently no 3.11 and no 3.5)</li>
-<li>No native support for attrs</li>
+<li>No native support for attrs (but can be manually added by the user)</li>
+<li>Faster than typedload in most cases</li>
 </ul>
 <h2 id="pydantic">pydantic</h2>
 <p>Found <a href="https://pydantic-docs.helpmanual.io/">here</a></p>
@@ -177,22 +185,22 @@
 <li><a href="https://pydantic-docs.helpmanual.io/usage/models/#recursive-models">Uses float=None without using Optional in its own documentation</a>.</li>
 </ul>
 </li>
-<li>Union might do casting when casting is not needed.</li>
 </ul>
 <h2 id="jsons">jsons</h2>
 <p>Found <a href="https://github.com/ramonhagenaars/jsons">here</a></p>
-<p>I was unable to run the full performance testsuite on this because it doesn't support some needed features, but my preliminary findings are that:</p>
 <ul>
 <li>It is buggy:<ul>
 <li>This returns an int <code>jsons.load(1.1, Union[int, float])</code></li>
+<li>This returns a string <code>jsons.load(1, Union[str, int])</code></li>
 <li>This raises an exception <code>jsons.load(1.0, int | float)</code></li>
 </ul>
 </li>
+<li>It is incredibly slow (40x slower in certain cases)</li>
 <li><a href="https://github.com/ramonhagenaars/jsons/issues/170">Does not support <code>Literal</code></a></li>
 <li>Can't load iterables as lists</li>
 <li>Exceptions do not have information to find the incorrect data</li>
-<li>It is incredibly slow:</li>
 </ul>
+<h4 id="quick-test">Quick test</h4>
 <pre><code class="language-python"># Needed because jsons can't load directly from range()
 data = [i for i in range(3000000)]
 
@@ -200,19 +208,31 @@ data = [i for i in range(3000000)]
 load(data, list[int])
 
 # This took 20s with jsons and 500ms with typedload
+# And it converted all the ints to float!
 load(data, list[Union[float,int]])
 </code></pre>
 <h2 id="dataclasses-json">dataclasses-json</h2>
 <p>Found <a href="https://github.com/lidatong/dataclasses-json">here</a></p>
 <ul>
-<li>20x slower than typedload</li>
-<li>Does not check types</li>
+<li>It is incredibly slow (20x slower in certain cases)</li>
+<li>It's buggy (it will be happy to load whatever inside an int field)</li>
 <li>Requires to decorate all the classes</li>
 <li>It is not extensible</li>
-<li>Doesn't support Union (and other types)</li>
 <li>Has dependencies (marshmallow, marshmallow-enum, typing-inspect)</li>
 <li>Very complicated way for doing lists</li>
 </ul>
+<h4 id="quick-test_1">Quick test</h4>
+<pre><code class="language-python"># Just to show how unreliable this is
+@dataclass_json
+@dataclass
+class Data:
+    data: list[int]
+
+Data.from_dict({'data': [&quot;4&quot;, None, ..., ('qwe',), 1.1]})
+# This returns:
+# Data(data=['4', None, Ellipsis, ('qwe',), 1.1])
+# despite data is supposed to be a list of int
+</code></pre>
               
             </div>
           </div><footer>
@@ -225,7 +245,7 @@ load(data, list[Union[float,int]])
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright (C) 2021 Salvo "LtWorf" Tomaselli</p>
+      <p>Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli</p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

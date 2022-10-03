@@ -103,6 +103,11 @@
                   <li class="toctree-l1"><a class="" href="https://pypistats.org/packages/typedload">Pypi stats</a>
                   </li>
               </ul>
+              <p class="caption"><span class="caption-text">Other</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="version_numbers.html">Versioning scheme</a>
+                  </li>
+              </ul>
       </div>
     </div>
     </nav>
@@ -126,7 +131,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="218">2.18</h1>
+                <h1 id="219">2.19</h1>
+<ul>
+<li>Fix minor bug about exception raising from string constructed types</li>
+<li>Simplify type checking functions, defining only the one for the current python version</li>
+<li>Fix type definitions of some private functions for compatibility with cython</li>
+<li>Improved loading speed for dictionaries</li>
+<li>Improved loading speed for iterators</li>
+<li>Improved documentation</li>
+<li>Improved performance testing code</li>
+</ul>
+<h1 id="218">2.18</h1>
 <ul>
 <li>Fix bug with loading generators that raise exceptions</li>
 </ul>
@@ -360,7 +375,7 @@
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright (C) 2021 Salvo "LtWorf" Tomaselli</p>
+      <p>Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli</p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

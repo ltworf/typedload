@@ -109,6 +109,11 @@
                   <li class="toctree-l1"><a class="" href="https://pypistats.org/packages/typedload">Pypi stats</a>
                   </li>
               </ul>
+              <p class="caption"><span class="caption-text">Other</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="version_numbers.html">Versioning scheme</a>
+                  </li>
+              </ul>
       </div>
     </div>
     </nav>
@@ -135,18 +140,31 @@
               
                 <h1 id="performance">Performance</h1>
 <p>The tests are done on my PC.</p>
-<p><code>typedload</code> manages to win some benchmarks despite the competitors are compiled to binary <code>.so</code> files. Probably compiling it would make it win hands down. Feel free to help!</p>
+<p><code>typedload</code> manages to win quite a few benchmarks despite the competitors are compiled to binary <code>.so</code> files. Probably compiling it would make it win hands down. Feel free to help!</p>
+<p>Negative values mean that the library could not do the test or returned incorrect values.</p>
+<p>Keep in mind that when <code>jsons</code> and <code>dataclasses-json</code> are outperforming the rest, it usually means they are just passing the data without doing any check for correctness of the types.</p>
 <h2 id="using-python-310">Using Python 3.10</h2>
-<p><img alt="performance chart" src="3.10.svg" title="Title" /></p>
-<p>It is possible to see that the latest version is always faster than <code>pydantic</code>, and can be slower or faster than <code>apischema</code> depending on the test.</p>
+<p>It is possible to see that it is always faster than <code>pydantic</code>, and is faster than <code>apischema</code> in just one test. <code>jsons</code> and <code>dataclasses-json</code> are usually very slow, unless they just return the same data without checking anything.</p>
+<p><img alt="performance chart" src="3.10_realistic_union_of_objects_as_namedtuple.svg" title="Title" />
+<img alt="performance chart" src="3.10_load_list_of_floats_and_ints.svg" title="Title" />
+<img alt="performance chart" src="3.10_load_list_of_lists.svg" title="Title" />
+<img alt="performance chart" src="3.10_load_list_of_NamedTuple_objects.svg" title="Title" />
+<img alt="performance chart" src="3.10_load_big_dictionary.svg" title="Title" />
+<img alt="performance chart" src="3.10_load_list_of_ints.svg" title="Title" /></p>
 <h2 id="using-python-311">Using Python 3.11</h2>
-<p><img alt="performance chart" src="3.11.svg" title="Title" /></p>
-<p>It is possible to see that the latest version is always faster than <code>pydantic</code>. There is no <code>apischema</code> because it doesn't run with Python 3.11.</p>
+<p>It is possible to see that it is always faster than <code>pydantic</code>. <code>apischema</code> doesn't work with Python 3.11 so all results are -1. <code>jsons</code> and <code>dataclasses-json</code> are usually very slow, unless they just return the same data without checking anything.</p>
+<p>With Python 3.11 some tests are faster but some other are slower. So it seems that in this use case the performance improvements are a bit hit or miss.</p>
+<p><img alt="performance chart" src="3.11_realistic_union_of_objects_as_namedtuple.svg" title="Title" />
+<img alt="performance chart" src="3.11_load_list_of_floats_and_ints.svg" title="Title" />
+<img alt="performance chart" src="3.11_load_list_of_lists.svg" title="Title" />
+<img alt="performance chart" src="3.11_load_list_of_NamedTuple_objects.svg" title="Title" />
+<img alt="performance chart" src="3.11_load_big_dictionary.svg" title="Title" />
+<img alt="performance chart" src="3.11_load_list_of_ints.svg" title="Title" /></p>
 <h2 id="run-the-tests">Run the tests</h2>
 <p>Generate the performance chart locally.</p>
 <pre><code class="language-bash">python3 -m venv perfvenv
 . perfvenv/bin/activate
-pip install apischema pydantic attrs
+pip install apischema pydantic attrs dataclasses-json jsons
 export PYTHONPATH=$(pwd)
 make gnuplot
 </code></pre>
@@ -162,7 +180,7 @@ make gnuplot
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright (C) 2021 Salvo "LtWorf" Tomaselli</p>
+      <p>Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli</p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
