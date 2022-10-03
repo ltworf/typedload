@@ -7,6 +7,8 @@ The tests are done on my PC.
 
 Negative values mean that the library could not do the test or returned incorrect values.
 
+Keep in mind that when `jsons` and `dataclasses-json` are outperforming the rest, it usually means they are just passing the data without doing any check for correctness of the types.
+
 Using Python 3.10
 -----------------
 
