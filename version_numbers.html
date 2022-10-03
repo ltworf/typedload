@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Versioning scheme - typedload</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="cdn/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Versioning scheme";
+        var mkdocs_page_input_path = "version_numbers.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="cdn/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="index.html" class="icon icon-home"> typedload
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="index.html">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Using typedload</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="supported_types.html">Supported types</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="deferred_evaluation.html">Deferred evaluation of types</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Docstrings</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="typedload_docgen.html">typedload</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="typedload.dataloader_docgen.html">typedload.dataloader</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="typedload.datadumper_docgen.html">typedload.datadumper</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="typedload.typechecks_docgen.html">typedload.typechecks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="typedload.exceptions_docgen.html">typedload.exceptions</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Comparisons</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="comparisons.html">Why typedload</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="performance.html">Performance</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributors</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="CODE_OF_CONDUCT.html">Code of conduct</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Links</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://github.com/ltworf/typedload/">Git</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/ltworf/typedload/releases">Downloads</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/ltworf/typedload/issues">Bug reports</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://packages.debian.org/search?keywords=python3-typedload">Debian package</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://pypi.org/project/typedload/">Pypi package</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://pypistats.org/packages/typedload">Pypi stats</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Other</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="version_numbers.html">Versioning scheme</a>
+    <ul class="current">
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">typedload</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html" class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Other &raquo;</li><li>Versioning scheme</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="version-numbers">Version numbers</h1>
+<p>Breaking API changes happen when the first number increases. So far they have been minimal.</p>
+<p>The second number being bumped means bugs were fixed or new features introduced, but the API remained compatible.</p>
+<p>Dropping support for EOL python versions is not considered breaking API.</p>
+<p>Changes that trigger failures in buggy code are acceptable <a href="https://lwn.net/Articles/416821/">See here</a>. I am not Linus Torvalds and I don't have to follow his rules.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="CODE_OF_CONDUCT.html" class="btn btn-neutral float-left" title="Code of conduct"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="CODE_OF_CONDUCT.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme_extra.js" defer></script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
+<!-- Trackers stripped from mkdocs theme by me -_-' -->
