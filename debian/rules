@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@ --with python3,mkdocs --buildsystem=pybuild
+	dh $@ --with python3 --buildsystem=pybuild
 
 override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
@@ -9,12 +9,6 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 		$$pyversion -m tests; \
 	done
 endif
-
-execute_before_dh_installdocs:
-	make html
-
-override_dh_installdocs:
-	dh_installdocs --exclude=CHANGELOG.md
 
 override_dh_link:
 	jdupes -rl debian/python3-typedload-doc/usr/share/doc/

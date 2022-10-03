@@ -9,7 +9,3 @@ Section: Programming/Python
 
 Format: text
 Files: /usr/share/doc/python3-typedload/docs/*
-
-Format: HTML
-Index: /usr/share/doc/python3-typedload/html/index.html
-Files: /usr/share/doc/python3-typedload/html/
