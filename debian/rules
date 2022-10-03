@@ -15,3 +15,7 @@ execute_before_dh_installdocs:
 
 override_dh_installdocs:
 	dh_installdocs --exclude=CHANGELOG.md
+
+override_dh_link:
+	jdupes -rl debian/python3-typedload-doc/usr/share/doc/
+	dh_link

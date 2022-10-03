@@ -9,6 +9,7 @@ Build-Depends:
  python3-distutils,
  python3-attr,
  debhelper-compat (= 13),
+ jdupes,
  mkdocs
 Standards-Version: 4.6.1.0
 Homepage: https://ltworf.github.io/typedload/

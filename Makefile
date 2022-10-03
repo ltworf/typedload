@@ -86,8 +86,7 @@ docs/typedload.typechecks_docgen.md: typedload/typechecks.py
 	./docgen $@
 
 html: \
-		docs/3.10.svg \
-		docs/3.11.svg \
+		docs/*.svg \
 		docs/CHANGELOG.md \
 		docs/CODE_OF_CONDUCT.md \
 		docs/comparisons.md \
