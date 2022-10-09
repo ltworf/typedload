@@ -1,3 +1,6 @@
+2.20
+====
+
 2.19
 ====
 * Fix minor bug about exception raising from string constructed types
