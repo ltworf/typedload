@@ -6,7 +6,7 @@ Build-Depends:
  debhelper (>= 13),
  python3-all:any,
  dh-python,
- python3-distutils,
+ python3-setuptools,
  python3-attr,
  debhelper-compat (= 13),
  jdupes
