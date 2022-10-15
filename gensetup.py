@@ -67,7 +67,7 @@ AUTHOR = 'Salvo \'LtWorf\' Tomaselli'
 print(
 f'''#!/usr/bin/python3
 # This file is auto generated. Do not modify
-from distutils.core import setup
+from setuptools import setup
 setup(
     name='typedload',
     version={load_version()!r},

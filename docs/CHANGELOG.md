@@ -1,5 +1,7 @@
 2.20
 ====
+* Switch to setuptools
+  Since python decided to drop the only installation method available within the stdlib
 
 2.19
 ====
