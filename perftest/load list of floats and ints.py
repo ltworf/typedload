@@ -32,7 +32,7 @@ data = {'data': [i if i % 2 else float(i) for i in range(3000000)]}
 
 if sys.argv[1] == '--typedload':
     from typedload import load
-    f = lambda: load(data, Data)
+    f = lambda: load(data, Data, basiccast=False)
     assert reduce(lambda i,j: i and j, map(lambda i,j: type(i) == type(j), f().data[0:4], [0.0, 1, 2.0, 3]), True)
     print(timeit(f))
 if sys.argv[1] == '--jsons':
