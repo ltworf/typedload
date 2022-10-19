@@ -612,6 +612,14 @@ def _unionload(l: Loader, value: Any, type_) -> Any:
 
     value_type = type(value)
 
+    # Create specialised handlers for simpler unions
+    if not l.basiccast and set(args).issubset(l.basictypes):
+        def _unionbasicload(l: Loader, value: Any, type_):
+            if type(value) in args:
+                return value
+            raise TypedloadValueError('Got %s of type %s, expected %s' % (repr(value), tname(type(value)), tname(type_)), value=value, type_=type_)
+        l._indexcache[type_] = _unionbasicload
+
     # Do not convert basic types, if possible
     if value_type in l.basictypes and value_type in args:
         return value
