@@ -90,7 +90,7 @@ class Dumper:
         * Tuple[TypeA, TypeB, TypeC]
         * Set[SomeType]
     """
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         self.basictypes = {int, bool, float, str, NONETYPE}
 
         self.hidedefault = True
