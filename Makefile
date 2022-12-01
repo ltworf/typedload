@@ -12,8 +12,11 @@ mypy:
 	mypy --python-version=$(MINIMUM_PYTHON_VERSION) --config-file mypy.conf typedload
 	mypy --python-version=3.7 example.py
 
+pyproject.toml: docs/CHANGELOG.md
+	./gensetup.py --$@
+
 setup.py: docs/CHANGELOG.md README.md
-	./gensetup.py --setup.py
+	./gensetup.py --$@
 	chmod u+x setup.py
 
 pypi: setup.py typedload
@@ -33,12 +36,13 @@ clean:
 	$(RM) typedload_`head -1 CHANGELOG`.orig.tar.gz.asc
 	$(RM) -r deb-pkg
 	$(RM) setup.py
+	$(RM) pyproject.toml
 	$(RM) -r html
 	$(RM) -r perftest.output
 	$(RM) docs/*_docgen.md
 
 .PHONY: dist
-dist: clean setup.py
+dist: clean setup.py pyproject.toml
 	cd ..; tar -czvvf typedload.tar.gz \
 		typedload/setup.py \
 		typedload/Makefile \
@@ -52,6 +56,7 @@ dist: clean setup.py
 		typedload/README.md \
 		typedload/example.py \
 		typedload/mypy.conf \
+		typedload/pyproject.toml \
 		typedload/typedload
 	mv ../typedload.tar.gz typedload_`./setup.py --version`.orig.tar.gz
 	gpg --detach-sign -a *.orig.tar.gz

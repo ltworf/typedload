@@ -101,3 +101,12 @@ setup(
     package_data={{"typedload": ["py.typed", "__init__.pyi"]}},
 )''', file=f
     )
+
+if argv[1] == '--pyproject.toml':
+    with open('pyproject.toml', 'wt') as f:
+        print(
+'''
+[build-system]
+requires = ["setuptools", "wheel"]
+''', file=f
+        )
