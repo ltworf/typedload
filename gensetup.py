@@ -122,8 +122,8 @@ description = "{DESCRIPTION}"
 readme = "README.md"
 requires-python = ">=3.5"
 classifiers = {CLASSIFIERS!r}
-keywords = "{KEYWORDS}"
-license = "GPL-3.0-only"
+keywords = {KEYWORDS.split(' ')!r}
+license = {{file = "LICENSE"}}
 
 [project.urls]
 "Homepage" = "{URL}"
