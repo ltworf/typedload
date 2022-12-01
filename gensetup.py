@@ -101,7 +101,7 @@ setup(
     url='{URL}',
     author={AUTHOR!r},
     author_email='{AUTHOR_EMAIL}',
-    license='GPLv3',
+    license='GPL-3.0-only',
     classifiers={CLASSIFIERS!r},
     keywords='{KEYWORDS}',
     packages=['typedload'],
@@ -124,6 +124,7 @@ readme = "README.md"
 requires-python = ">=3.5"
 classifiers = {CLASSIFIERS!r}
 keywords = "{KEYWORDS}"
+license = "GPL-3.0-only"
 
 [project.urls]
 "Homepage" = "{URL}"
