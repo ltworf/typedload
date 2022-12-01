@@ -19,7 +19,7 @@ setup.py: docs/CHANGELOG.md README.md
 	./gensetup.py --$@
 	chmod u+x setup.py
 
-pypi: setup.py typedload
+pypi: pyproject.toml setup.py typedload
 	mkdir -p dist pypi
 	./setup.py sdist
 	mv dist/typedload-`head -1 CHANGELOG`.tar.gz pypi
