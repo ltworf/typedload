@@ -30,6 +30,7 @@ pypi: pyproject.toml setup.py typedload
 clean:
 	$(RM) -r pypi
 	$(RM) -r .mypy_cache
+	$(RM) -r typedload.egg-info/
 	$(RM) MANIFEST
 	$(RM) -r `find . -name __pycache__`
 	$(RM) typedload_`head -1 CHANGELOG`.orig.tar.gz
