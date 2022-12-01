@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # typedload
-# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
+
+from sys import argv, exit
 
 def load_long_description():
 
@@ -62,35 +64,72 @@ def load_version():
         return f.readline().strip()
 
 AUTHOR = 'Salvo \'LtWorf\' Tomaselli'
+AUTHOR_EMAIL = 'tiposchi@tiscali.it'
+URL = 'https://ltworf.github.io/typedload/'
+BUGTRACKER = 'https://github.com/ltworf/typedload/issues'
+DESCRIPTION = 'Load and dump data from json-like format into typed data structures'
+KEYWORDS='typing types mypy json schema json-schema python3 namedtuple enums dataclass pydantic'
+CLASSIFIERS = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+    'Typing :: Typed',
+    'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+]
 
+if len(argv) != 2:
+    exit('Wrong command line')
 
-print(
+if argv[1] == '--setup.py':
+    with open('setup.py', 'wt') as f:
+        print(
 f'''#!/usr/bin/python3
 # This file is auto generated. Do not modify
 from setuptools import setup
 setup(
     name='typedload',
     version={load_version()!r},
-    description='Load and dump data from json-like format into typed data structures',
+    description='{DESCRIPTION}',
     long_description={''.join(load_long_description())!r},
-    url='https://ltworf.github.io/typedload/',
+    url='{URL}',
     author={AUTHOR!r},
-    author_email='tiposchi@tiscali.it',
-    license='GPLv3',
-    classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Intended Audience :: Developers',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
-        'Programming Language :: Python :: 3.12',
-    ],
-    keywords='typing types mypy json',
+    author_email='{AUTHOR_EMAIL}',
+    license='GPL-3.0-only',
+    classifiers={CLASSIFIERS!r},
+    keywords='{KEYWORDS}',
     packages=['typedload'],
     package_data={{"typedload": ["py.typed", "__init__.pyi"]}},
-)'''
-)
+)''', file=f
+    )
+
+elif argv[1] == '--pyproject.toml':
+    with open('pyproject.toml', 'wt') as f:
+        print(
+f'''[project]
+name = "typedload"
+version = "{load_version()}"
+authors = [
+  {{ name="{AUTHOR}", email="{AUTHOR_EMAIL}" }},
+]
+description = "{DESCRIPTION}"
+readme = "README.md"
+requires-python = ">=3.5"
+classifiers = {CLASSIFIERS!r}
+keywords = {KEYWORDS.split(' ')!r}
+license = {{file = "LICENSE"}}
+
+[project.urls]
+"Homepage" = "{URL}"
+"Bug Tracker" = "{BUGTRACKER}"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+''', file=f
+        )

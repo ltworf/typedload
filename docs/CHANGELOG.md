@@ -2,6 +2,7 @@
 ====
 * Switch to setuptools
   Since python decided to drop the only installation method available within the stdlib
+* Add pyproject.toml
 
 2.19
 ====
