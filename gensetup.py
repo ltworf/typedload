@@ -68,7 +68,7 @@ AUTHOR_EMAIL = 'tiposchi@tiscali.it'
 URL = 'https://ltworf.github.io/typedload/'
 BUGTRACKER = 'https://github.com/ltworf/typedload/issues'
 DESCRIPTION = 'Load and dump data from json-like format into typed data structures'
-KEYWORDS='typing types mypy json'
+KEYWORDS='typing types mypy json schema json-schema python3 namedtuple enums dataclass pydantic'
 CLASSIFIERS = [
     'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
