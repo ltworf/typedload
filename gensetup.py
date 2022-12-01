@@ -112,10 +112,9 @@ setup(
 elif argv[1] == '--pyproject.toml':
     with open('pyproject.toml', 'wt') as f:
         print(
-f'''
-[project]
+f'''[project]
 name = "typedload"
-version = "{load_version()!r}"
+version = "{load_version()}"
 authors = [
   {{ name="{AUTHOR}", email="{AUTHOR_EMAIL}" }},
 ]
