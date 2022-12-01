@@ -13,7 +13,7 @@ mypy:
 	mypy --python-version=3.7 example.py
 
 setup.py: docs/CHANGELOG.md README.md
-	./gensetup.py > setup.py
+	./gensetup.py --setup.py
 	chmod u+x setup.py
 
 pypi: setup.py typedload

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # typedload
-# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
+
+from sys import argv, exit
 
 def load_long_description():
 
@@ -64,7 +66,12 @@ def load_version():
 AUTHOR = 'Salvo \'LtWorf\' Tomaselli'
 
 
-print(
+if len(argv) != 2:
+    exit('Wrong command line')
+
+if argv[1] == '--setup.py':
+    with open('setup.py', 'wt') as f:
+        print(
 f'''#!/usr/bin/python3
 # This file is auto generated. Do not modify
 from setuptools import setup
@@ -92,5 +99,5 @@ setup(
     keywords='typing types mypy json',
     packages=['typedload'],
     package_data={{"typedload": ["py.typed", "__init__.pyi"]}},
-)'''
-)
+)''', file=f
+    )
