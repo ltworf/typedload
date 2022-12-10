@@ -321,7 +321,7 @@ def _literalload(l: Loader, value: Any, type_) -> Any:
     Checks if the value is within the allowed literals and
     returns it.
     """
-    if value in literalvalues(type_):
+    if value in type_.__args__:
         return value
     raise TypedloadValueError('Not one of the allowed values in %s' % tname(type_), value=value, type_=type_)
 
