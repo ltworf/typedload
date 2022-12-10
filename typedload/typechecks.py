@@ -64,12 +64,7 @@ __all__ = [
 ]
 
 
-try:
-    # Since 3.7
-    from typing import ForwardRef  # type: ignore
-except ImportError:
-    from typing import _ForwardRef as ForwardRef  # type: ignore
-
+from typing import ForwardRef
 
 Literal = None  # type: Any
 _TypedDictMeta = None  # type: Any
