@@ -15,4 +15,4 @@ jobs:
     - name: Install dependencies
       run: pip install mypy types-dataclasses attrs
     - name: mypy
-      run: make MINIMUM_PYTHON_VERSION=3.5 mypy
+      run: make MINIMUM_PYTHON_VERSION=3.7 mypy
