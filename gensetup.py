@@ -74,8 +74,6 @@ CLASSIFIERS = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
     'Typing :: Typed',
-    'Programming Language :: Python :: 3.5',
-    'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
@@ -120,7 +118,7 @@ authors = [
 ]
 description = "{DESCRIPTION}"
 readme = "README.md"
-requires-python = ">=3.5"
+requires-python = ">=3.7"
 classifiers = {CLASSIFIERS!r}
 keywords = {KEYWORDS.split(' ')!r}
 license = {{file = "LICENSE"}}
