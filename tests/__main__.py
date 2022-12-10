@@ -21,15 +21,14 @@ import unittest
 import sys
 
 print('Running tests using %s' % sys.version)
-if sys.version_info.major != 3 or sys.version_info.minor < 5:
+if sys.version_info.major != 3 or sys.version_info.minor < 7:
     raise Exception('Only version 3.5 and above supported')
 
-if sys.version_info.minor > 5:
+if sys.version_info.minor >= 7:
     from .test_dataloader import *
     from .test_datadumper import *
     from .test_dumpload import *
     from .test_exceptions import *
-if sys.version_info.minor >= 7:
     from .test_dataclass import *
     from .test_deferred import *
 if sys.version_info.minor >= 8:
