@@ -10,7 +10,7 @@ In general, the advantages of typedload over competing libraries are:
 * Easy to extend, even with objects from 3rd party libraries
 * Stable API, breaking changes only happen on major releases (it has happened once since 2018)
 * Supports Union properly
-* Works on python 3.5
+* Works on python 3.5 (typedload <= 2.20)
 * Mypy and similar work without plugins
 * Can use and convert camelCase and snake_case
 * Functional approach
@@ -26,7 +26,7 @@ It also means that mypy will just work out of the box, rather than requiring plu
 
 Instead, typedload works fine with the type annotations from the `typing` module and will work without requiring any changes to the datatypes.
 
-It also works on python 3.5, so projects running on LTS distributions can use it.
+It also works on python 3.5 (until version 2.20), so projects running on LTS distributions can use it.
 
 ### It is easy to extend
 
