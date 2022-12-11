@@ -20,45 +20,6 @@
 
 from sys import argv, exit
 
-def load_long_description():
-
-    with open('README.md', 'rt') as f:
-        long_description = [i for i in  f.readlines() if not i.startswith('![')]
-
-    # Add double ===
-    to_add = []
-    for i, line in enumerate(long_description):
-        line = line.rstrip()
-        if set(line) != {'='}:
-            continue # Line is not made of ======
-        to_add.append((i, len(line)))
-
-    to_add.reverse()
-    for line, size in to_add:
-        long_description.insert(line - 1, '=' * size + '\n')
-
-    # Convert ``` to indentation
-    indent_block = False
-    for i in range(len(long_description)):
-        line = long_description[i]
-        if line.startswith('```'):
-            indent_block = not indent_block
-            long_description[i] = '\n>>>\n' if indent_block else '\n'
-            continue
-
-        if line.rstrip() == '' and indent_block:
-            long_description[i] = '>>>\n'
-
-    #for i, line in enumerate(long_description):
-        #if not line.endswith('\n'):
-            #print(i, 'AAAAAAAAAAAAAAAAAAAAA ERRORE!!!!')
-        #print (i, line.rstrip())
-
-    #from docutils import core
-    #core.publish_string(''.join(long_description ))
-    return long_description
-
-
 def load_version():
     with open('CHANGELOG', 'rt') as f:
         return f.readline().strip()
@@ -95,7 +56,7 @@ setup(
     name='typedload',
     version={load_version()!r},
     description='{DESCRIPTION}',
-    long_description={''.join(load_long_description())!r},
+    readme='README.md',
     url='{URL}',
     author={AUTHOR!r},
     author_email='{AUTHOR_EMAIL}',
