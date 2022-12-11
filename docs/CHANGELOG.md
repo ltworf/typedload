@@ -1,3 +1,7 @@
+2.21
+====
+* Drop support to Python 3.5 and 3.6
+
 2.20
 ====
 * Switch to setuptools
