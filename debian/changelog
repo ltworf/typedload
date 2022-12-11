@@ -1,9 +1,9 @@
-typedload (2.20-1) UNRELEASED; urgency=medium
+typedload (2.20-1) unstable; urgency=low
 
   * New upstream release
   * Switch distutils for setuptools
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Mon, 03 Oct 2022 21:32:08 +0200
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Sun, 11 Dec 2022 08:46:15 +0100
 
 typedload (2.19-1) unstable; urgency=low
 
