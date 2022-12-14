@@ -120,3 +120,16 @@ Data.from_dict({'data': ["4", None, ..., ('qwe',), 1.1]})
 # Data(data=['4', None, Ellipsis, ('qwe',), 1.1])
 # despite data is supposed to be a list of int
 ```
+
+msgspec
+-------
+
+Found [here](https://jcristharif.com/msgspec/)
+
+
+* Decodes json directly, which is faster, but it means it can't be used with bson, yaml, and whatever else
+* Very rudimental support for unions, so it can't run the performance tests
+
+```python
+TypeError: Type unions may not contain more than one dataclass type - type `A | B` is not supported
+```
