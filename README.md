@@ -80,7 +80,7 @@ The following things are supported:
  * Tuple[TypeA, TypeB, TypeC] and Tuple[SomeType, ...]
  * Set[SomeType]
  * Union[TypeA, TypeB]
- * dataclass (requires Python 3.7)
+ * dataclass
  * attr.s
  * ForwardRef (Refer to the type in its own definition)
  * Literal (requires Python 3.8)
