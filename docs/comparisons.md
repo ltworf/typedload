@@ -49,7 +49,6 @@ Found [here](https://github.com/wyfo/apischema)
 It's the only viable alternative to typedload that I've encountered.
 
 * It reuses the same objects in the output, so changing the data might result in subtle bugs if the input data is used again
-* Doesn't support as many python versions as typedload (currently no 3.11 and no 3.5)
 * No native support for attrs (but can be manually added by the user)
 * Faster than typedload in most cases
 
@@ -119,4 +118,17 @@ Data.from_dict({'data': ["4", None, ..., ('qwe',), 1.1]})
 # This returns:
 # Data(data=['4', None, Ellipsis, ('qwe',), 1.1])
 # despite data is supposed to be a list of int
+```
+
+msgspec
+-------
+
+Found [here](https://jcristharif.com/msgspec/)
+
+
+* Decodes json directly, which is faster, but it means it can't be used with bson, yaml, and whatever else
+* Very rudimental support for unions, so it can't run the performance tests
+
+```python
+TypeError: Type unions may not contain more than one dataclass type - type `A | B` is not supported
 ```

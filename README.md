@@ -18,6 +18,8 @@ It is released with a GPLv3 license but [it is possible to ask for LGPLv3](mailt
 
 ![GPLv3 logo](docs/gpl3logo.png)
 
+(Donate)[https://liberapay.com/ltworf/donate]
+
 Example
 =======
 
@@ -80,7 +82,7 @@ The following things are supported:
  * Tuple[TypeA, TypeB, TypeC] and Tuple[SomeType, ...]
  * Set[SomeType]
  * Union[TypeA, TypeB]
- * dataclass (requires Python 3.7)
+ * dataclass
  * attr.s
  * ForwardRef (Refer to the type in its own definition)
  * Literal (requires Python 3.8)
@@ -90,6 +92,11 @@ The following things are supported:
  * IPv4Address, IPv6Address
  * typing.Any
  * typing.NewType
+
+Unions
+------
+
+typedload works fine with untagged unions. However using Literal fields to tag them makes it much faster.
 
 Using Mypy
 ==========
