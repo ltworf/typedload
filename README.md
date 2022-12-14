@@ -93,6 +93,11 @@ The following things are supported:
  * typing.Any
  * typing.NewType
 
+Unions
+------
+
+typedload works fine with untagged unions. However using Literal fields to tag them makes it much faster.
+
 Using Mypy
 ==========
 
