@@ -24,22 +24,20 @@ print('Running tests using %s' % sys.version)
 if sys.version_info.major != 3 or sys.version_info.minor < 7:
     raise Exception('Only version 3.5 and above supported')
 
-if sys.version_info.minor >= 7:
-    from .test_dataloader import *
-    from .test_datadumper import *
-    from .test_dumpload import *
-    from .test_exceptions import *
-    from .test_dataclass import *
-    from .test_deferred import *
+from .test_dataloader import *
+from .test_datadumper import *
+from .test_dumpload import *
+from .test_exceptions import *
+from .test_dataclass import *
+from .test_deferred import *
+from .test_legacytuples_dataloader import *
+from .test_typechecks import *
+
 if sys.version_info.minor >= 8:
     from .test_literal import *
     from .test_typeddict import *
 if sys.version_info.minor >= 10:
     from .test_orunion import *
-
-from .test_legacytuples_dataloader import *
-from .test_typechecks import *
-
 
 # Run tests for the attr plugin only if it is loaded
 try:
