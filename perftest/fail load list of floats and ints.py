@@ -59,6 +59,9 @@ elif sys.argv[1] == '--dataclass_json':
 data = {'data': [1, 0.3, 'qwe']}
 assert raised(f)
 
+data = {'data': [1, 0.3]}
+assert not raised(f)
+
 # Actual performance test
-data = {'data': [i if i % 2 else float(i) for i in range(3000000)] + ['asd']}
+data = {'data': [i if i % 2 else float(i) for i in range(9000000)] + ['asd']}
 print(timeit(lambda: raised(f)))

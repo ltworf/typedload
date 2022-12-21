@@ -164,6 +164,9 @@ elif sys.argv[1] == '--apischema-discriminator':
 data = {'data': events + [{}]}
 assert raised(f)
 
+data = {'data': events}
+assert not raised(f)
+
 data = {'data': events * 50000 + [{}]}
 print(timeit(lambda: raised(f)))
 

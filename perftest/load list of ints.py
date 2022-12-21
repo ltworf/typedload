@@ -64,5 +64,5 @@ data = {'data': ['asd']}
 assert raised(f)
 
 # Actual performance test
-data = {'data': list(range(3000000))}
+data = {'data': list(range(9000000))}
 print(timeit(f))

@@ -64,5 +64,5 @@ data = {'data': ['qwe']}
 assert raised(f)
 
 # Actual performance test
-data = {'data': [i if i % 2 else float(i) for i in range(3000000)]}
+data = {'data': [i if i % 2 else float(i) for i in range(9000000)]}
 print(timeit(f))
