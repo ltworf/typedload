@@ -19,26 +19,19 @@
 from typing import NamedTuple
 import sys
 
-from common import timeit
+from common import timeit, raised
 
 
 class Data(NamedTuple):
     data: dict[str, dict[int, str]]
 
 
-data = {'data': { str(k): {i: str(i) for i in range(300)} for k in range(3000)}}
-
-
 if sys.argv[1] == '--typedload':
     from typedload import load
     f = lambda: load(data, Data)
-    assert f().data['0'][0] == '0'
-    print(timeit(f))
 elif sys.argv[1] == '--jsons':
     from jsons import load
     f = lambda: load(data, Data)
-    assert f().data['0'][0] == '0'
-    print(timeit(f))
 elif sys.argv[1] == '--pydantic':
     import pydantic
     class DataPy(pydantic.BaseModel):
@@ -56,8 +49,6 @@ elif sys.argv[1] == '--apischema':
         r = apischema.deserialize(Data, data)
         d = copy.deepcopy(r)
         return d
-    assert f().data['0'][0] == '0'
-    print(timeit(f))
 elif sys.argv[1] == '--dataclass_json':
     from dataclasses import dataclass
     from dataclasses_json import dataclass_json
@@ -66,5 +57,15 @@ elif sys.argv[1] == '--dataclass_json':
     class Data:
         data: dict[str, dict[int, str]]
     f = lambda: Data.from_dict(data)
-    assert f().data['0'][0] == '0'
-    print(timeit(f))
+
+# Functionality test
+data = {'data': { str(k): {i: str(i) for i in range(3)} for k in range(30)}}
+assert f().data['0'][0] == '0'
+
+# Test it doesn't just pass any value
+data = {'data': {'ciccio', 'asd'}}
+assert raised(f)
+
+# Performance test
+data = {'data': { str(k): {i: str(i) for i in range(300)} for k in range(3000)}}
+print(timeit(f))

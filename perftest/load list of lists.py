@@ -19,33 +19,24 @@
 from typing import NamedTuple
 import sys
 
-from common import timeit
+from common import timeit, raised
 
 
 class Data(NamedTuple):
     data: list[list[int]]
 
 
-data = {'data': [[1, 2, 3] for _ in range(300000)]}
-
-
 if sys.argv[1] == '--typedload':
     from typedload import load
     f = lambda: load(data, Data)
-    assert f().data[0][0] == 1
-    print(timeit(f))
 elif sys.argv[1] == '--jsons':
     from jsons import load
     f = lambda: load(data, Data)
-    assert f().data[0][0] == 1
-    print(timeit(f))
 elif sys.argv[1] == '--pydantic':
     import pydantic
     class DataPy(pydantic.BaseModel):
         data: list[list[int]]
     f = lambda: DataPy(**data)
-    assert f().data[0][0] == 1
-    print(timeit(f))
 elif sys.argv[1] == '--apischema':
     import apischema
     import copy\
@@ -56,8 +47,6 @@ elif sys.argv[1] == '--apischema':
         r = apischema.deserialize(Data, data)
         d = copy.deepcopy(r)
         return d
-    assert f().data[0][0] == 1
-    print(timeit(f))
 elif sys.argv[1] == '--dataclass_json':
     from dataclasses import dataclass
     from dataclasses_json import dataclass_json
@@ -66,5 +55,13 @@ elif sys.argv[1] == '--dataclass_json':
     class Data:
         data: list[list[int]]
     f = lambda: Data.from_dict(data)
-    assert f().data[0][0] == 1
-    print(timeit(f))
+
+
+data = {'data': [[1, 2, 3] for _ in range(30)]}
+assert f().data[0][0] == 1
+
+data = {'data': [['q']]}
+assert raised(f)
+
+data = {'data': [[1, 2, 3] for _ in range(300000)]}
+print(timeit(f))
