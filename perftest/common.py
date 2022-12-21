@@ -35,3 +35,13 @@ def timeit(f) -> Tuple[float, float]:
         end = time()
         r.append(end - begin)
     return min(r), max(r)
+
+def raised(f) -> bool:
+    '''
+    Returns true if f() raised
+    '''
+    try:
+        f()
+        return False
+    except:
+        return True

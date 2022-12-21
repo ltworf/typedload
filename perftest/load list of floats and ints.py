@@ -20,33 +20,23 @@ from functools import reduce
 from typing import List, NamedTuple, Union
 import sys
 
-from common import timeit
+from common import timeit, raised
 
 
 class Data(NamedTuple):
     data: List[Union[int, float]]
 
-
-data = {'data': [i if i % 2 else float(i) for i in range(3000000)]}
-
-
 if sys.argv[1] == '--typedload':
     from typedload import load
     f = lambda: load(data, Data)
-    assert reduce(lambda i,j: i and j, map(lambda i,j: type(i) == type(j), f().data[0:4], [0.0, 1, 2.0, 3]), True)
-    print(timeit(f))
 if sys.argv[1] == '--jsons':
     from jsons import load
     f = lambda: load(data, Data)
-    assert reduce(lambda i,j: i and j, map(lambda i,j: type(i) == type(j), f().data[0:4], [0.0, 1, 2.0, 3]), True)
-    print(timeit(f))
 elif sys.argv[1] == '--pydantic':
     import pydantic
     class DataPy(pydantic.BaseModel):
         data: List[Union[int, float]]
     f = lambda: DataPy(**data)
-    assert reduce(lambda i,j: i and j, map(lambda i,j: type(i) == type(j), f().data[0:4], [0.0, 1, 2.0, 3]), True)
-    print(timeit(f))
 elif sys.argv[1] == '--apischema':
     import apischema
     # apischema will return a pointer to the same list, which is a bug
@@ -56,8 +46,6 @@ elif sys.argv[1] == '--apischema':
         r = apischema.deserialize(Data, data)
         r.data.copy()
         return r
-    assert reduce(lambda i,j: i and j, map(lambda i,j: type(i) == type(j), f().data[0:4], [0.0, 1, 2.0, 3]), True)
-    print(timeit(f))
 elif sys.argv[1] == '--dataclass_json':
     from dataclasses import dataclass
     from dataclasses_json import dataclass_json
@@ -66,5 +54,15 @@ elif sys.argv[1] == '--dataclass_json':
     class Data:
         data: List[Union[int, float]]
     f = lambda: Data.from_dict(data)
-    assert reduce(lambda i,j: i and j, map(lambda i,j: type(i) == type(j), f().data[0:4], [0.0, 1, 2.0, 3]), True)
-    print(timeit(f))
+
+# Functionality test
+data = {'data': [i if i % 2 else float(i) for i in range(30)]}
+assert reduce(lambda i,j: i and j, map(lambda i,j: type(i) == type(j), f().data[0:4], [0.0, 1, 2.0, 3]), True)
+
+# Exception test
+data = {'data': ['qwe']}
+assert raised(f)
+
+# Actual performance test
+data = {'data': [i if i % 2 else float(i) for i in range(3000000)]}
+print(timeit(f))

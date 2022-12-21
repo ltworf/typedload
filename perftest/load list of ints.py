@@ -19,33 +19,24 @@
 from typing import List, NamedTuple
 import sys
 
-from common import timeit
+from common import timeit, raised
 
 
 class Data(NamedTuple):
     data: List[int]
 
 
-data = {'data': list(range(3000000))}
-
-
 if sys.argv[1] == '--typedload':
     from typedload import load
     f = lambda: load(data, Data)
-    assert f().data[1] == 1
-    print(timeit(f))
 elif sys.argv[1] == '--jsons':
     from jsons import load
     f = lambda: load(data, Data)
-    assert f().data[1] == 1
-    print(timeit(f))
 elif sys.argv[1] == '--pydantic':
     import pydantic
     class DataPy(pydantic.BaseModel):
         data: List[int]
     f = lambda: DataPy(**data)
-    assert f().data[1] == 1
-    print(timeit(f))
 elif sys.argv[1] == '--apischema':
     import apischema
     # apischema will return a pointer to the same list, which is a bug
@@ -55,8 +46,6 @@ elif sys.argv[1] == '--apischema':
         r = apischema.deserialize(Data, data)
         r.data.copy()
         return r
-    assert f().data[1] == 1
-    print(timeit(f))
 elif sys.argv[1] == '--dataclass_json':
     from dataclasses import dataclass
     from dataclasses_json import dataclass_json
@@ -65,5 +54,15 @@ elif sys.argv[1] == '--dataclass_json':
     class Data:
         data: List[int]
     f = lambda: Data.from_dict(data)
-    assert f().data[1] == 1
-    print(timeit(f))
+
+# Test basic functionality works
+data = {'data': list(range(30))}
+assert f().data[1] == 1
+
+# Test it doesn't just pass any value
+data = {'data': ['asd']}
+assert raised(f)
+
+# Actual performance test
+data = {'data': list(range(3000000))}
+print(timeit(f))

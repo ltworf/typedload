@@ -20,7 +20,7 @@ from typing import Tuple, Union, Literal, NamedTuple
 import sys
 from dataclasses import dataclass
 
-from common import timeit
+from common import timeit, raised
 
 @dataclass(frozen=True)
 class EventMessage:
@@ -97,21 +97,14 @@ events = [
         'receiver': '3145',
         'url': 'http://url',
     },
-] * 50000
-
-data = {'data': events}
-
+]
 
 if sys.argv[1] == '--typedload':
     from typedload import load
     f = lambda: load(data, EventList)
-    assert f().data[2].sender == '3141'
-    print(timeit(f))
 elif sys.argv[1] == '--jsons':
     from jsons import load
     f = lambda: load(data, EventList)
-    assert f().data[2].sender == '3141'
-    print(timeit(f))
 elif sys.argv[1] == '--pydantic':
     import pydantic
     class EventMessagePy(pydantic.BaseModel):
@@ -144,13 +137,9 @@ elif sys.argv[1] == '--pydantic':
     class EventListPy(pydantic.BaseModel):
         data: Tuple[EventPy, ...]
     f = lambda: EventListPy(**data)
-    assert f().data[2].sender == '3141'
-    print(timeit(f))
 elif sys.argv[1] == '--apischema':
     import apischema
     f = lambda: apischema.deserialize(EventList, data)
-    assert f().data[2].sender == '3141'
-    print(timeit(f))
 elif sys.argv[1] == '--dataclass_json':
     from dataclasses_json import dataclass_json
     @dataclass_json
@@ -158,8 +147,6 @@ elif sys.argv[1] == '--dataclass_json':
     class EventList:
         data: Tuple[Event, ...]
     f = lambda: EventList.from_dict(data)
-    assert f().data[2].sender == '3141'
-    print(timeit(f))
 elif sys.argv[1] == '--apischema-discriminator':
     import apischema
     try:
@@ -173,6 +160,10 @@ elif sys.argv[1] == '--apischema-discriminator':
         class DiscriminatedEventList(NamedTuple):
             data: Tuple[Annotated[Event, discriminator], ...]
         f = lambda: apischema.deserialize(DiscriminatedEventList, data)
-        assert f().data[2].sender == '3141'
-        print(timeit(f))
+
+data = {'data': events * 5}
+assert f().data[2].sender == '3141'
+
+data = {'data': events * 50000}
+print(timeit(f))
 
