@@ -39,7 +39,6 @@ def parse_performance(cmd: list[str]) -> tuple[float, float]:
 
 def main():
     tests = [
-        'fail load list of floats and ints',
         'load list of ints',
         'load list of floats and ints',
         'load list of lists',
@@ -48,6 +47,8 @@ def main():
         #'load list of dataclass objects',
         #'load list of attrs objects',
         'realistic union of objects as namedtuple',
+        'fail realistic union of objects as namedtuple',
+        'fail load list of floats and ints',
     ]
 
     extlibs = ['pydantic', 'apischema', 'dataclass_json', 'jsons']
