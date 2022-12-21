@@ -50,7 +50,7 @@ It's the only viable alternative to typedload that I've encountered.
 
 * It reuses the same objects in the output, so changing the data might result in subtle bugs if the input data is used again
 * No native support for attrs (but can be manually added by the user)
-* Faster than typedload in most cases
+* Faster than typedload for flat data structures
 
 
 pydantic
@@ -70,6 +70,7 @@ jsons
 
 Found [here](https://github.com/ramonhagenaars/jsons)
 
+* Type safety is not a goal of this project
 * It is buggy:
     * This returns an int `jsons.load(1.1, Union[int, float])`
     * This returns a string `jsons.load(1, Union[str, int])`
@@ -98,8 +99,10 @@ dataclasses-json
 
 Found [here](https://github.com/lidatong/dataclasses-json)
 
+*It is completely useless for type safety and very slow. I can't understand why it has users.*
+
 * It is incredibly slow (20x slower in certain cases)
-* It's buggy (it will be happy to load whatever inside an int field)
+* It doesn't enforce type safety (it will be happy to load whatever inside an int field)
 * Requires to decorate all the classes
 * It is not extensible
 * Has dependencies (marshmallow, marshmallow-enum, typing-inspect)
