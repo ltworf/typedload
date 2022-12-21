@@ -7,26 +7,14 @@ The tests are done on my PC.
 
 Negative values mean that the library could not do the test or returned incorrect values.
 
-Keep in mind that when `jsons` and `dataclasses-json` are outperforming the rest, it usually means they are just passing the data without doing any check for correctness of the types.
-
-Using Python 3.10
------------------
-
-It is possible to see that it is always faster than `pydantic`, and is faster than `apischema` in just one test. `jsons` and `dataclasses-json` are usually very slow, unless they just return the same data without checking anything.
-
-![performance chart](3.10_realistic_union_of_objects_as_namedtuple.svg "Title")
-![performance chart](3.10_load_list_of_floats_and_ints.svg "Title")
-![performance chart](3.10_load_list_of_lists.svg "Title")
-![performance chart](3.10_load_list_of_NamedTuple_objects.svg "Title")
-![performance chart](3.10_load_big_dictionary.svg "Title")
-![performance chart](3.10_load_list_of_ints.svg "Title")
-
 Using Python 3.11
 -----------------
 
-It is possible to see that it is always faster than `pydantic`. `apischema` doesn't work with Python 3.11 so all results are -1. `jsons` and `dataclasses-json` are usually very slow, unless they just return the same data without checking anything.
-
-With Python 3.11 some tests are faster but some other are slower. So it seems that in this use case the performance improvements are a bit hit or miss.
+* `typedload` ![Downloads](https://pepy.tech/badge/typedload)
+* `pydantic` ![Downloads](https://pepy.tech/badge/pydantic) is always slower
+* `apischema` ![Downloads](https://pepy.tech/badge/apischema) is slower for nested data and faster otherwise
+* `jsons` ![Downloads](https://pepy.tech/badge/jsons) is very slow and fails half the tests
+* `dataclasses-json` ![Downloads](https://pepy.tech/badge/dataclasses-json) fails all the tests but is faster in one (yay)
 
 ![performance chart](3.11_realistic_union_of_objects_as_namedtuple.svg "Title")
 ![performance chart](3.11_load_list_of_floats_and_ints.svg "Title")
