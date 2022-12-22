@@ -67,5 +67,5 @@ data = {'data': {'ciccio', 'asd'}}
 assert raised(f)
 
 # Performance test
-data = {'data': { str(k): {i: str(i) for i in range(300)} for k in range(3000)}}
+data = {'data': { str(k): {i: str(i) for i in range(300)} for k in range(30000)}}
 print(timeit(f))
