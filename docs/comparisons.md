@@ -34,7 +34,7 @@ Since there can be situations that are highly domain specific, typedload allows 
 
 ### Support of Union
 
-Other libraries tend to either be very slow or just give completely wrong results when Union are involved.
+Other libraries tend to either be very slow or just give completely [wrong results](https://pydantic-docs.helpmanual.io/) when Union are involved.
 
 # Functional approach
 
@@ -50,7 +50,7 @@ It's the only viable alternative to typedload that I've encountered.
 
 * It reuses the same objects in the output, so changing the data might result in subtle bugs if the input data is used again
 * No native support for attrs (but can be manually added by the user)
-* Faster than typedload for flat data structures
+* Faster than typedload for flat data structures, slower otherwise (but requires compilation to achieve that)
 
 
 pydantic
@@ -59,7 +59,8 @@ pydantic
 Found [here](https://pydantic-docs.helpmanual.io/)
 
 * [They change API all the time, between minor releases.](https://pypi.org/project/pydantic/1.9.1/)
-* Slower than typedload
+* [Unions behave non-deterministically by default and require a flag to behave normally](https://docs.pydantic.dev/usage/model_config/#smart-union)
+* Slow, despite being compiled
 * Requires all the classes to derive from a superclass
 * Does not work with mypy:
     * [Abuses python typing annotation to mean something different, breaking linters](https://pydantic-docs.helpmanual.io/usage/models/#required-optional-fields)

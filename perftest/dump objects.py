@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2021-2022 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2022 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,26 +16,26 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
-from functools import reduce
-from typing import List, NamedTuple, Union
+from typing import List, NamedTuple
 import sys
 
 from common import timeit, raised
 
 
 class Data(NamedTuple):
-    data: List[Union[int, float]]
+    data: List[int]
+
 
 if sys.argv[1] == '--typedload':
     from typedload import load
     f = lambda: load(data, Data)
-if sys.argv[1] == '--jsons':
+elif sys.argv[1] == '--jsons':
     from jsons import load
     f = lambda: load(data, Data)
 elif sys.argv[1] == '--pydantic':
     import pydantic
-    class DataPy(pydantic.BaseModel, smart_union=True):
-        data: List[Union[int, float]]
+    class DataPy(pydantic.BaseModel):
+        data: List[int]
     f = lambda: DataPy(**data)
 elif sys.argv[1] == '--apischema':
     import apischema
@@ -52,17 +52,17 @@ elif sys.argv[1] == '--dataclass_json':
     @dataclass_json
     @dataclass
     class Data:
-        data: List[Union[int, float]]
+        data: List[int]
     f = lambda: Data.from_dict(data)
 
-# Functionality test
-data = {'data': [i if i % 2 else float(i) for i in range(30)]}
-assert reduce(lambda i,j: i and j, map(lambda i,j: type(i) == type(j), f().data[0:4], [0.0, 1, 2.0, 3]), True)
+# Test basic functionality works
+data = {'data': list(range(30))}
+assert f().data[1] == 1
 
-# Exception test
-data = {'data': ['qwe']}
+# Test it doesn't just pass any value
+data = {'data': ['asd']}
 assert raised(f)
 
 # Actual performance test
-data = {'data': [i if i % 2 else float(i) for i in range(9000000)]}
+data = {'data': list(range(9000000))}
 print(timeit(f))
