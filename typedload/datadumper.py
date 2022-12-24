@@ -130,9 +130,11 @@ class Dumper:
 
         ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
 
+        self._handlerscache = {}  # type: Dict[Type[Any], Callable[['Dumper', Any], Any]]
+        self._dataclasscache = {}  # type: Dict[Type[Any], Tuple[Set[str], Dict[str, Any]]]
+
         for k, v in kwargs.items():
             setattr(self, k, v)
-
 
     def index(self, value: Any) -> int:
         """
@@ -157,8 +159,12 @@ class Dumper:
         Dump the typed data structure into its
         untyped equivalent.
         """
-        index = self.index(value)
-        func = self.handlers[index][1]
+        t = type(value)
+        func = self._handlerscache.get(t)
+        if func is None:
+            index = self.index(value)
+            func = self.handlers[index][1]
+            self._handlerscache[t] = func
         return func(self, value)
 
 
@@ -200,11 +206,17 @@ def _namedtupledump(l, value):
 
 
 def _dataclassdump(d, value):
-    from dataclasses import _MISSING_TYPE as DT_MISSING_TYPE
-    fields = set(value.__dataclass_fields__.keys())
-    field_defaults = {k: v.default for k,v in value.__dataclass_fields__.items() if not isinstance (v.default, DT_MISSING_TYPE)}
-    field_factories = {k: v.default_factory() for k,v in value.__dataclass_fields__.items() if not isinstance (v.default_factory, DT_MISSING_TYPE)}
-    defaults = {**field_defaults, **field_factories} # Merge the two dictionaries
+    t = type(value)
+    cached = d._dataclasscache.get(t)
+    if cached is None:
+        from dataclasses import _MISSING_TYPE as DT_MISSING_TYPE
+        fields = set(value.__dataclass_fields__.keys())
+        field_defaults = {k: v.default for k,v in value.__dataclass_fields__.items() if not isinstance (v.default, DT_MISSING_TYPE)}
+        field_factories = {k: v.default_factory() for k,v in value.__dataclass_fields__.items() if not isinstance (v.default_factory, DT_MISSING_TYPE)}
+        defaults = {**field_defaults, **field_factories} # Merge the two dictionaries
+        d._dataclasscache[t] = (fields, defaults)
+    else:
+        fields, defaults = cached
 
     r = {
         value.__dataclass_fields__[f].metadata.get(d.mangle_key, f) : d.dump(getattr(value, f)) for f in fields
