@@ -16,26 +16,26 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
-from typing import List, NamedTuple
+from functools import reduce
+from typing import List, NamedTuple, Union
 import sys
 
 from common import timeit, raised
 
 
 class Data(NamedTuple):
-    data: List[int]
-
+    data: List[Union[int, float]]
 
 if sys.argv[1] == '--typedload':
     from typedload import load
     f = lambda: load(data, Data)
-elif sys.argv[1] == '--jsons':
+if sys.argv[1] == '--jsons':
     from jsons import load
     f = lambda: load(data, Data)
 elif sys.argv[1] == '--pydantic':
     import pydantic
-    class DataPy(pydantic.BaseModel):
-        data: List[int]
+    class DataPy(pydantic.BaseModel, smart_union=True):
+        data: List[Union[int, float]]
     f = lambda: DataPy(**data)
 elif sys.argv[1] == '--apischema':
     import apischema
@@ -52,17 +52,16 @@ elif sys.argv[1] == '--dataclass_json':
     @dataclass_json
     @dataclass
     class Data:
-        data: List[int]
+        data: List[Union[int, float]]
     f = lambda: Data.from_dict(data)
 
-# Test basic functionality works
-data = {'data': list(range(30))}
-assert f().data[1] == 1
-
-# Test it doesn't just pass any value
-data = {'data': ['asd']}
+# Exception test
+data = {'data': [1, 0.3, 'qwe']}
 assert raised(f)
 
+data = {'data': [1, 0.3]}
+assert not raised(f)
+
 # Actual performance test
-data = {'data': list(range(9000000))}
-print(timeit(f))
+data = {'data': [i if i % 2 else float(i) for i in range(9000000)] + ['asd']}
+print(timeit(lambda: raised(f)))

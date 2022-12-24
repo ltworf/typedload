@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2021-2022 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2022 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,53 +16,72 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
-from typing import List, NamedTuple
+from dataclasses import dataclass
+from typing import Literal
 import sys
 
 from common import timeit, raised
 
+@dataclass
+class Car:
+    type: Literal['car']
+    name: str
+    model: str
+    extras: list[str]
 
-class Data(NamedTuple):
-    data: List[int]
+@dataclass
+class House:
+    type: Literal['house']
+    address: str
+    garden: bool
+    bedrooms: int
+
+@dataclass
+class Possessions:
+    possessions: list[House|Car]
 
 
 if sys.argv[1] == '--typedload':
-    from typedload import load
-    f = lambda: load(data, Data)
+    from typedload import dump
+    f = lambda: dump(data)
 elif sys.argv[1] == '--jsons':
-    from jsons import load
-    f = lambda: load(data, Data)
+    from jsons import dump
+    f = lambda: dump(data)
 elif sys.argv[1] == '--pydantic':
     import pydantic
-    class DataPy(pydantic.BaseModel):
-        data: List[int]
-    f = lambda: DataPy(**data)
+    class PPossessions(pydantic.BaseModel):
+        possessions: list[House|Car]
+    f = lambda: PPossessions(possessions=data.possessions).dict()
 elif sys.argv[1] == '--apischema':
     import apischema
     # apischema will return a pointer to the same list, which is a bug
     # that can lead to data corruption, but makes it very fast
     # so level the field by copying the list
     def f():
-        r = apischema.deserialize(Data, data)
-        r.data.copy()
+        r = apischema.serialize(data)
         return r
 elif sys.argv[1] == '--dataclass_json':
-    from dataclasses import dataclass
     from dataclasses_json import dataclass_json
     @dataclass_json
     @dataclass
-    class Data:
-        data: List[int]
-    f = lambda: Data.from_dict(data)
+    class Possessions:
+        possessions: list[House|Car]
+    f = lambda: Possessions(possessions=data.possessions).to_dict()
 
-# Test basic functionality works
-data = {'data': list(range(30))}
-assert f().data[1] == 1
 
-# Test it doesn't just pass any value
-data = {'data': ['asd']}
-assert raised(f)
+data = Possessions([
+    Car('car',
+        f'New {i}',
+        str(i // 12) + 'J' if i % 6 == 0 else 'Q',
+        [f'Optional {j}' for j in range(i % 40)]
+    )
+    if i % 2 else
+    House('house',
+          f'Via Mulini a vento {i}',
+          i % 3 == 0,
+          i // 4 + 1,
+    )
 
-# Actual performance test
-data = {'data': list(range(9000000))}
+    for i in range(300000)
+    ])
 print(timeit(f))

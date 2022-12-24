@@ -34,7 +34,7 @@ if sys.argv[1] == '--jsons':
     f = lambda: load(data, Data)
 elif sys.argv[1] == '--pydantic':
     import pydantic
-    class DataPy(pydantic.BaseModel):
+    class DataPy(pydantic.BaseModel, smart_union=True):
         data: List[Union[int, float]]
     f = lambda: DataPy(**data)
 elif sys.argv[1] == '--apischema':
@@ -64,5 +64,5 @@ data = {'data': ['qwe']}
 assert raised(f)
 
 # Actual performance test
-data = {'data': [i if i % 2 else float(i) for i in range(3000000)]}
+data = {'data': [i if i % 2 else float(i) for i in range(9000000)]}
 print(timeit(f))

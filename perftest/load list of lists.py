@@ -63,5 +63,5 @@ assert f().data[0][0] == 1
 data = {'data': [['q']]}
 assert raised(f)
 
-data = {'data': [[1, 2, 3] for _ in range(300000)]}
+data = {'data': [[1, 2, 3] for _ in range(900000)]}
 print(timeit(f))

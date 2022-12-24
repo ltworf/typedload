@@ -67,6 +67,6 @@ assert f().data[1].value == 1
 data = {'data': [{'value': 'qwe'} for i in range(30)]}
 assert raised(f)
 
-data = {'data': [{'value': i} for i in range(300000)]}
+data = {'data': [{'value': i} for i in range(900000)]}
 print(timeit(f))
 
