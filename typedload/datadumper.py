@@ -130,8 +130,8 @@ class Dumper:
 
         ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
 
-        self._handlerscache = {}
-        self._dataclasscache = {}
+        self._handlerscache = {}  # type: Dict[Type[Any], Callable[['Dumper', Any], Any]]
+        self._dataclasscache = {}  # type: Dict[Type[Any], Tuple[Set[str], Dict[str, Any]]]
 
         for k, v in kwargs.items():
             setattr(self, k, v)
