@@ -1,6 +1,7 @@
 2.21
 ====
 * Drop support to Python 3.5 and 3.6
+* Improve performance for dumping
 
 2.20
 ====
