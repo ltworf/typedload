@@ -130,9 +130,10 @@ class Dumper:
 
         ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
 
+        self._handlerscache = {}
+
         for k, v in kwargs.items():
             setattr(self, k, v)
-
 
     def index(self, value: Any) -> int:
         """
@@ -157,8 +158,12 @@ class Dumper:
         Dump the typed data structure into its
         untyped equivalent.
         """
-        index = self.index(value)
-        func = self.handlers[index][1]
+        t = type(value)
+        func = self._handlerscache.get(t)
+        if func is None:
+            index = self.index(value)
+            func = self.handlers[index][1]
+            self._handlerscache[t] = func
         return func(self, value)
 
 
