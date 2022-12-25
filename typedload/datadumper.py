@@ -239,13 +239,13 @@ def _iteratordump(d: Dumper, value: Any, t: Any) -> List[Any]:
     itertype = getattr(t, '__args__', (Any, ))
     if len(itertype) == 1 and (itertype[0] in d.basictypes):
         r = []
-        # Call one iteration with dump, to populate the cache
         iterator = iter(value)
         try:
+            # Call one iteration with dump, to populate the cache
             r.append(d.dump(next(iterator), itertype[0]))
         except StopIteration:
             return []
         f = d._handlerscache[itertype[0]]
-        return r + [f(d, i, itertype[0]) for i in iterator]
+        return r.extend((f(d, i, itertype[0]) for i in iterator))
     else:
         return [d.dump(i) for i in value]
