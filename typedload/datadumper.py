@@ -22,6 +22,7 @@ data structures to things that json can serialize.
 
 import datetime
 import ipaddress
+from inspect import signature
 from enum import Enum
 import pathlib
 from typing import *
@@ -130,8 +131,8 @@ class Dumper:
 
         ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
 
-        self._handlerscache = {}  # type: Dict[Type[Any], Callable[['Dumper', Any], Any]]
-        self._dataclasscache = {}  # type: Dict[Type[Any], Tuple[Set[str], Dict[str, Any]]]
+        self._handlerscache = {}  # type: Dict[Type[Any], Callable[['Dumper', Any], Any]|Callable[['Dumper', Any, Any], Any]]
+        self._dataclasscache = {}  # type: Dict[Type[Any], Tuple[Set[str], Dict[str, Any], Dict[str, Any]]]
 
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -154,18 +155,27 @@ class Dumper:
                 return i
         raise TypedloadValueError('Unable to dump %s' % value, value=value, type_=type(value))
 
-    def dump(self, value: Any) -> Any:
+    def dump(self, value: Any, annotated_type=Any) -> Any:
         """
         Dump the typed data structure into its
         untyped equivalent.
+
+        annotated_type contains the annotation for the value.
+        It is not needed to provide it, but it can enable some faster code paths.
         """
         t = type(value)
         func = self._handlerscache.get(t)
         if func is None:
             index = self.index(value)
-            func = self.handlers[index][1]
+            f = self.handlers[index][1]
+            # It has no type parameter
+            # TODO make all handlers require it in 3.0
+            if len(signature(f).parameters) == 2:
+                func = lambda d, v, _: f(d, v)
+            else:
+                func = f
             self._handlerscache[t] = func
-        return func(self, value)
+        return func(self, value, annotated_type)
 
 
 def _attrdump(d, value) -> Dict[str, Any]:
@@ -214,12 +224,13 @@ def _dataclassdump(d: Dumper, value) -> Dict[str, Any]:
         field_defaults = {k: v.default for k,v in value.__dataclass_fields__.items() if not isinstance (v.default, DT_MISSING_TYPE)}
         field_factories = {k: v.default_factory() for k,v in value.__dataclass_fields__.items() if not isinstance (v.default_factory, DT_MISSING_TYPE)}
         defaults = {**field_defaults, **field_factories} # Merge the two dictionaries
-        d._dataclasscache[t] = (fields, defaults)
+        type_hints = get_type_hints(value)
+        d._dataclasscache[t] = (fields, defaults, type_hints)
     else:
-        fields, defaults = cached
+        fields, defaults, type_hints = cached
 
     r = {
-        value.__dataclass_fields__[f].metadata.get(d.mangle_key, f) : d.dump(getattr(value, f)) for f in fields
+        value.__dataclass_fields__[f].metadata.get(d.mangle_key, f) : d.dump(getattr(value, f), type_hints.get(f, Any)) for f in fields
         if not d.hidedefault or f not in defaults or defaults[f] != getattr(value, f)
     }
     return r
