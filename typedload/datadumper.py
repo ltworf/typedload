@@ -122,7 +122,7 @@ class Dumper:
             (lambda value: type(value) in self.basictypes, lambda l, value, t: value),
             (lambda value: isinstance(value, tuple) and hasattr(value, '_fields') and hasattr(value, '_asdict'), _namedtupledump),
             (lambda value: '__dataclass_fields__' in dir(value), _dataclassdump),
-            (lambda value: isinstance(value, (list, tuple, set, frozenset)), lambda l, value, t: [l.dump(i) for i in value]),
+            (lambda value: isinstance(value, (list, tuple, set, frozenset)), _iteratordump),
             (lambda value: isinstance(value, Enum), lambda l, value, t: l.dump(value.value)),
             (lambda value: isinstance(value, Dict), lambda l, value, t: {l.dump(k): l.dump(v) for k, v in value.items()}),
             (is_attrs, _attrdump),
@@ -234,3 +234,18 @@ def _dataclassdump(d: Dumper, value, t) -> Dict[str, Any]:
         if not d.hidedefault or f not in defaults or defaults[f] != getattr(value, f)
     }
     return r
+
+def _iteratordump(d: Dumper, value: Any, t: Any) -> List[Any]:
+    itertype = getattr(t, '__args__', (Any, ))
+    if len(itertype) == 1 and (itertype[0] in d.basictypes):
+        r = []
+        # Call one iteration with dump, to populate the cache
+        iterator = iter(value)
+        try:
+            r.append(d.dump(next(iterator), itertype[0]))
+        except StopIteration:
+            return []
+        f = d._handlerscache[itertype[0]]
+        return r + [f(d, i, itertype[0]) for i in iterator]
+    else:
+        return [d.dump(i) for i in value]
