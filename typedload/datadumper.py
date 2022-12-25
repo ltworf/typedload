@@ -119,15 +119,15 @@ class Dumper:
             }
 
         self.handlers = [
-            (lambda value: type(value) in self.basictypes, lambda l, value: value),
+            (lambda value: type(value) in self.basictypes, lambda l, value, t: value),
             (lambda value: isinstance(value, tuple) and hasattr(value, '_fields') and hasattr(value, '_asdict'), _namedtupledump),
             (lambda value: '__dataclass_fields__' in dir(value), _dataclassdump),
-            (lambda value: isinstance(value, (list, tuple, set, frozenset)), lambda l, value: [l.dump(i) for i in value]),
-            (lambda value: isinstance(value, Enum), lambda l, value: l.dump(value.value)),
-            (lambda value: isinstance(value, Dict), lambda l, value: {l.dump(k): l.dump(v) for k, v in value.items()}),
+            (lambda value: isinstance(value, (list, tuple, set, frozenset)), lambda l, value, t: [l.dump(i) for i in value]),
+            (lambda value: isinstance(value, Enum), lambda l, value, t: l.dump(value.value)),
+            (lambda value: isinstance(value, Dict), lambda l, value, t: {l.dump(k): l.dump(v) for k, v in value.items()}),
             (is_attrs, _attrdump),
             (lambda value: isinstance(value, (datetime.date, datetime.time)), _datetimedump),
-            (lambda value: type(value) in self.strconstructed, lambda l, value: str(value)),
+            (lambda value: type(value) in self.strconstructed, lambda l, value, t: str(value)),
 
         ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
 
@@ -178,7 +178,7 @@ class Dumper:
         return func(self, value, annotated_type)
 
 
-def _attrdump(d, value) -> Dict[str, Any]:
+def _attrdump(d, value, t) -> Dict[str, Any]:
     r = {}
     for attr in value.__attrs_attrs__:
         attrval = getattr(value, attr.name)
@@ -194,7 +194,7 @@ def _attrdump(d, value) -> Dict[str, Any]:
     return r
 
 
-def _datetimedump(d: Dumper, value: Union[datetime.time, datetime.date, datetime.datetime]):
+def _datetimedump(d: Dumper, value: Union[datetime.time, datetime.date, datetime.datetime], t):
     # datetime is subclass of date
     if isinstance(value, datetime.date) and not isinstance(value, datetime.datetime):
         return [value.year, value.month, value.day]
@@ -206,7 +206,7 @@ def _datetimedump(d: Dumper, value: Union[datetime.time, datetime.date, datetime
     return [value.year, value.month, value.day, value.hour, value.minute, value.second, value.microsecond]
 
 
-def _namedtupledump(d: Dumper, value) -> Dict[str, Any]:
+def _namedtupledump(d: Dumper, value, t) -> Dict[str, Any]:
     field_defaults = getattr(value, '_field_defaults', {})
     # Named tuple, skip default values
     return {
@@ -215,7 +215,7 @@ def _namedtupledump(d: Dumper, value) -> Dict[str, Any]:
     }
 
 
-def _dataclassdump(d: Dumper, value) -> Dict[str, Any]:
+def _dataclassdump(d: Dumper, value, t) -> Dict[str, Any]:
     t = type(value)
     cached = d._dataclasscache.get(t)
     if cached is None:
