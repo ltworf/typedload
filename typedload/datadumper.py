@@ -184,7 +184,7 @@ def _attrdump(d, value) -> Dict[str, Any]:
     return r
 
 
-def _datetimedump(l, value: Union[datetime.time, datetime.date, datetime.datetime]):
+def _datetimedump(d: Dumper, value: Union[datetime.time, datetime.date, datetime.datetime]):
     # datetime is subclass of date
     if isinstance(value, datetime.date) and not isinstance(value, datetime.datetime):
         return [value.year, value.month, value.day]
@@ -196,16 +196,16 @@ def _datetimedump(l, value: Union[datetime.time, datetime.date, datetime.datetim
     return [value.year, value.month, value.day, value.hour, value.minute, value.second, value.microsecond]
 
 
-def _namedtupledump(l, value):
+def _namedtupledump(d: Dumper, value) -> Dict[str, Any]:
     field_defaults = getattr(value, '_field_defaults', {})
     # Named tuple, skip default values
     return {
-        k: l.dump(v) for k, v in value._asdict().items()
-        if not l.hidedefault or k not in field_defaults or field_defaults[k] != v
+        k: d.dump(v) for k, v in value._asdict().items()
+        if not d.hidedefault or k not in field_defaults or field_defaults[k] != v
     }
 
 
-def _dataclassdump(d, value):
+def _dataclassdump(d: Dumper, value) -> Dict[str, Any]:
     t = type(value)
     cached = d._dataclasscache.get(t)
     if cached is None:
