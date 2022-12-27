@@ -22,6 +22,7 @@ data structures to things that json can serialize.
 
 import datetime
 import ipaddress
+from inspect import signature
 from enum import Enum
 import pathlib
 from typing import *
@@ -118,20 +119,20 @@ class Dumper:
             }
 
         self.handlers = [
-            (lambda value: type(value) in self.basictypes, lambda l, value: value),
+            (lambda value: type(value) in self.basictypes, lambda l, value, t: value),
             (lambda value: isinstance(value, tuple) and hasattr(value, '_fields') and hasattr(value, '_asdict'), _namedtupledump),
             (lambda value: '__dataclass_fields__' in dir(value), _dataclassdump),
-            (lambda value: isinstance(value, (list, tuple, set, frozenset)), lambda l, value: [l.dump(i) for i in value]),
-            (lambda value: isinstance(value, Enum), lambda l, value: l.dump(value.value)),
-            (lambda value: isinstance(value, Dict), lambda l, value: {l.dump(k): l.dump(v) for k, v in value.items()}),
+            (lambda value: isinstance(value, (list, tuple, set, frozenset)), _iteratordump),
+            (lambda value: isinstance(value, Enum), lambda l, value, t: l.dump(value.value)),
+            (lambda value: isinstance(value, Dict), lambda l, value, t: {l.dump(k): l.dump(v) for k, v in value.items()}),
             (is_attrs, _attrdump),
             (lambda value: isinstance(value, (datetime.date, datetime.time)), _datetimedump),
-            (lambda value: type(value) in self.strconstructed, lambda l, value: str(value)),
+            (lambda value: type(value) in self.strconstructed, lambda l, value, t: str(value)),
 
-        ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
+        ]  # type: List[Tuple[Callable[[Any], bool], Callable[['Dumper', Any, Any], Any]|Callable[['Dumper', Any], Any]]]
 
-        self._handlerscache = {}  # type: Dict[Type[Any], Callable[['Dumper', Any], Any]]
-        self._dataclasscache = {}  # type: Dict[Type[Any], Tuple[Set[str], Dict[str, Any]]]
+        self._handlerscache = {}  # type: Dict[Type[Any], Callable[['Dumper', Any], Any]|Callable[['Dumper', Any, Any], Any]]
+        self._dataclasscache = {}  # type: Dict[Type[Any], Tuple[Set[str], Dict[str, Any], Dict[str, Any]]]
 
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -154,21 +155,30 @@ class Dumper:
                 return i
         raise TypedloadValueError('Unable to dump %s' % value, value=value, type_=type(value))
 
-    def dump(self, value: Any) -> Any:
+    def dump(self, value: Any, annotated_type=Any) -> Any:
         """
         Dump the typed data structure into its
         untyped equivalent.
+
+        annotated_type contains the annotation for the value.
+        It is not needed to provide it, but it can enable some faster code paths.
         """
         t = type(value)
         func = self._handlerscache.get(t)
         if func is None:
             index = self.index(value)
-            func = self.handlers[index][1]
+            f = self.handlers[index][1]
+            # It has no type parameter
+            # TODO make all handlers require it in 3.0
+            if len(signature(f).parameters) == 2:
+                func = lambda d, v, _: f(d, v)  # type: ignore
+            else:
+                func = f
             self._handlerscache[t] = func
-        return func(self, value)
+        return func(self, value, annotated_type)  # type: ignore
 
 
-def _attrdump(d, value) -> Dict[str, Any]:
+def _attrdump(d, value, t) -> Dict[str, Any]:
     r = {}
     for attr in value.__attrs_attrs__:
         attrval = getattr(value, attr.name)
@@ -184,7 +194,7 @@ def _attrdump(d, value) -> Dict[str, Any]:
     return r
 
 
-def _datetimedump(l, value: Union[datetime.time, datetime.date, datetime.datetime]):
+def _datetimedump(d: Dumper, value: Union[datetime.time, datetime.date, datetime.datetime], t):
     # datetime is subclass of date
     if isinstance(value, datetime.date) and not isinstance(value, datetime.datetime):
         return [value.year, value.month, value.day]
@@ -196,16 +206,16 @@ def _datetimedump(l, value: Union[datetime.time, datetime.date, datetime.datetim
     return [value.year, value.month, value.day, value.hour, value.minute, value.second, value.microsecond]
 
 
-def _namedtupledump(l, value):
+def _namedtupledump(d: Dumper, value, t) -> Dict[str, Any]:
     field_defaults = getattr(value, '_field_defaults', {})
     # Named tuple, skip default values
     return {
-        k: l.dump(v) for k, v in value._asdict().items()
-        if not l.hidedefault or k not in field_defaults or field_defaults[k] != v
+        k: d.dump(v) for k, v in value._asdict().items()
+        if not d.hidedefault or k not in field_defaults or field_defaults[k] != v
     }
 
 
-def _dataclassdump(d, value):
+def _dataclassdump(d: Dumper, value, t) -> Dict[str, Any]:
     t = type(value)
     cached = d._dataclasscache.get(t)
     if cached is None:
@@ -214,12 +224,29 @@ def _dataclassdump(d, value):
         field_defaults = {k: v.default for k,v in value.__dataclass_fields__.items() if not isinstance (v.default, DT_MISSING_TYPE)}
         field_factories = {k: v.default_factory() for k,v in value.__dataclass_fields__.items() if not isinstance (v.default_factory, DT_MISSING_TYPE)}
         defaults = {**field_defaults, **field_factories} # Merge the two dictionaries
-        d._dataclasscache[t] = (fields, defaults)
+        type_hints = get_type_hints(value)
+        d._dataclasscache[t] = (fields, defaults, type_hints)
     else:
-        fields, defaults = cached
+        fields, defaults, type_hints = cached
 
     r = {
-        value.__dataclass_fields__[f].metadata.get(d.mangle_key, f) : d.dump(getattr(value, f)) for f in fields
+        value.__dataclass_fields__[f].metadata.get(d.mangle_key, f) : d.dump(getattr(value, f), type_hints.get(f, Any)) for f in fields
         if not d.hidedefault or f not in defaults or defaults[f] != getattr(value, f)
     }
     return r
+
+def _iteratordump(d: Dumper, value: Any, t: Any) -> List[Any]:
+    itertype = getattr(t, '__args__', (Any, ))
+    if len(itertype) == 1 and (itertype[0] in d.basictypes):
+        r = []
+        iterator = iter(value)
+        try:
+            # Call one iteration with dump, to populate the cache
+            r.append(d.dump(next(iterator), itertype[0]))
+        except StopIteration:
+            return []
+        f = d._handlerscache[itertype[0]]  # type: ignore
+        r.extend((f(d, i, itertype[0]) for i in iterator))  # type: ignore
+        return r
+    else:
+        return [d.dump(i) for i in value]
