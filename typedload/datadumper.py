@@ -130,7 +130,7 @@ class Dumper:
             }
 
         self.handlers = [
-            (lambda value: type(value) in self.basictypes, lambda l, value, t: value),
+            (lambda value: type(value) in self.basictypes, _identitydump),
             (lambda value: isinstance(value, tuple) and hasattr(value, '_fields') and hasattr(value, '_asdict'), _namedtupledump),
             (lambda value: '__dataclass_fields__' in dir(value), _dataclassdump),
             (lambda value: isinstance(value, (list, tuple, set, frozenset)), _iteratordump),
@@ -140,10 +140,9 @@ class Dumper:
             (lambda value: isinstance(value, (datetime.date, datetime.time)), _datetimedump),
             (lambda value: isinstance(value, datetime.timedelta), _timedeltadump),
             (lambda value: type(value) in self.strconstructed, lambda l, value, t: str(value)),
-
         ]  # type: List[Tuple[Callable[[Any], bool], Callable[['Dumper', Any, Any], Any]|Callable[['Dumper', Any], Any]]]
 
-        self._handlerscache = {}  # type: Dict[Type[Any], Callable[['Dumper', Any], Any]|Callable[['Dumper', Any, Any], Any]]
+        self._handlerscache = {}  # type: Dict[Type[Any], Callable[['Dumper', Any, Any], Any]]
         self._dataclasscache = {}  # type: Dict[Type[Any], Tuple[Set[str], Dict[str, Any], Dict[str, Any]]]
 
         for k, v in kwargs.items():
@@ -185,8 +184,8 @@ class Dumper:
             if len(signature(f).parameters) == 2:
                 func = lambda d, v, _: f(d, v)  # type: ignore
             else:
-                func = f
-            self._handlerscache[t] = func
+                func = f  # type: ignore
+            self._handlerscache[t] = func  # type: ignore
         return func(self, value, annotated_type)  # type: ignore
 
 
@@ -261,17 +260,24 @@ def _dataclassdump(d: Dumper, value, t) -> Dict[str, Any]:
     return r
 
 def _iteratordump(d: Dumper, value: Any, t: Any) -> List[Any]:
-    itertype = getattr(t, '__args__', (Any, ))
-    if len(itertype) == 1 and (itertype[0] in d.basictypes):
-        r = []
-        iterator = iter(value)
-        try:
-            # Call one iteration with dump, to populate the cache
-            r.append(d.dump(next(iterator), itertype[0]))
-        except StopIteration:
-            return []
-        f = d._handlerscache[itertype[0]]  # type: ignore
-        r.extend((f(d, i, itertype[0]) for i in iterator))  # type: ignore
-        return r
+    itertypes = getattr(t, '__args__', (Any, ))
+    if len(itertypes) == 1:
+        # This is true for lists/sets but not tuples
+        itertype = itertypes[0]
     else:
-        return [d.dump(i) for i in value]
+        itertype = Any
+
+    if itertype in d.basictypes and d.handlers[0][1] == _identitydump:
+        # Iterable of basic types, unchanged default handler for basic types
+        if isinstance(value, list):
+            # Just copy the list if it's a list
+            return value.copy()
+        else:
+            # Create a list and return it otherwise
+            return [i for i in value]
+
+    return [d.dump(i) for i in value]
+
+
+def _identitydump(d: Dumper, value: Any, t: Any) -> Any:
+    return value
