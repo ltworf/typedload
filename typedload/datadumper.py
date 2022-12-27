@@ -129,7 +129,7 @@ class Dumper:
             (lambda value: isinstance(value, (datetime.date, datetime.time)), _datetimedump),
             (lambda value: type(value) in self.strconstructed, lambda l, value, t: str(value)),
 
-        ]  # type: List[Tuple[Callable[[Any], bool],Callable[['Dumper', Any], Any]]]
+        ]  # type: List[Tuple[Callable[[Any], bool], Callable[['Dumper', Any, Any], Any]|Callable[['Dumper', Any], Any]]]
 
         self._handlerscache = {}  # type: Dict[Type[Any], Callable[['Dumper', Any], Any]|Callable[['Dumper', Any, Any], Any]]
         self._dataclasscache = {}  # type: Dict[Type[Any], Tuple[Set[str], Dict[str, Any], Dict[str, Any]]]
@@ -171,11 +171,11 @@ class Dumper:
             # It has no type parameter
             # TODO make all handlers require it in 3.0
             if len(signature(f).parameters) == 2:
-                func = lambda d, v, _: f(d, v)
+                func = lambda d, v, _: f(d, v)  # type: ignore
             else:
                 func = f
             self._handlerscache[t] = func
-        return func(self, value, annotated_type)
+        return func(self, value, annotated_type)  # type: ignore
 
 
 def _attrdump(d, value, t) -> Dict[str, Any]:
@@ -245,7 +245,8 @@ def _iteratordump(d: Dumper, value: Any, t: Any) -> List[Any]:
             r.append(d.dump(next(iterator), itertype[0]))
         except StopIteration:
             return []
-        f = d._handlerscache[itertype[0]]
-        return r.extend((f(d, i, itertype[0]) for i in iterator))
+        f = d._handlerscache[itertype[0]]  # type: ignore
+        r.extend((f(d, i, itertype[0]) for i in iterator))  # type: ignore
+        return r
     else:
         return [d.dump(i) for i in value]
