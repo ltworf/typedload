@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # typedload
-# Copyright (C) 2021-2022 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2021-2023 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -81,8 +81,8 @@ def main():
         tags.append('master')
 
     if 'MOREVERSIONS' in os.environ:
-        #TODO add 2.19
-        toadd =  [i for i in ['1.20', '2.0', '2.13', '2.15', '2.17'] if i not in tags]
+        #TODO add 2.21
+        toadd =  [i for i in ['1.20', '2.0', '2.13', '2.15', '2.17', '2.19'] if i not in tags]
         tags = toadd + tags
     print('Testing tags:', ' '.join(tags))
 
