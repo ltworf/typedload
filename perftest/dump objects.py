@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2022 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2022-2023 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, Union
 import sys
 
 from common import timeit, raised
@@ -38,7 +38,7 @@ class House:
 
 @dataclass
 class Possessions:
-    possessions: list[House|Car]
+    possessions: list[Union[House, Car]]
 
 
 if sys.argv[1] == '--typedload':
@@ -50,7 +50,7 @@ elif sys.argv[1] == '--jsons':
 elif sys.argv[1] == '--pydantic':
     import pydantic
     class PPossessions(pydantic.BaseModel):
-        possessions: list[House|Car]
+        possessions: list[Union[House, Car]]
     f = lambda: PPossessions(possessions=data.possessions).dict()
 elif sys.argv[1] == '--apischema':
     import apischema
@@ -65,7 +65,7 @@ elif sys.argv[1] == '--dataclass_json':
     @dataclass_json
     @dataclass
     class Possessions:
-        possessions: list[House|Car]
+        possessions: list[Union[House, Car]]
     f = lambda: Possessions(possessions=data.possessions).to_dict()
 
 
