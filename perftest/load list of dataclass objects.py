@@ -47,4 +47,5 @@ elif sys.argv[1] == '--pydantic':
     print(timeit(lambda: DataPy(**data)))
 elif sys.argv[1] == '--apischema':
     import apischema
+    apischema.settings.serialization.check_type = True
     print(timeit(lambda: apischema.deserialize(Data, data)))

@@ -41,6 +41,7 @@ elif sys.argv[1] == '--pydantic':
     print(timeit(f))
 elif sys.argv[1] == '--apischema':
     import apischema
+    apischema.settings.serialization.check_type = True
     import copy
     # apischema will return a pointer to the same list, which is a bug
     # that can lead to data corruption, but makes it very fast
