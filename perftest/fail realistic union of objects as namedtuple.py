@@ -139,6 +139,7 @@ elif sys.argv[1] == '--pydantic':
     f = lambda: EventListPy(**data)
 elif sys.argv[1] == '--apischema':
     import apischema
+    apischema.settings.serialization.check_type = True
     f = lambda: apischema.deserialize(EventList, data)
 elif sys.argv[1] == '--dataclass_json':
     from dataclasses_json import dataclass_json

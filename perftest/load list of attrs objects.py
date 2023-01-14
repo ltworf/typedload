@@ -48,6 +48,7 @@ elif sys.argv[1] == '--pydantic':
     print(timeit(lambda: DataPy(**data)))
 elif sys.argv[1] == '--apischema':
     import apischema
+    apischema.settings.serialization.check_type = True
     ##### apischema attrs support #####
     prev_default_object_fields = apischema.settings.default_object_fields
 

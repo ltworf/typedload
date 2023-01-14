@@ -48,9 +48,11 @@ Found [here](https://github.com/wyfo/apischema)
 
 It's the only viable alternative to typedload that I've encountered.
 
+* Settings are global, a submodule changing a setting will affect the entire application
+* Type checks are disabled by default
 * It reuses the same objects in the output, so changing the data might result in subtle bugs if the input data is used again
 * No native support for attrs (but can be manually added by the user)
-* Faster than typedload for flat data structures, slower otherwise (but requires compilation to achieve that)
+* Faster than typedload for flat data structures, slower otherwise
 
 
 pydantic
@@ -61,10 +63,11 @@ Found [here](https://pydantic-docs.helpmanual.io/)
 * [They change API all the time, between minor releases.](https://pypi.org/project/pydantic/1.9.1/)
 * [Unions behave non-deterministically by default and require a flag to behave normally](https://docs.pydantic.dev/usage/model_config/#smart-union)
 * Slow, despite being compiled
-* Requires all the classes to derive from a superclass
+* Requires all the classes to derive from a superclass, existing code needs to be modified, external libraries are harder to use directly
 * Does not work with mypy:
     * [Abuses python typing annotation to mean something different, breaking linters](https://pydantic-docs.helpmanual.io/usage/models/#required-optional-fields)
     * [Uses float=None without using Optional in its own documentation](https://pydantic-docs.helpmanual.io/usage/models/#recursive-models).
+* [Author refuses to include unfavorable comparisons](https://github.com/pydantic/pydantic/pull/1525)
 
 jsons
 -----

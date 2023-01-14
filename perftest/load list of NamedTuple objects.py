@@ -46,6 +46,7 @@ elif sys.argv[1] == '--pydantic':
     f = lambda: DataPy(**data)
 elif sys.argv[1] == '--apischema':
     import apischema
+    apischema.settings.serialization.check_type = True
     f = lambda: apischema.deserialize(Data, data)
 elif sys.argv[1] == '--dataclass_json':
     from dataclasses import dataclass
