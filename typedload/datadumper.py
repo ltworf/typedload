@@ -179,9 +179,14 @@ class Dumper:
         if func is None:
             index = self.index(value)
             f = self.handlers[index][1]
-            # It has no type parameter
-            # TODO make all handlers require it in 3.0
+            # It has no type parameter, make a lambda
             if len(signature(f).parameters) == 2:
+                import warnings
+                warnings.warn(
+                    'The type signature for the dump handlers has changed to include type hints\n'
+                    'new handlers are: f(dumper, value, annotated_type)',
+                    DeprecationWarning
+                )
                 func = lambda d, v, _: f(d, v)  # type: ignore
             else:
                 func = f  # type: ignore
