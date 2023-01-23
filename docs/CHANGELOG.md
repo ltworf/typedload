@@ -1,3 +1,6 @@
+2.22
+====
+
 2.21
 ====
 * Drop support to Python 3.5 and 3.6
