@@ -27,6 +27,7 @@ pypi: pyproject.toml setup.py typedload
 	mv dist/*whl pypi
 	rmdir dist
 	gpg --detach-sign -a pypi/typedload-`head -1 CHANGELOG`.tar.gz
+	gpg --detach-sign -a pypi/typedload-`head -1 CHANGELOG`-py3-none-any.whl
 
 .PHONY: clean
 clean:
