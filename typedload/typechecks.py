@@ -15,7 +15,7 @@ protects the user from the ever changing internal representation used in
 different versions of Python.
 """
 
-# Copyright (C) 2019-2022 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2019-2023 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -250,11 +250,7 @@ def uniontypes(type_: Any) -> Tuple[Type[Any], ...]:
     '''
     Returns the types of a Union.
     '''
-    types = getattr(type_, '__args__', None)
-    if types is not None:
-        return types
-    else:
-        return type_.__union_params__
+    return type_.__args__
 
 
 def literalvalues(type_: Any) -> Set[Any]:
