@@ -22,9 +22,12 @@ setup.py: docs/CHANGELOG.md README.md
 pypi: pyproject.toml setup.py typedload
 	mkdir -p dist pypi
 	./setup.py sdist
+	./setup.py bdist_wheel
 	mv dist/typedload-`head -1 CHANGELOG`.tar.gz pypi
+	mv dist/*whl pypi
 	rmdir dist
 	gpg --detach-sign -a pypi/typedload-`head -1 CHANGELOG`.tar.gz
+	gpg --detach-sign -a pypi/typedload-`head -1 CHANGELOG`-py3-none-any.whl
 
 .PHONY: clean
 clean:
@@ -64,7 +67,7 @@ dist: clean setup.py pyproject.toml
 
 .PHONY: upload
 upload: pypi
-	twine upload --username __token__ --password `cat .token` pypi/typedload-`./setup.py --version`.tar.gz
+	twine upload --username __token__ --password `cat .token` pypi/*
 
 deb-pkg: dist
 	mv typedload_`./setup.py --version`.orig.tar.gz* /tmp
