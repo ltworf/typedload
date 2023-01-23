@@ -2,6 +2,7 @@
 ====
 * Drop support to Python 3.5 and 3.6
 * Improve performance for dumping
+* Generate pure python wheel
 
 2.20
 ====
