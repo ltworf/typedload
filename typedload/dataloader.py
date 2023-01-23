@@ -409,10 +409,7 @@ def _tupleload(l: Loader, value: Any, type_) -> Tuple:
     """
     This loads into something like Tuple[int,str]
     """
-    if HAS_TUPLEARGS:
-        args = type_.__args__
-    else:
-        args = type_.__tuple_params__
+    args = type_.__args__
 
     if len(args) == 2 and args[1] == ...: # Tuple[something, ...]
         return _iterload(l, value, type_, tuple)

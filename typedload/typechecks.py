@@ -99,22 +99,17 @@ def _issubclass(t1, t2) -> bool:
         return False
 
 
-HAS_TUPLEARGS = hasattr(Tuple[int, int], '__args__')
+HAS_TUPLEARGS = True # Legacy, used to be dependant on python version, but I exported the symbol
 NONETYPE = type(None)  # type: Any
 HAS_UNIONSUBCLASS = False
 
 
-if HAS_TUPLEARGS:
-    def is_tuple(type_: Any) -> bool:
-        '''
-        Tuple[int, str]
-        Tuple
-        '''
-        return _generic_type_check(type_, tuple, Tuple)
-else:
-    def is_tuple(type_: Any) -> bool:
-        # Old python
-        return _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
+def is_tuple(type_: Any) -> bool:
+    '''
+    Tuple[int, str]
+    Tuple
+    '''
+    return _generic_type_check(type_, tuple, Tuple)
 
 
 if UnionType:
