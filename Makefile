@@ -22,7 +22,9 @@ setup.py: docs/CHANGELOG.md README.md
 pypi: pyproject.toml setup.py typedload
 	mkdir -p dist pypi
 	./setup.py sdist
+	./setup.py bdist_wheel
 	mv dist/typedload-`head -1 CHANGELOG`.tar.gz pypi
+	mv dist/*whl pypi
 	rmdir dist
 	gpg --detach-sign -a pypi/typedload-`head -1 CHANGELOG`.tar.gz
 
