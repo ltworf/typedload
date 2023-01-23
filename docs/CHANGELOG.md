@@ -1,5 +1,6 @@
 2.22
 ====
+* Improve loading time for literals
 
 2.21
 ====
