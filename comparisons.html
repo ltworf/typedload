@@ -147,7 +147,7 @@
 <li>Easy to extend, even with objects from 3rd party libraries</li>
 <li>Stable API, breaking changes only happen on major releases (it has happened once since 2018)</li>
 <li>Supports Union properly</li>
-<li>Works on python 3.5</li>
+<li>Works on python 3.5 (typedload &lt;= 2.20)</li>
 <li>Mypy and similar work without plugins</li>
 <li>Can use and convert camelCase and snake_case</li>
 <li>Functional approach</li>
@@ -158,37 +158,41 @@
 <p>This means that types from other libraries or non supported stdlib classes can never be used.</p>
 <p>It also means that mypy will just work out of the box, rather than requiring plugins.</p>
 <p>Instead, typedload works fine with the type annotations from the <code>typing</code> module and will work without requiring any changes to the datatypes.</p>
-<p>It also works on python 3.5, so projects running on LTS distributions can use it.</p>
+<p>It also works on python 3.5 (until version 2.20), so projects running on LTS distributions can use it.</p>
 <h3 id="it-is-easy-to-extend">It is easy to extend</h3>
 <p>Since there can be situations that are highly domain specific, typedload allows to extend its functionality to support more types or replace the existing code to handle special cases.</p>
 <h3 id="support-of-union">Support of Union</h3>
-<p>Other libraries tend to either be very slow or just give completely wrong results when Union are involved.</p>
+<p>Other libraries tend to either be very slow or just give completely <a href="https://pydantic-docs.helpmanual.io/">wrong results</a> when Union are involved.</p>
 <h1 id="functional-approach">Functional approach</h1>
 <p>You can load a <code>List[YourType]</code>, while pydantic can only load a single object that then will contain the list.</p>
 <h2 id="apischema">apischema</h2>
 <p>Found <a href="https://github.com/wyfo/apischema">here</a></p>
 <p>It's the only viable alternative to typedload that I've encountered.</p>
 <ul>
+<li>Settings are global, a submodule changing a setting will affect the entire application</li>
+<li>Type checks are disabled by default</li>
 <li>It reuses the same objects in the output, so changing the data might result in subtle bugs if the input data is used again</li>
-<li>Doesn't support as many python versions as typedload (currently no 3.11 and no 3.5)</li>
 <li>No native support for attrs (but can be manually added by the user)</li>
-<li>Faster than typedload in most cases</li>
+<li>Faster than typedload for flat data structures, slower otherwise</li>
 </ul>
 <h2 id="pydantic">pydantic</h2>
 <p>Found <a href="https://pydantic-docs.helpmanual.io/">here</a></p>
 <ul>
 <li><a href="https://pypi.org/project/pydantic/1.9.1/">They change API all the time, between minor releases.</a></li>
-<li>Slower than typedload</li>
-<li>Requires all the classes to derive from a superclass</li>
+<li><a href="https://docs.pydantic.dev/usage/model_config/#smart-union">Unions behave non-deterministically by default and require a flag to behave normally</a></li>
+<li>Slow, despite being compiled</li>
+<li>Requires all the classes to derive from a superclass, existing code needs to be modified, external libraries are harder to use directly</li>
 <li>Does not work with mypy:<ul>
 <li><a href="https://pydantic-docs.helpmanual.io/usage/models/#required-optional-fields">Abuses python typing annotation to mean something different, breaking linters</a></li>
 <li><a href="https://pydantic-docs.helpmanual.io/usage/models/#recursive-models">Uses float=None without using Optional in its own documentation</a>.</li>
 </ul>
 </li>
+<li><a href="https://github.com/pydantic/pydantic/pull/1525">Author refuses to include unfavorable comparisons</a></li>
 </ul>
 <h2 id="jsons">jsons</h2>
 <p>Found <a href="https://github.com/ramonhagenaars/jsons">here</a></p>
 <ul>
+<li>Type safety is not a goal of this project</li>
 <li>It is buggy:<ul>
 <li>This returns an int <code>jsons.load(1.1, Union[int, float])</code></li>
 <li>This returns a string <code>jsons.load(1, Union[str, int])</code></li>
@@ -213,9 +217,10 @@ load(data, list[Union[float,int]])
 </code></pre>
 <h2 id="dataclasses-json">dataclasses-json</h2>
 <p>Found <a href="https://github.com/lidatong/dataclasses-json">here</a></p>
+<p><em>It is completely useless for type safety and very slow. I can't understand why it has users.</em></p>
 <ul>
 <li>It is incredibly slow (20x slower in certain cases)</li>
-<li>It's buggy (it will be happy to load whatever inside an int field)</li>
+<li>It doesn't enforce type safety (it will be happy to load whatever inside an int field)</li>
 <li>Requires to decorate all the classes</li>
 <li>It is not extensible</li>
 <li>Has dependencies (marshmallow, marshmallow-enum, typing-inspect)</li>
@@ -232,6 +237,14 @@ Data.from_dict({'data': [&quot;4&quot;, None, ..., ('qwe',), 1.1]})
 # This returns:
 # Data(data=['4', None, Ellipsis, ('qwe',), 1.1])
 # despite data is supposed to be a list of int
+</code></pre>
+<h2 id="msgspec">msgspec</h2>
+<p>Found <a href="https://jcristharif.com/msgspec/">here</a></p>
+<ul>
+<li>Decodes json directly, which is faster, but it means it can't be used with bson, yaml, and whatever else</li>
+<li>Very rudimental support for unions, so it can't run the performance tests</li>
+</ul>
+<pre><code class="language-python">TypeError: Type unions may not contain more than one dataclass type - type `A | B` is not supported
 </code></pre>
               
             </div>

@@ -78,9 +78,9 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="performance.html">Performance</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#using-python-310">Using Python 3.10</a>
-    </li>
     <li class="toctree-l2"><a class="reference internal" href="#using-python-311">Using Python 3.11</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-pypy-7311">Using Pypy 7.3.11</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#run-the-tests">Run the tests</a>
     </li>
@@ -142,24 +142,33 @@
 <p>The tests are done on my PC.</p>
 <p><code>typedload</code> manages to win quite a few benchmarks despite the competitors are compiled to binary <code>.so</code> files. Probably compiling it would make it win hands down. Feel free to help!</p>
 <p>Negative values mean that the library could not do the test or returned incorrect values.</p>
-<p>Keep in mind that when <code>jsons</code> and <code>dataclasses-json</code> are outperforming the rest, it usually means they are just passing the data without doing any check for correctness of the types.</p>
-<h2 id="using-python-310">Using Python 3.10</h2>
-<p>It is possible to see that it is always faster than <code>pydantic</code>, and is faster than <code>apischema</code> in just one test. <code>jsons</code> and <code>dataclasses-json</code> are usually very slow, unless they just return the same data without checking anything.</p>
-<p><img alt="performance chart" src="3.10_realistic_union_of_objects_as_namedtuple.svg" title="Title" />
-<img alt="performance chart" src="3.10_load_list_of_floats_and_ints.svg" title="Title" />
-<img alt="performance chart" src="3.10_load_list_of_lists.svg" title="Title" />
-<img alt="performance chart" src="3.10_load_list_of_NamedTuple_objects.svg" title="Title" />
-<img alt="performance chart" src="3.10_load_big_dictionary.svg" title="Title" />
-<img alt="performance chart" src="3.10_load_list_of_ints.svg" title="Title" /></p>
+<ul>
+<li><code>typedload</code> <img alt="Downloads" src="https://pepy.tech/badge/typedload" /></li>
+<li><code>pydantic</code> <img alt="Downloads" src="https://pepy.tech/badge/pydantic" /> is always slower</li>
+<li><code>apischema</code> <img alt="Downloads" src="https://pepy.tech/badge/apischema" /> is slower for nested data and faster otherwise</li>
+<li><code>jsons</code> <img alt="Downloads" src="https://pepy.tech/badge/jsons" /> is very slow and fails half the tests</li>
+<li><code>dataclasses-json</code> <img alt="Downloads" src="https://pepy.tech/badge/dataclasses-json" /> fails all the tests but is faster in one (yay)</li>
+</ul>
 <h2 id="using-python-311">Using Python 3.11</h2>
-<p>It is possible to see that it is always faster than <code>pydantic</code>. <code>apischema</code> doesn't work with Python 3.11 so all results are -1. <code>jsons</code> and <code>dataclasses-json</code> are usually very slow, unless they just return the same data without checking anything.</p>
-<p>With Python 3.11 some tests are faster but some other are slower. So it seems that in this use case the performance improvements are a bit hit or miss.</p>
-<p><img alt="performance chart" src="3.11_realistic_union_of_objects_as_namedtuple.svg" title="Title" />
-<img alt="performance chart" src="3.11_load_list_of_floats_and_ints.svg" title="Title" />
-<img alt="performance chart" src="3.11_load_list_of_lists.svg" title="Title" />
-<img alt="performance chart" src="3.11_load_list_of_NamedTuple_objects.svg" title="Title" />
-<img alt="performance chart" src="3.11_load_big_dictionary.svg" title="Title" />
-<img alt="performance chart" src="3.11_load_list_of_ints.svg" title="Title" /></p>
+<p><img alt="performance chart" src="3.11_realistic_union_of_objects_as_namedtuple.svg" title="Load realistic union of objects" />
+<img alt="performance chart" src="3.11_load_list_of_floats_and_ints.svg" title="Load list of floats and ints" />
+<img alt="performance chart" src="3.11_load_list_of_lists.svg" title="Load list of lists" />
+<img alt="performance chart" src="3.11_load_list_of_NamedTuple_objects.svg" title="Load list of NamedTuple" />
+<img alt="performance chart" src="3.11_load_big_dictionary.svg" title="Load big dictionary" />
+<img alt="performance chart" src="3.11_load_list_of_ints.svg" title="Load list of ints" />
+<img alt="performance chart" src="3.11_dump_objects.svg" title="Dump objects" />
+<img alt="performance chart" src="3.11_fail_load_list_of_floats_and_ints.svg" title="Load list of floats and ints which raises an exception" />
+<img alt="performance chart" src="3.11_fail_realistic_union_of_objects_as_namedtuple.svg" title="Load realistic union of objects which raises an exception" /></p>
+<h2 id="using-pypy-7311">Using Pypy 7.3.11</h2>
+<p><img alt="performance chart" src="3.9_realistic_union_of_objects_as_namedtuple.svg" title="Load realistic union of objects" />
+<img alt="performance chart" src="3.9_load_list_of_floats_and_ints.svg" title="Load list of floats and ints" />
+<img alt="performance chart" src="3.9_load_list_of_lists.svg" title="Load list of lists" />
+<img alt="performance chart" src="3.9_load_list_of_NamedTuple_objects.svg" title="Load list of NamedTuple" />
+<img alt="performance chart" src="3.9_load_big_dictionary.svg" title="Load big dictionary" />
+<img alt="performance chart" src="3.9_load_list_of_ints.svg" title="Load list of ints" />
+<img alt="performance chart" src="3.9_dump_objects.svg" title="Dump objects" />
+<img alt="performance chart" src="3.9_fail_load_list_of_floats_and_ints.svg" title="Load list of floats and ints which raises an exception" />
+<img alt="performance chart" src="3.9_fail_realistic_union_of_objects_as_namedtuple.svg" title="Load realistic union of objects which raises an exception" /></p>
 <h2 id="run-the-tests">Run the tests</h2>
 <p>Generate the performance chart locally.</p>
 <pre><code class="language-bash">python3 -m venv perfvenv

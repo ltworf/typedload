@@ -143,6 +143,7 @@ type checks or casts when needed.</p>
 like json, because it guarantees that the data will follow the specified schema.</p>
 <p>It is released with a GPLv3 license but <a href="mailto:tiposchi@tiscali.it">it is possible to ask for LGPLv3</a>.</p>
 <p><img alt="GPLv3 logo" src="docs/gpl3logo.png" /></p>
+<p><a href="https://liberapay.com/ltworf/donate">Donate</a></p>
 <h1 id="example">Example</h1>
 <p>For example this dictionary, loaded from a json:</p>
 <pre><code class="language-python">data = {
@@ -187,7 +188,7 @@ class Logins(NamedTuple):
 <li>Tuple[TypeA, TypeB, TypeC] and Tuple[SomeType, ...]</li>
 <li>Set[SomeType]</li>
 <li>Union[TypeA, TypeB]</li>
-<li>dataclass (requires Python 3.7)</li>
+<li>dataclass</li>
 <li>attr.s</li>
 <li>ForwardRef (Refer to the type in its own definition)</li>
 <li>Literal (requires Python 3.8)</li>
@@ -198,6 +199,8 @@ class Logins(NamedTuple):
 <li>typing.Any</li>
 <li>typing.NewType</li>
 </ul>
+<h2 id="unions">Unions</h2>
+<p>typedload works fine with untagged unions. However using Literal fields to tag them makes it much faster.</p>
 <h1 id="using-mypy">Using Mypy</h1>
 <p>Mypy and similar tools work without requiring any plugins.</p>
 <pre><code class="language-python"># This is treated as Any, no checks done.
@@ -285,6 +288,6 @@ the capabilities of this module.</p>
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2022-12-11 16:16:59.337762+00:00
+Build Date UTC : 2023-01-23 17:06:15.781104+00:00
 -->
 <!-- Trackers stripped from mkdocs theme by me -_-' -->
