@@ -15,7 +15,7 @@ protects the user from the ever changing internal representation used in
 different versions of Python.
 """
 
-# Copyright (C) 2019-2022 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2019-2023 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -99,22 +99,17 @@ def _issubclass(t1, t2) -> bool:
         return False
 
 
-HAS_TUPLEARGS = hasattr(Tuple[int, int], '__args__')
+HAS_TUPLEARGS = True # Legacy, used to be dependant on python version, but I exported the symbol
 NONETYPE = type(None)  # type: Any
 HAS_UNIONSUBCLASS = False
 
 
-if HAS_TUPLEARGS:
-    def is_tuple(type_: Any) -> bool:
-        '''
-        Tuple[int, str]
-        Tuple
-        '''
-        return _generic_type_check(type_, tuple, Tuple)
-else:
-    def is_tuple(type_: Any) -> bool:
-        # Old python
-        return _issubclass(type_, Tuple) and _issubclass(type_, tuple) == False
+def is_tuple(type_: Any) -> bool:
+    '''
+    Tuple[int, str]
+    Tuple
+    '''
+    return _generic_type_check(type_, tuple, Tuple)
 
 
 if UnionType:
@@ -250,11 +245,7 @@ def uniontypes(type_: Any) -> Tuple[Type[Any], ...]:
     '''
     Returns the types of a Union.
     '''
-    types = getattr(type_, '__args__', None)
-    if types is not None:
-        return types
-    else:
-        return type_.__union_params__
+    return type_.__args__
 
 
 def literalvalues(type_: Any) -> Set[Any]:
