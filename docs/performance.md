@@ -7,21 +7,38 @@ The tests are done on my PC.
 
 Negative values mean that the library could not do the test or returned incorrect values.
 
-Using Python 3.11
------------------
-
 * `typedload` ![Downloads](https://pepy.tech/badge/typedload)
 * `pydantic` ![Downloads](https://pepy.tech/badge/pydantic) is always slower
 * `apischema` ![Downloads](https://pepy.tech/badge/apischema) is slower for nested data and faster otherwise
 * `jsons` ![Downloads](https://pepy.tech/badge/jsons) is very slow and fails half the tests
 * `dataclasses-json` ![Downloads](https://pepy.tech/badge/dataclasses-json) fails all the tests but is faster in one (yay)
 
-![performance chart](3.11_realistic_union_of_objects_as_namedtuple.svg "Title")
-![performance chart](3.11_load_list_of_floats_and_ints.svg "Title")
-![performance chart](3.11_load_list_of_lists.svg "Title")
-![performance chart](3.11_load_list_of_NamedTuple_objects.svg "Title")
-![performance chart](3.11_load_big_dictionary.svg "Title")
-![performance chart](3.11_load_list_of_ints.svg "Title")
+Using Python 3.11
+-----------------
+
+![performance chart](3.11_realistic_union_of_objects_as_namedtuple.svg "Load realistic union of objects")
+![performance chart](3.11_load_list_of_floats_and_ints.svg "Load list of floats and ints")
+![performance chart](3.11_load_list_of_lists.svg "Load list of lists")
+![performance chart](3.11_load_list_of_NamedTuple_objects.svg "Load list of NamedTuple")
+![performance chart](3.11_load_big_dictionary.svg "Load big dictionary")
+![performance chart](3.11_load_list_of_ints.svg "Load list of ints")
+![performance chart](3.11_dump_objects.svg "Dump objects")
+![performance chart](3.11_fail_load_list_of_floats_and_ints.svg "Load list of floats and ints which raises an exception")
+![performance chart](3.11_fail_realistic_union_of_objects_as_namedtuple.svg "Load realistic union of objects which raises an exception")
+
+
+Using Pypy 7.3.11
+-----------------
+
+![performance chart](3.9_realistic_union_of_objects_as_namedtuple.svg "Load realistic union of objects")
+![performance chart](3.9_load_list_of_floats_and_ints.svg "Load list of floats and ints")
+![performance chart](3.9_load_list_of_lists.svg "Load list of lists")
+![performance chart](3.9_load_list_of_NamedTuple_objects.svg "Load list of NamedTuple")
+![performance chart](3.9_load_big_dictionary.svg "Load big dictionary")
+![performance chart](3.9_load_list_of_ints.svg "Load list of ints")
+![performance chart](3.9_dump_objects.svg "Dump objects")
+![performance chart](3.9_fail_load_list_of_floats_and_ints.svg "Load list of floats and ints which raises an exception")
+![performance chart](3.9_fail_realistic_union_of_objects_as_namedtuple.svg "Load realistic union of objects which raises an exception")
 
 
 Run the tests
