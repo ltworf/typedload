@@ -20,7 +20,7 @@ from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
-from attr import attrs, attrib
+from attr import attrs, attrib, define, field
 
 from typedload import load, dump, exceptions, typechecks
 from typedload import datadumper
@@ -234,3 +234,25 @@ class TestAttrExceptions(unittest.TestCase):
             assert e.trace[-2].annotation[1] == 'students'
             assert e.trace[-1].annotation[1] == 2
 
+
+class TestAttrConverter(unittest.TestCase):
+
+    def test_old_style_int_conversion(self):
+        @attrs
+        class C:
+            a: int = attrib(converter=int)
+            b: int = attrib()
+
+        assert load({'a': '1', 'b': 1}, C) == C(1, 1)
+        with self.assertRaises(ValueError):
+            load({'a': 'a', 'b': 1}, C)
+
+    def test_new_style_int_conversion(self):
+        @define
+        class C:
+            a: int = field(converter=int)
+            b: int
+
+        assert load({'a': '1', 'b': 1}, C) == C(1, 1)
+        with self.assertRaises(ValueError):
+            load({'a': 'a', 'b': 1}, C)
