@@ -1,6 +1,8 @@
 2.22
 ====
 * Improve loading time for literals
+* When a field in an attrs class has a converter, assume the type is Any and
+  expect the converter to deal with whatever it is.
 
 2.21
 ====
