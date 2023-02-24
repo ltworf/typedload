@@ -746,7 +746,7 @@ def _attrload(l: Loader, value: Any, type_) -> Any:
 
     fields = {i.name for i in type_.__attrs_attrs__}
     necessary_fields = set()
-    type_hints = {i.name: i.type for i in type_.__attrs_attrs__}
+    type_hints = {i.name: (Any if i.converter else i.type) for i in type_.__attrs_attrs__}
     namesmap = {}  # type: Dict[str, str]
 
     for attribute in type_.__attrs_attrs__:
