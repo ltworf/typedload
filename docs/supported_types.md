@@ -223,6 +223,8 @@ class New:
     newfield: int = attr.ib()
 
 def conv(p: Old | New) -> New:
+    # The type hinting necessary to tell typedload what to do
+    # Without hinting it would just pass the dictionary directly
     if isinstance(p, New):
         return p
     return New(p.oldfield)
