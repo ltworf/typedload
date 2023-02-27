@@ -75,6 +75,14 @@
     <li class="toctree-l2"><a class="reference internal" href="#typingdict">typing.Dict</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#objects">Objects</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#attrs-converters">attrs converters</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#forward-references">Forward references</a>
     </li>
@@ -322,6 +330,54 @@ Out: Solid(vertex=[Point3d(x=1.0, y=1.0, z=1.0), Point3d(x=2.0, y=2.0, z=2.0), P
 </code></pre>
 <p>They are loaded from dictionaries into those objects. <code>failonextra</code> when set can generate exceptions if more fields than expected are present.</p>
 <p>When dumping they go back to dictionaries. <code>hide_default</code> defaults to True, so all fields that were equal to the default will not be dumped.</p>
+<h3 id="attrs-converters">attrs converters</h3>
+<p>Attrs fields can have a converter function associated.</p>
+<p>If this is the case, typedload will ignore the assigned type, inspect the type hints of the converter function, and assign the type of the parameter of the converter as type. If the function is not typed, <code>Any</code> will be used.</p>
+<p>This can be useful when the data format has been changed in a more complex way than just adding a few extra fields. Then the converter function can be used to do the necessary conversions for the old data format.</p>
+<h4 id="examples">Examples</h4>
+<pre><code class="language-python">@attr.s
+class A:
+    x: int = attr.ib(converter=str) # x has a converter that just calls str()
+
+In : load({'x': [1]}, A)
+Out: A(x='[1]')
+
+# In this case the int type for x was completely ignored, because a converter is defined
+# The str() function does not define type hints, so Any is used
+# So the list [1] is passed as is to the constructor of A() which calls str() on it to convert it
+</code></pre>
+<pre><code class="language-python">@attr.s
+class Old:
+    oldfield: int = attr.ib()
+
+@attr.s
+class New:
+    newfield: int = attr.ib()
+
+def conv(p: Old | New) -&gt; New:
+    # The type hinting necessary to tell typedload what to do
+    # Without hinting it would just pass the dictionary directly
+    if isinstance(p, New):
+        return p
+    return New(p.oldfield)
+
+@attr.s
+class Outer:
+    '''
+    Our old data format was using the Old class, but
+    we now use the New class.
+
+    The converter returns a New instance from an Old instance.
+    '''
+    inner: New = attr.ib(converter=conv)
+
+# Calling load with the new data format, returns a New class
+In : load({'inner': {'newfield':3}}, Outer)
+Out: Outer(inner=New(newfield=3))
+# Loading with the old data format, still returns a New class
+In : load({'inner': {'oldfield':3}}, Outer)
+Out: Outer(inner=New(newfield=3))
+</code></pre>
 <h2 id="forward-references">Forward references</h2>
 <p>A forward reference is when a type is specified as a string instead of as an object:</p>
 <pre><code class="language-python">a: ObjA = ObjA()
