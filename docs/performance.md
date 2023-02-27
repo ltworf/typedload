@@ -10,8 +10,6 @@ Negative values mean that the library could not do the test or returned incorrec
 * `typedload` ![Downloads](https://pepy.tech/badge/typedload)
 * `pydantic` ![Downloads](https://pepy.tech/badge/pydantic) is always slower
 * `apischema` ![Downloads](https://pepy.tech/badge/apischema) is slower for nested data and faster otherwise
-* `jsons` ![Downloads](https://pepy.tech/badge/jsons) is very slow and fails half the tests
-* `dataclasses-json` ![Downloads](https://pepy.tech/badge/dataclasses-json) fails all the tests but is faster in one (yay)
 
 Using Python 3.11
 -----------------
@@ -49,7 +47,7 @@ Generate the performance chart locally.
 ```bash
 python3 -m venv perfvenv
 . perfvenv/bin/activate
-pip install apischema pydantic attrs dataclasses-json jsons
+pip install apischema pydantic attrs
 export PYTHONPATH=$(pwd)
 make gnuplot
 ```
