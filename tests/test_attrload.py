@@ -19,8 +19,9 @@
 from enum import Enum
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
+import sys
 
-from attr import attrs, attrib
+from attr import attrs, attrib, define, field
 
 from typedload import load, dump, exceptions, typechecks
 from typedload import datadumper
@@ -234,3 +235,59 @@ class TestAttrExceptions(unittest.TestCase):
             assert e.trace[-2].annotation[1] == 'students'
             assert e.trace[-1].annotation[1] == 2
 
+
+class TestAttrConverter(unittest.TestCase):
+
+    def test_old_style_int_conversion_any(self):
+        @attrs
+        class C:
+            a: int = attrib(converter=int)
+            b: int = attrib()
+
+        assert load({'a': '1', 'b': 1}, C) == C(1, 1)
+        with self.assertRaises(ValueError):
+            load({'a': 'a', 'b': 1}, C)
+
+    def test_new_style_int_conversion_any(self):
+        @define
+        class C:
+            a: int = field(converter=int)
+            b: int
+
+        assert load({'a': '1', 'b': 1}, C) == C(1, 1)
+        with self.assertRaises(ValueError):
+            load({'a': 'a', 'b': 1}, C)
+
+    def test_typed_conversion(self):
+        if sys.version_info.minor < 8:
+            # Skip for older than 3.8
+            return
+
+        from typing import Literal
+
+        @define
+        class A:
+            type: Literal['A']
+            value: int
+
+        @define
+        class B:
+            type: Literal['B']
+            value: str
+
+        def conv(param: Union[A, B]) -> B:
+            if isinstance(param, B):
+                return param
+            return B('B', str(param.value))
+
+        @define
+        class Outer:
+            inner: B = field(converter=conv)
+
+        v = load({'inner': {'type': 'A', 'value': 33}}, Outer)
+        assert v.inner.type == 'B'
+        assert v.inner.value == '33'
+
+        v = load({'inner': {'type': 'B', 'value': '33'}}, Outer)
+        assert v.inner.type == 'B'
+        assert v.inner.value == '33'

@@ -189,6 +189,63 @@ They are loaded from dictionaries into those objects. `failonextra` when set can
 
 When dumping they go back to dictionaries. `hide_default` defaults to True, so all fields that were equal to the default will not be dumped.
 
+### attrs converters
+
+Attrs fields can have a converter function associated.
+
+If this is the case, typedload will ignore the assigned type, inspect the type hints of the converter function, and assign the type of the parameter of the converter as type. If the function is not typed, `Any` will be used.
+
+This can be useful when the data format has been changed in a more complex way than just adding a few extra fields. Then the converter function can be used to do the necessary conversions for the old data format.
+
+#### Examples
+
+```python
+@attr.s
+class A:
+    x: int = attr.ib(converter=str) # x has a converter that just calls str()
+
+In : load({'x': [1]}, A)
+Out: A(x='[1]')
+
+# In this case the int type for x was completely ignored, because a converter is defined
+# The str() function does not define type hints, so Any is used
+# So the list [1] is passed as is to the constructor of A() which calls str() on it to convert it
+```
+
+
+```python
+@attr.s
+class Old:
+    oldfield: int = attr.ib()
+
+@attr.s
+class New:
+    newfield: int = attr.ib()
+
+def conv(p: Old | New) -> New:
+    # The type hinting necessary to tell typedload what to do
+    # Without hinting it would just pass the dictionary directly
+    if isinstance(p, New):
+        return p
+    return New(p.oldfield)
+
+@attr.s
+class Outer:
+    '''
+    Our old data format was using the Old class, but
+    we now use the New class.
+
+    The converter returns a New instance from an Old instance.
+    '''
+    inner: New = attr.ib(converter=conv)
+
+# Calling load with the new data format, returns a New class
+In : load({'inner': {'newfield':3}}, Outer)
+Out: Outer(inner=New(newfield=3))
+# Loading with the old data format, still returns a New class
+In : load({'inner': {'oldfield':3}}, Outer)
+Out: Outer(inner=New(newfield=3))
+```
 
 Forward references
 ------------------

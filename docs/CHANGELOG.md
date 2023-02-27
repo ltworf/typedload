@@ -1,6 +1,7 @@
 2.22
 ====
 * Improve loading time for literals
+* Support attrs converter
 
 2.21
 ====
