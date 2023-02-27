@@ -44,6 +44,13 @@ elif sys.argv[1] == '--pydantic':
     class DataPy(pydantic.BaseModel):
         data: List[ChildPy]
     f = lambda: DataPy(**data)
+elif sys.argv[1] == '--msgspec':
+    import msgspec
+    class Child(msgspec.Struct):
+        value: int
+    class Data(msgspec.Struct):
+        data: List[Child]
+    f = lambda: msgspec.from_builtins(data, Data)
 elif sys.argv[1] == '--apischema':
     import apischema
     apischema.settings.serialization.check_type = True

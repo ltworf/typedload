@@ -39,6 +39,11 @@ elif sys.argv[1] == '--pydantic':
     f = lambda: DataPy(**data)
     assert f().data['0'][0] == '0'
     print(timeit(f))
+elif sys.argv[1] == '--msgspec':
+    import msgspec
+    class Data(msgspec.Struct):
+        data: dict[str, dict[int, str]]
+    f = lambda: msgspec.from_builtins(data, Data)
 elif sys.argv[1] == '--apischema':
     import apischema
     apischema.settings.serialization.check_type = True
