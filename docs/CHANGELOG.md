@@ -1,6 +1,7 @@
 2.23
 ====
-
+* Remove `jsons` and `dataclasses-json` from benchmarks.
+  They were too slow to be a useful comparison.
 
 2.22
 ====
