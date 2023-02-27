@@ -80,6 +80,7 @@ Found [here](https://github.com/ramonhagenaars/jsons)
     * This returns a string `jsons.load(1, Union[str, int])`
     * This raises an exception `jsons.load(1.0, int | float)`
 * It is incredibly slow (40x slower in certain cases)
+  For this reason it has been removed from the benchmarks.
 * [Does not support `Literal`](https://github.com/ramonhagenaars/jsons/issues/170)
 * Can't load iterables as lists
 * Exceptions do not have information to find the incorrect data
@@ -106,6 +107,7 @@ Found [here](https://github.com/lidatong/dataclasses-json)
 *It is completely useless for type safety and very slow. I can't understand why it has users.*
 
 * It is incredibly slow (20x slower in certain cases)
+  For this reason it has been removed from the benchmarks.
 * It doesn't enforce type safety (it will be happy to load whatever inside an int field)
 * Requires to decorate all the classes
 * It is not extensible
