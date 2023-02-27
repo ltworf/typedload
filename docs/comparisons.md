@@ -80,6 +80,7 @@ Found [here](https://github.com/ramonhagenaars/jsons)
     * This returns a string `jsons.load(1, Union[str, int])`
     * This raises an exception `jsons.load(1.0, int | float)`
 * It is incredibly slow (40x slower in certain cases)
+  For this reason it has been removed from the benchmarks.
 * [Does not support `Literal`](https://github.com/ramonhagenaars/jsons/issues/170)
 * Can't load iterables as lists
 * Exceptions do not have information to find the incorrect data
@@ -106,6 +107,7 @@ Found [here](https://github.com/lidatong/dataclasses-json)
 *It is completely useless for type safety and very slow. I can't understand why it has users.*
 
 * It is incredibly slow (20x slower in certain cases)
+  For this reason it has been removed from the benchmarks.
 * It doesn't enforce type safety (it will be happy to load whatever inside an int field)
 * Requires to decorate all the classes
 * It is not extensible
@@ -134,7 +136,7 @@ Found [here](https://jcristharif.com/msgspec/)
 
 
 * Decodes json directly, which is faster, but it means it can't be used with bson, yaml, and whatever else
-* Very rudimental support for unions, so it can't run the performance tests
+* It can't run the performance tests since it doesn't support unions (not even tagged with Literal)
 
 ```python
 TypeError: Type unions may not contain more than one dataclass type - type `A | B` is not supported

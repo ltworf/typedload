@@ -52,7 +52,7 @@ def main():
         'fail load list of floats and ints',
     ]
 
-    extlibs = ['pydantic', 'apischema', 'dataclass_json', 'jsons']
+    extlibs = ['pydantic', 'apischema']
 
     outdir = Path('perftest.output')
     if not outdir.exists():
