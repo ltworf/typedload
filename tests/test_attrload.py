@@ -17,8 +17,9 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 from enum import Enum
-from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union, Literal
+from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
+import sys
 
 from attr import attrs, attrib, define, field
 
@@ -258,6 +259,11 @@ class TestAttrConverter(unittest.TestCase):
             load({'a': 'a', 'b': 1}, C)
 
     def test_typed_conversion(self):
+        if sys.version_info.minor < 8:
+            # Skip for older than 3.8
+            return
+
+        from typing import Literal
 
         @define
         class A:
