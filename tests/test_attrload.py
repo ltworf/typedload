@@ -17,7 +17,7 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 from enum import Enum
-from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
+from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union, Literal
 import unittest
 
 from attr import attrs, attrib, define, field
@@ -237,7 +237,7 @@ class TestAttrExceptions(unittest.TestCase):
 
 class TestAttrConverter(unittest.TestCase):
 
-    def test_old_style_int_conversion(self):
+    def test_old_style_int_conversion_any(self):
         @attrs
         class C:
             a: int = attrib(converter=int)
@@ -247,7 +247,7 @@ class TestAttrConverter(unittest.TestCase):
         with self.assertRaises(ValueError):
             load({'a': 'a', 'b': 1}, C)
 
-    def test_new_style_int_conversion(self):
+    def test_new_style_int_conversion_any(self):
         @define
         class C:
             a: int = field(converter=int)
@@ -256,3 +256,32 @@ class TestAttrConverter(unittest.TestCase):
         assert load({'a': '1', 'b': 1}, C) == C(1, 1)
         with self.assertRaises(ValueError):
             load({'a': 'a', 'b': 1}, C)
+
+    def test_typed_conversion(self):
+
+        @define
+        class A:
+            type: Literal['A']
+            value: int
+
+        @define
+        class B:
+            type: Literal['B']
+            value: str
+
+        def conv(param: A | B) -> B:
+            if isinstance(param, B):
+                return param
+            return B('B', str(param.value))
+
+        @define
+        class Outer:
+            inner: B = field(converter=conv)
+
+        v = load({'inner': {'type': 'A', 'value': 33}}, Outer)
+        assert v.inner.type == 'B'
+        assert v.inner.value == '33'
+
+        v = load({'inner': {'type': 'B', 'value': '33'}}, Outer)
+        assert v.inner.type == 'B'
+        assert v.inner.value == '33'
