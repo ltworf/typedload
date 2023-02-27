@@ -741,12 +741,28 @@ def _datetimeload(l: Loader, value: Any, type_) -> Union[datetime.date, datetime
         raise TypedloadTypeError(str(e), type_=type_, value=value)
 
 
+def _get_attr_converter_type(c: "Callable"):
+    """
+    c is a converter function passed to an attr field
+
+    it is supposed to have 1 parameter only
+
+    If it's typed, return the type of the parameter. Otherwise return Any
+    """
+    hints = get_type_hints(c)
+    if len(hints) > 0 and len(hints) <= 2:
+        if 'return' in hints:
+            del hints['return']
+        return next(iter(hints.values()))
+    return Any
+
+
 def _attrload(l: Loader, value: Any, type_) -> Any:
     from attr._make import _Nothing as NOTHING
 
     fields = {i.name for i in type_.__attrs_attrs__}
     necessary_fields = set()
-    type_hints = {i.name: (Any if i.converter else i.type) for i in type_.__attrs_attrs__}
+    type_hints = {i.name: (_get_attr_converter_type(i.converter) if i.converter else i.type) for i in type_.__attrs_attrs__}
     namesmap = {}  # type: Dict[str, str]
 
     for attribute in type_.__attrs_attrs__:
