@@ -136,7 +136,7 @@ Found [here](https://jcristharif.com/msgspec/)
 
 
 * Decodes json directly, which is faster, but it means it can't be used with bson, yaml, and whatever else
-* Very rudimental support for unions, so it can't run the performance tests
+* It can't run the performance tests since it doesn't support unions (not even tagged with Literal)
 
 ```python
 TypeError: Type unions may not contain more than one dataclass type - type `A | B` is not supported
