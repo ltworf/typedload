@@ -275,7 +275,7 @@ class TestAttrConverter(unittest.TestCase):
             type: Literal['B']
             value: str
 
-        def conv(param: A | B) -> B:
+        def conv(param: Union[A, B]) -> B:
             if isinstance(param, B):
                 return param
             return B('B', str(param.value))
