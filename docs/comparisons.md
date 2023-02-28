@@ -134,12 +134,12 @@ msgspec
 
 Found [here](https://jcristharif.com/msgspec/)
 
-* It doesn't support PyPy.
-* It has [some restrictions on unions](https://jcristharif.com/msgspec/supported-types.html#union-optional).
-  In particular unions containing multiple dataclasses aren't supported; to
-  represent unions of object types you need to use their ``msgspec.Struct``
-  type.
-
-```python
-TypeError: Type unions may not contain more than one dataclass type - type `A | B` is not supported
-```
+* Implemented in C, won't run on PyPy
+* Supports tagged Unions partially only when inheriting from its Struct type
+  Mypy will not typecheck those classes.
+  To use unions you must give up static typechecking.
+* Doesn't support unions between regular dataclass/NamedTuple/Attrs/TypedDict
+* Doesn't support untagged Unions
+* Doesn't support multiple tags (e.g. `tag=Literal[1, 2]`)
+* Extended using a single function that must handle all cases
+* Can't replace type handlers
