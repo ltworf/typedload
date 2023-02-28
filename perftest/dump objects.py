@@ -52,6 +52,9 @@ elif sys.argv[1] == '--pydantic':
     class PPossessions(pydantic.BaseModel):
         possessions: list[Union[House, Car]]
     f = lambda: PPossessions(possessions=data.possessions).dict()
+elif sys.argv[1] == '--msgspec':
+    import msgspec
+    f = lambda: msgspec.to_builtins(data)
 elif sys.argv[1] == '--apischema':
     import apischema
     apischema.settings.serialization.check_type = True

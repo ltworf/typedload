@@ -137,6 +137,33 @@ elif sys.argv[1] == '--pydantic':
     class EventListPy(pydantic.BaseModel):
         data: Tuple[EventPy, ...]
     f = lambda: EventListPy(**data)
+elif sys.argv[1] == '--msgspec':
+    import msgspec
+    class EventMessage(msgspec.Struct, tag="message"):
+        timestamp: float
+        text: str
+        sender: str
+        receiver: str
+    class EventFile(msgspec.Struct, tag="file"):
+        timestamp: float
+        filename: str
+        sender: str
+        receiver: str
+        url: str
+    class EventPing(msgspec.Struct, tag="ping"):
+        timestamp: float
+    class EventEnter(msgspec.Struct, tag="enter"):
+        timestamp: float
+        sender: str
+        room: int
+    class EventExit(msgspec.Struct, tag="exit"):
+        timestamp: float
+        sender: str
+        room: int
+    Event = Union[EventExit, EventEnter, EventMessage, EventPing, EventFile]
+    class EventList(msgspec.Struct):
+        data: Tuple[Event, ...]
+    f = lambda: msgspec.from_builtins(data, EventList)
 elif sys.argv[1] == '--apischema':
     import apischema
     apischema.settings.serialization.check_type = True
@@ -167,4 +194,3 @@ assert f().data[2].sender == '3141'
 
 data = {'data': events * 50000}
 print(timeit(f))
-
