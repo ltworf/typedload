@@ -134,9 +134,11 @@ msgspec
 
 Found [here](https://jcristharif.com/msgspec/)
 
-
-* Decodes json directly, which is faster, but it means it can't be used with bson, yaml, and whatever else
-* It can't run the performance tests since it doesn't support unions (not even tagged with Literal)
+* It doesn't support PyPy.
+* It has [some restrictions on unions](https://jcristharif.com/msgspec/supported-types.html#union-optional).
+  In particular unions containing multiple dataclasses aren't supported; to
+  represent unions of object types you need to use their ``msgspec.Struct``
+  type.
 
 ```python
 TypeError: Type unions may not contain more than one dataclass type - type `A | B` is not supported
