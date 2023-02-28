@@ -2,7 +2,6 @@
 ====
 * Remove `jsons` and `dataclasses-json` from benchmarks.
   They were too slow to be a useful comparison.
-* Add benchmark for `msgspec`
 
 2.22
 ====
