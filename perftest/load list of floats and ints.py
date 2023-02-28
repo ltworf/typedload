@@ -37,11 +37,6 @@ elif sys.argv[1] == '--pydantic':
     class DataPy(pydantic.BaseModel, smart_union=True):
         data: List[Union[int, float]]
     f = lambda: DataPy(**data)
-elif sys.argv[1] == '--msgspec':
-    import msgspec
-    class Data(msgspec.Struct):
-        data: List[Union[int, float]]
-    f = lambda: msgspec.from_builtins(data, Data)
 elif sys.argv[1] == '--apischema':
     import apischema
     apischema.settings.serialization.check_type = True
