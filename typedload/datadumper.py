@@ -267,7 +267,7 @@ def _dataclassdump(d: Dumper, value, t) -> Dict[str, Any]:
 def _iteratordump(d: Dumper, value: Any, t: Any) -> List[Any]:
     itertypes = getattr(t, '__args__', (Any, ))
     # list[T] or tuple[T, ...]
-    if (len(itertypes) == 1) or (len(itertypes) == 2 and itertypes[1] == ...):
+    if (len(itertypes) == 1) or (len(itertypes) == 2 and itertypes[1] == ...):  # type: ignore
         # This is true for lists/sets but not tuples
         itertype = itertypes[0]
     else:
