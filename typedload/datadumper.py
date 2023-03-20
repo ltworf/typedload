@@ -72,12 +72,12 @@ class Dumper:
         List[
             Tuple[
                 Callable[[Any], bool],
-                Callable[['Dumper', Any], Any]
+                Callable[['Dumper', Any, Any], Any]
             ]
         ]
         The elements are: Tuple[Condition, Dumper]
         Condition(value) -> Bool
-        Dumper(dumper, value) -> simpler_value
+        Dumper(dumper, value, value_type) -> simpler_value
 
         In most cases, it is sufficient to append new elements
         at the end, to handle more types.
@@ -91,14 +91,21 @@ class Dumper:
     ones have any effect. This is to allow custom handlers to have their
     own parameters as well.
 
+    Because internal caches are used, after the first call to dump() these properties
+    should no longer be modified.
+
     There is support for:
         * Basic python types (int, str, bool, float, NoneType)
-        * NamedTuple
-        * Enum
-        * List[SomeType]
+        * NamedTuple, dataclasses, attrs, TypedDict
         * Dict[TypeA, TypeB]
-        * Tuple[TypeA, TypeB, TypeC]
-        * Set[SomeType]
+        * Enum
+        * List
+        * Tuple
+        * Set
+        * FrozenSet
+        * Path
+        * IPv4Address, IPv6Address, IPv4Network, IPv6Network, IPv4Interface, IPv6Interface
+        * datetime
     """
     def __init__(self, **kwargs) -> None:
         self.basictypes = {int, bool, float, str, NONETYPE}

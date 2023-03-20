@@ -153,8 +153,11 @@ class Loader:
     ones have any effect. This is to allow custom handlers to have their
     own parameters as well.
 
-    Using unions is complicated. If the types in the union are too
-    similar to each other, it is easy to obtain an unexpected type.
+    Because internal caches are used, after the first call to load() these properties
+    should no longer be modified.
+
+    Using unions is complicated. The best is to use tagged unions using a Literal field.
+    If the types in the union are too similar to each other, it is easy to obtain an unexpected type.
     """
 
     def __init__(self, **kwargs) -> None:
