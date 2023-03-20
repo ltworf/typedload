@@ -23,6 +23,13 @@ from typedload import load, dump, dataloader, datadumper
 
 
 class TestDatetimedump(unittest.TestCase):
+    def test_isodatetime(self):
+        dumper = datadumper.Dumper(isodates=True)
+        assert dumper.dump(datetime.date(2011, 12, 12)) == '2011-12-12'
+        assert dumper.dump(datetime.time(15, 41)) == '15:41:00'
+        assert dumper.dump(datetime.datetime(2019, 5, 31, 12, 44, 22)) == '2019-05-31T12:44:22'
+        assert dumper.dump(datetime.datetime(2023, 3, 20, 7, 43, 19, 906439, tzinfo=datetime.timezone.utc)) == '2023-03-20T07:43:19.906439+00:00'
+
     def test_datetime(self):
         dumper = datadumper.Dumper()
         assert dumper.dump(datetime.date(2011, 12, 12)) == [2011, 12, 12]
@@ -30,6 +37,18 @@ class TestDatetimedump(unittest.TestCase):
         assert dumper.dump(datetime.datetime(2019, 5, 31, 12, 44, 22)) == [2019, 5, 31, 12, 44, 22, 0]
 
 class TestDatetimeLoad(unittest.TestCase):
+    def test_isoload(self):
+        now = datetime.datetime.now()
+        assert load(now.isoformat(), datetime.datetime) == now
+
+        withtz = datetime.datetime(2023, 3, 20, 7, 43, 19, 906439, tzinfo=datetime.timezone.utc)
+        assert load(withtz.isoformat(), datetime.datetime) == withtz
+
+        date = datetime.date(2023, 4, 1)
+        assert load(date.isoformat(), datetime.date) == date
+
+        time = datetime.time(23, 44, 12)
+        assert load(time.isoformat(), datetime.time) == time
 
     def test_date(self):
         loader = dataloader.Loader()
