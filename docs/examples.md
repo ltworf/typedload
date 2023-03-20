@@ -459,7 +459,7 @@ nt_handler = d.index(Point(1,2)) # We need to use a real object to find the hand
 
 dump_handler = (
     lambda x: hasattr(x, 'from_json'), # Anything that has a from_json
-    lambda loader, value: value.to_json() # Call the from_json and return its value
+    lambda dumper, value, value_type: value.to_json() # Call the from_json and return its value
 )
 d.handlers.insert(nt_handler, dump_handler)
 

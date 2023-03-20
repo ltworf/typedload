@@ -3,6 +3,8 @@
 * When loading a string into datetime.date/time/datetime, ISO 8601 is used
 * When dumping, setting `isodates=True` dumps an ISO 8601 string instead of a list of ints. The previous behaviour is now deprecated.
 * Add support for datetime.timedelta. It is dumped as a float representing seconds
+* Deprecate dump handlers without type hints
+* Improve performance for dumping, by carrying type hints
 * Remove `jsons` and `dataclasses-json` from benchmarks.
   They were too slow to be a useful comparison.
 
