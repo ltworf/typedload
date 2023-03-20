@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2023 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ from .test_dataclass import *
 from .test_deferred import *
 from .test_legacytuples_dataloader import *
 from .test_typechecks import *
+from .test_datetime import *
 
 if sys.version_info.minor >= 8:
     from .test_literal import *

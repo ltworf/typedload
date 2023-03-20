@@ -1,5 +1,6 @@
 2.23
 ====
+* Add support for datetime.timedelta. It is dumped as a float representing seconds
 * Remove `jsons` and `dataclasses-json` from benchmarks.
   They were too slow to be a useful comparison.
 
