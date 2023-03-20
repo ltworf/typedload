@@ -22,6 +22,37 @@ import unittest
 from typedload import load, dump, dataloader, datadumper
 
 
+class TestDatetimedump(unittest.TestCase):
+    def test_datetime(self):
+        dumper = datadumper.Dumper()
+        assert dumper.dump(datetime.date(2011, 12, 12)) == [2011, 12, 12]
+        assert dumper.dump(datetime.time(15, 41)) == [15, 41, 0, 0]
+        assert dumper.dump(datetime.datetime(2019, 5, 31, 12, 44, 22)) == [2019, 5, 31, 12, 44, 22, 0]
+
+class TestDatetimeLoad(unittest.TestCase):
+
+    def test_date(self):
+        loader = dataloader.Loader()
+        assert loader.load((2011, 1, 1), datetime.date) == datetime.date(2011, 1, 1)
+        assert loader.load((15, 33), datetime.time) == datetime.time(15, 33)
+        assert loader.load((15, 33, 0), datetime.time) == datetime.time(15, 33)
+        assert loader.load((2011, 1, 1), datetime.datetime) == datetime.datetime(2011, 1, 1)
+        assert loader.load((2011, 1, 1, 22), datetime.datetime) == datetime.datetime(2011, 1, 1, 22)
+
+        # Same but with lists
+        assert loader.load([2011, 1, 1], datetime.date) == datetime.date(2011, 1, 1)
+        assert loader.load([15, 33], datetime.time) == datetime.time(15, 33)
+        assert loader.load([15, 33, 0], datetime.time) == datetime.time(15, 33)
+        assert loader.load([2011, 1, 1], datetime.datetime) == datetime.datetime(2011, 1, 1)
+        assert loader.load([2011, 1, 1, 22], datetime.datetime) == datetime.datetime(2011, 1, 1, 22)
+
+    def test_exception(self):
+        loader = dataloader.Loader()
+        with self.assertRaises(TypeError):
+            loader.load((2011, ), datetime.datetime)
+            loader.load(33, datetime.datetime)
+
+
 class TestTimedelta(unittest.TestCase):
 
     def test_findhandlers(self):
