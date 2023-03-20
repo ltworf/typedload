@@ -445,12 +445,12 @@ Loads a string as a `Path`; when dumping it goes back to being a string.
 
 ### ipaddress.IPv*Address/Network/Interface
 
-* ipaddress.IPv4Address
-* ipaddress.IPv6Address
-* ipaddress.IPv4Network
-* ipaddress.IPv6Network
-* ipaddress.IPv4Interface
-* ipaddress.IPv6Interface
+* `ipaddress.IPv4Address`
+* `ipaddress.IPv6Address`
+* `ipaddress.IPv4Network`
+* `ipaddress.IPv6Network`
+* `ipaddress.IPv4Interface`
+* `ipaddress.IPv6Interface`
 
 ```python
 In : typedload.load('10.1.1.3', IPv4Address)
@@ -467,8 +467,8 @@ This is converted to a dictionary and can be loaded into NamedTuple/dataclass.
 Dates
 -----
 
-* datetime.date
-* datetime.time
-* datetime.datetime
-
-TODO
+* `datetime.date`
+* `datetime.time`
+* `datetime.datetime`
+* `datetime.timedelta`
+  Represented as a float of seconds
