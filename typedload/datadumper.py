@@ -48,6 +48,15 @@ class Dumper:
         When enabled, does not include fields that have the
         same value as the default in the dump.
 
+    isodates: Disabled by default.
+        Will be enabled by default from version 3.
+        When disabled, datetime.datetime, datetime.time, datetime.date
+        are dumped as lists of ints.
+
+        When enabled they are dumped as strings in ISO 8601 format.
+
+        When enabled, timezone information will work.
+
     raiseconditionerrors: Enabled by default.
         Raises exceptions when evaluating a condition from an
         handler. When disabled, the exceptions are not raised
@@ -95,6 +104,8 @@ class Dumper:
         self.basictypes = {int, bool, float, str, NONETYPE}
 
         self.hidedefault = True
+
+        self.isodates = False
 
         # Which key is used in metadata to perform name mangling
         self.mangle_key = 'name'
@@ -196,6 +207,15 @@ def _attrdump(d, value, t) -> Dict[str, Any]:
 
 
 def _datetimedump(d: Dumper, value: Union[datetime.time, datetime.date, datetime.datetime], t):
+    if d.isodates:
+        return value.isoformat()
+    import warnings
+    warnings.warn(
+        'Dumping datetime classes as list of values is deprecated.\n'
+            'You are encouraged to dump with isodates=True\n'
+            'This will become the default in the next major version.',
+        DeprecationWarning
+    )
     # datetime is subclass of date
     if isinstance(value, datetime.date) and not isinstance(value, datetime.datetime):
         return [value.year, value.month, value.day]
