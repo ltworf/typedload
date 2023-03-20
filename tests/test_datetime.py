@@ -22,6 +22,56 @@ import unittest
 from typedload import load, dump, dataloader, datadumper
 
 
+class TestDatetimedump(unittest.TestCase):
+    def test_isodatetime(self):
+        dumper = datadumper.Dumper(isodates=True)
+        assert dumper.dump(datetime.date(2011, 12, 12)) == '2011-12-12'
+        assert dumper.dump(datetime.time(15, 41)) == '15:41:00'
+        assert dumper.dump(datetime.datetime(2019, 5, 31, 12, 44, 22)) == '2019-05-31T12:44:22'
+        assert dumper.dump(datetime.datetime(2023, 3, 20, 7, 43, 19, 906439, tzinfo=datetime.timezone.utc)) == '2023-03-20T07:43:19.906439+00:00'
+
+    def test_datetime(self):
+        dumper = datadumper.Dumper()
+        assert dumper.dump(datetime.date(2011, 12, 12)) == [2011, 12, 12]
+        assert dumper.dump(datetime.time(15, 41)) == [15, 41, 0, 0]
+        assert dumper.dump(datetime.datetime(2019, 5, 31, 12, 44, 22)) == [2019, 5, 31, 12, 44, 22, 0]
+
+class TestDatetimeLoad(unittest.TestCase):
+    def test_isoload(self):
+        now = datetime.datetime.now()
+        assert load(now.isoformat(), datetime.datetime) == now
+
+        withtz = datetime.datetime(2023, 3, 20, 7, 43, 19, 906439, tzinfo=datetime.timezone.utc)
+        assert load(withtz.isoformat(), datetime.datetime) == withtz
+
+        date = datetime.date(2023, 4, 1)
+        assert load(date.isoformat(), datetime.date) == date
+
+        time = datetime.time(23, 44, 12)
+        assert load(time.isoformat(), datetime.time) == time
+
+    def test_date(self):
+        loader = dataloader.Loader()
+        assert loader.load((2011, 1, 1), datetime.date) == datetime.date(2011, 1, 1)
+        assert loader.load((15, 33), datetime.time) == datetime.time(15, 33)
+        assert loader.load((15, 33, 0), datetime.time) == datetime.time(15, 33)
+        assert loader.load((2011, 1, 1), datetime.datetime) == datetime.datetime(2011, 1, 1)
+        assert loader.load((2011, 1, 1, 22), datetime.datetime) == datetime.datetime(2011, 1, 1, 22)
+
+        # Same but with lists
+        assert loader.load([2011, 1, 1], datetime.date) == datetime.date(2011, 1, 1)
+        assert loader.load([15, 33], datetime.time) == datetime.time(15, 33)
+        assert loader.load([15, 33, 0], datetime.time) == datetime.time(15, 33)
+        assert loader.load([2011, 1, 1], datetime.datetime) == datetime.datetime(2011, 1, 1)
+        assert loader.load([2011, 1, 1, 22], datetime.datetime) == datetime.datetime(2011, 1, 1, 22)
+
+    def test_exception(self):
+        loader = dataloader.Loader()
+        with self.assertRaises(TypeError):
+            loader.load((2011, ), datetime.datetime)
+            loader.load(33, datetime.datetime)
+
+
 class TestTimedelta(unittest.TestCase):
 
     def test_findhandlers(self):

@@ -467,8 +467,16 @@ This is converted to a dictionary and can be loaded into NamedTuple/dataclass.
 Dates
 -----
 
-* `datetime.date`
-* `datetime.time`
-* `datetime.datetime`
-* `datetime.timedelta`
-  Represented as a float of seconds
+### `datetime.timedelta`
+Represented as a float of seconds.
+
+
+### `datetime.date` `datetime.time` `datetime.datetime`
+
+When loading, it is possible to pass a string in ISO 8601, or a list of ints that will be passed to the constructor.
+
+When dumping, the default is to dump a list of ints, unless `isodates=True` is set in the dumper object, in which case an ISO 8601 string will be returned instead.
+
+The format with the list of ints is deprecated and kept for backward compatibility. Everybody should use the ISO 8601 strings.
+
+The format with the list of ints does not support timezones.

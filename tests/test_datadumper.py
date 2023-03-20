@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2023 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
 
-import datetime
 from enum import Enum
 from ipaddress import IPv4Address, IPv4Network, IPv4Interface, IPv6Address, IPv6Network, IPv6Interface
 from pathlib import Path
@@ -108,12 +107,6 @@ class TestBasicDump(unittest.TestCase):
         with self.assertRaises(ValueError):
             assert dumper.dump(None) == None
             assert dumper.dump(True) == True
-
-    def test_datetime(self):
-        dumper = datadumper.Dumper()
-        assert dumper.dump(datetime.date(2011, 12, 12)) == [2011, 12, 12]
-        assert dumper.dump(datetime.time(15, 41)) == [15, 41, 0, 0]
-        assert dumper.dump(datetime.datetime(2019, 5, 31, 12, 44, 22)) == [2019, 5, 31, 12, 44, 22, 0]
 
 
 class TestHandlersDumper(unittest.TestCase):
