@@ -3,7 +3,7 @@ typedload
 Module to load data into typed data structures
 """
 
-# Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2023 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -218,6 +218,7 @@ class Loader:
             (is_literal, _literalload),
             (is_typeddict, _typeddictload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
+            (lambda type_: type_ == datetime.timedelta, _timedeltaload),
             (lambda type_: type_ in self.strconstructed, _strconstructload),
             (is_attrs, _attrload),
             (is_any, _anyload),
@@ -740,6 +741,12 @@ def _datetimeload(l: Loader, value: Any, type_) -> Union[datetime.date, datetime
     except TypeError as e:
         raise TypedloadTypeError(str(e), type_=type_, value=value)
 
+
+def _timedeltaload(l: Loader, value, type_) -> datetime.timedelta:
+    try:
+        return type_(0, value)
+    except TypeError as e:
+        raise TypedloadTypeError(str(e), type_=type_, value=value)
 
 def _get_attr_converter_type(c: "Callable"):
     """

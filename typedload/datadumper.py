@@ -3,7 +3,7 @@ typedload
 This module is the inverse of dataloader. It converts typed
 data structures to things that json can serialize.
 """
-# Copyright (C) 2018-2021 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2023 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -127,6 +127,7 @@ class Dumper:
             (lambda value: isinstance(value, Dict), lambda l, value, t: {l.dump(k): l.dump(v) for k, v in value.items()}),
             (is_attrs, _attrdump),
             (lambda value: isinstance(value, (datetime.date, datetime.time)), _datetimedump),
+            (lambda value: isinstance(value, datetime.timedelta), _timedeltadump),
             (lambda value: type(value) in self.strconstructed, lambda l, value, t: str(value)),
 
         ]  # type: List[Tuple[Callable[[Any], bool], Callable[['Dumper', Any, Any], Any]|Callable[['Dumper', Any], Any]]]
@@ -204,6 +205,10 @@ def _datetimedump(d: Dumper, value: Union[datetime.time, datetime.date, datetime
         return [value.hour, value.minute, value.second, value.microsecond]
     # datetime.datetime
     return [value.year, value.month, value.day, value.hour, value.minute, value.second, value.microsecond]
+
+
+def _timedeltadump(d: Dumper, value: datetime.timedelta) -> float:
+    return value.total_seconds()
 
 
 def _namedtupledump(d: Dumper, value, t) -> Dict[str, Any]:
