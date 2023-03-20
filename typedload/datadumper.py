@@ -231,7 +231,7 @@ def _datetimedump(d: Dumper, value: Union[datetime.time, datetime.date, datetime
     return [value.year, value.month, value.day, value.hour, value.minute, value.second, value.microsecond]
 
 
-def _timedeltadump(d: Dumper, value: datetime.timedelta) -> float:
+def _timedeltadump(d: Dumper, value: datetime.timedelta, t) -> float:
     return value.total_seconds()
 
 
