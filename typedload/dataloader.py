@@ -737,9 +737,15 @@ def _noneload(l: Loader, value: Any, type_) -> None:
 
 def _datetimeload(l: Loader, value: Any, type_) -> Union[datetime.date, datetime.time, datetime.datetime]:
     try:
-        return type_(*value)
+        if isinstance(value, str):
+            return type_.fromisoformat(value)
+        else:
+            # This might be removed at some point in the future, but it will break data compatibility
+            return type_(*value)
     except TypeError as e:
         raise TypedloadTypeError(str(e), type_=type_, value=value)
+    except ValueError as e:
+        raise TypedloadValueError(str(e), type_=type_, value=value)
 
 
 def _timedeltaload(l: Loader, value, type_) -> datetime.timedelta:
