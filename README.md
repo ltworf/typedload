@@ -18,7 +18,7 @@ It is released with a GPLv3 license but [it is possible to ask for LGPLv3](mailt
 
 ![GPLv3 logo](docs/gpl3logo.png)
 
-[Donate](https://liberapay.com/ltworf/donate)
+[![Donate to LtWorf](docs/donate.svg)](https://liberapay.com/ltworf/donate)
 
 Example
 =======
