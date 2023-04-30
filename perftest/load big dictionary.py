@@ -37,8 +37,6 @@ elif sys.argv[1] == '--pydantic':
     class DataPy(pydantic.BaseModel):
         data: dict[str, dict[int, str]]
     f = lambda: DataPy(**data)
-    assert f().data['0'][0] == '0'
-    print(timeit(f))
 elif sys.argv[1] == '--apischema':
     import apischema
     apischema.settings.serialization.check_type = True
