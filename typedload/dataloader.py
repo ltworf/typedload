@@ -827,40 +827,30 @@ def _iterload(l: Loader, value: Any, type_, function) -> Any:
         raise TypedloadTypeError('Unable to load dictionary as an iterable', value=value, type_=type_)
     t = type_.__args__[0]
 
-    # Fast loading only works if we can re-iterate
-    fast = hasattr(value, '__getitem__')
+    # Get function pointer for the handler
+    cached_f = l._indexcache.get(t)
 
-    if fast:
-
-        # Get function pointer for the handler
-        cached_f = l._indexcache.get(t)
-
-        if cached_f:
-            f = cached_f
-        else:
-            try:
-                f = l._indexcache[t] = l.handlers[l.index(t)][1]
-            except ValueError:
-                raise TypedloadTypeError(
-                    'Cannot deal with value of type %s' % tname(type_),
-                    value=value,
-                    type_=type_
-                )
-
-        # Use the handler
+    if cached_f:
+        f = cached_f
+    else:
         try:
-            # Hopeful load calling the handler directly, skipping load()
-            return function(f(l, v, t) for v in value)
-        except TypedloadException:
-            # Fall back to the slow path
-            pass
-        except TypeError as e:
-            raise TypedloadTypeError(str(e), value=value, type_=type_)
+            f = l._indexcache[t] = l.handlers[l.index(t)][1]
+        except ValueError:
+            raise TypedloadTypeError(
+                'Cannot deal with value of type %s' % tname(type_),
+                value=value,
+                type_=type_
+            )
 
-    # FIXME Once 3.8 is the lowest supported version, I can use := to export the index where the
-    # error happened, removing the need to redo the entire loading of the list in the slow way
-    # A nested error happened, reload everything with load() so we get the detailed exception with path
+    # Use the handler
     try:
-        return function(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, v in enumerate(value))
+        # Hopeful load calling the handler directly, skipping load()
+        return function(f(l, v, (t, index:=i)[0]) for i, v in enumerate(value))
+    except TypedloadException as e:
+        annotation = Annotation(AnnotationType.INDEX, index)
+        e.trace.insert(0, TraceItem(value, type_, annotation))
+        raise e
     except TypeError as e:
-            raise TypedloadTypeError(str(e), value=value, type_=type_)
+        raise TypedloadTypeError(str(e), value=value, type_=type_)
+    except Exception as e:
+        raise TypedloadTypeError('Exception is not a subclass of TypedloadException. Make sure all handlers only raise TypedloadException')
