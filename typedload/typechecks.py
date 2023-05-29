@@ -64,15 +64,8 @@ __all__ = [
 ]
 
 
-from typing import ForwardRef
-
-Literal = None  # type: Any
-_TypedDictMeta = None  # type: Any
-try:
-    # Since 3.8
-    from typing import Literal, _TypedDictMeta  # type: ignore
-except ImportError:
-    pass
+from typing import ForwardRef, Literal
+from typing import _TypedDictMeta  # type: ignore
 
 UnionType = None  # type: Any
 try:
@@ -263,16 +256,14 @@ def is_literal(type_: Any) -> bool:
     '''
     Check if the type is a typing.Literal
     '''
-    return getattr(type_, '__origin__', None) == Literal and Literal is not None
+    return getattr(type_, '__origin__', None) == Literal
 
 
 def is_typeddict(type_: Any) -> bool:
     '''
     Check if it is a typing.TypedDict
     '''
-    if _TypedDictMeta:
-        return isinstance(type_, _TypedDictMeta)
-    return False
+    return isinstance(type_, _TypedDictMeta)
 
 
 def is_any(type_: Any) -> bool:
