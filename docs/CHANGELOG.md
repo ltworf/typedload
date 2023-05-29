@@ -1,5 +1,6 @@
 2.24
 ====
+* Drop support to Python 3.7 (which has reached EOL)
 
 2.23
 ====
