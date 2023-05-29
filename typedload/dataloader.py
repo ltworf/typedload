@@ -842,9 +842,8 @@ def _iterload(l: Loader, value: Any, type_, function) -> Any:
                 type_=type_
             )
 
-    # Use the handler
+    # load calling the handler directly, skipping load()
     try:
-        # Hopeful load calling the handler directly, skipping load()
         return function(f(l, v, t) for i, v in enumerate(value) if (index:= i+1))
     except TypedloadException as e:
         annotation = Annotation(AnnotationType.INDEX, index - 1)
