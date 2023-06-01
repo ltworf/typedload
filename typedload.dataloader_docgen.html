@@ -98,6 +98,8 @@
                   </li>
                   <li class="toctree-l1"><a class="" href="https://github.com/ltworf/typedload/issues">Bug reports</a>
                   </li>
+                  <li class="toctree-l1"><a class="" href="https://liberapay.com/ltworf">Donate</a>
+                  </li>
                   <li class="toctree-l1"><a class="" href="https://packages.debian.org/search?keywords=python3-typedload">Debian package</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://pypi.org/project/typedload/">Pypi package</a>
@@ -247,8 +249,11 @@ The constructor will accept any named argument, but only the documented
 ones have any effect. This is to allow custom handlers to have their
 own parameters as well.
 
-Using unions is complicated. If the types in the union are too
-similar to each other, it is easy to obtain an unexpected type.
+Because internal caches are used, after the first call to load() these properties
+should no longer be modified.
+
+Using unions is complicated. The best is to use tagged unions using a Literal field.
+If the types in the union are too similar to each other, it is easy to obtain an unexpected type.
 </code></pre>
               
             </div>
@@ -262,7 +267,7 @@ similar to each other, it is easy to obtain an unexpected type.
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli</p>
+      <p>Copyright (C) 2018-2023 Salvo "LtWorf" Tomaselli</p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

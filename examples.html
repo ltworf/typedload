@@ -122,6 +122,8 @@
                   </li>
                   <li class="toctree-l1"><a class="" href="https://github.com/ltworf/typedload/issues">Bug reports</a>
                   </li>
+                  <li class="toctree-l1"><a class="" href="https://liberapay.com/ltworf">Donate</a>
+                  </li>
                   <li class="toctree-l1"><a class="" href="https://packages.debian.org/search?keywords=python3-typedload">Debian package</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://pypi.org/project/typedload/">Pypi package</a>
@@ -538,7 +540,7 @@ nt_handler = d.index(Point(1,2)) # We need to use a real object to find the hand
 
 dump_handler = (
     lambda x: hasattr(x, 'from_json'), # Anything that has a from_json
-    lambda loader, value: value.to_json() # Call the from_json and return its value
+    lambda dumper, value, value_type: value.to_json() # Call the from_json and return its value
 )
 d.handlers.insert(nt_handler, dump_handler)
 
@@ -560,7 +562,7 @@ d.dump(Point(5, 5))
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli</p>
+      <p>Copyright (C) 2018-2023 Salvo "LtWorf" Tomaselli</p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

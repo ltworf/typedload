@@ -96,6 +96,8 @@
                   </li>
                   <li class="toctree-l1"><a class="" href="https://github.com/ltworf/typedload/issues">Bug reports</a>
                   </li>
+                  <li class="toctree-l1"><a class="" href="https://liberapay.com/ltworf">Donate</a>
+                  </li>
                   <li class="toctree-l1"><a class="" href="https://packages.debian.org/search?keywords=python3-typedload">Debian package</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://pypi.org/project/typedload/">Pypi package</a>
@@ -131,7 +133,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="222">2.22</h1>
+                <h1 id="223">2.23</h1>
+<ul>
+<li>When loading a string into datetime.date/time/datetime, ISO 8601 is used</li>
+<li>When dumping, setting <code>isodates=True</code> dumps an ISO 8601 string instead of a list of ints. The previous behaviour is now deprecated.</li>
+<li>Add support for datetime.timedelta. It is dumped as a float representing seconds</li>
+<li>Deprecate dump handlers without type hints</li>
+<li>Improve performance for dumping, by carrying type hints</li>
+<li>Remove <code>jsons</code> and <code>dataclasses-json</code> from benchmarks.
+  They were too slow to be a useful comparison.</li>
+</ul>
+<h1 id="222">2.22</h1>
 <ul>
 <li>Improve loading time for literals</li>
 <li>Support attrs converter</li>
@@ -392,7 +404,7 @@
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli</p>
+      <p>Copyright (C) 2018-2023 Salvo "LtWorf" Tomaselli</p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

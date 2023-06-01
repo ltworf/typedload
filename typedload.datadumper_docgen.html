@@ -98,6 +98,8 @@
                   </li>
                   <li class="toctree-l1"><a class="" href="https://github.com/ltworf/typedload/issues">Bug reports</a>
                   </li>
+                  <li class="toctree-l1"><a class="" href="https://liberapay.com/ltworf">Donate</a>
+                  </li>
                   <li class="toctree-l1"><a class="" href="https://packages.debian.org/search?keywords=python3-typedload">Debian package</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://pypi.org/project/typedload/">Pypi package</a>
@@ -149,6 +151,15 @@ hidedefault: Enabled by default.
     When enabled, does not include fields that have the
     same value as the default in the dump.
 
+isodates: Disabled by default.
+    Will be enabled by default from version 3.
+    When disabled, datetime.datetime, datetime.time, datetime.date
+    are dumped as lists of ints.
+
+    When enabled they are dumped as strings in ISO 8601 format.
+
+    When enabled, timezone information will work.
+
 raiseconditionerrors: Enabled by default.
     Raises exceptions when evaluating a condition from an
     handler. When disabled, the exceptions are not raised
@@ -164,12 +175,12 @@ handlers: This is the list that the dumper uses to
     List[
         Tuple[
             Callable[[Any], bool],
-            Callable[['Dumper', Any], Any]
+            Callable[['Dumper', Any, Any], Any]
         ]
     ]
     The elements are: Tuple[Condition, Dumper]
     Condition(value) -&gt; Bool
-    Dumper(dumper, value) -&gt; simpler_value
+    Dumper(dumper, value, value_type) -&gt; simpler_value
 
     In most cases, it is sufficient to append new elements
     at the end, to handle more types.
@@ -183,14 +194,21 @@ The constructor will accept any named argument, but only the documented
 ones have any effect. This is to allow custom handlers to have their
 own parameters as well.
 
+Because internal caches are used, after the first call to dump() these properties
+should no longer be modified.
+
 There is support for:
     * Basic python types (int, str, bool, float, NoneType)
-    * NamedTuple
-    * Enum
-    * List[SomeType]
+    * NamedTuple, dataclasses, attrs, TypedDict
     * Dict[TypeA, TypeB]
-    * Tuple[TypeA, TypeB, TypeC]
-    * Set[SomeType]
+    * Enum
+    * List
+    * Tuple
+    * Set
+    * FrozenSet
+    * Path
+    * IPv4Address, IPv6Address, IPv4Network, IPv6Network, IPv4Interface, IPv6Interface
+    * datetime
 </code></pre>
               
             </div>
@@ -204,7 +222,7 @@ There is support for:
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli</p>
+      <p>Copyright (C) 2018-2023 Salvo "LtWorf" Tomaselli</p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

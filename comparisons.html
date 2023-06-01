@@ -102,6 +102,8 @@
                   </li>
                   <li class="toctree-l1"><a class="" href="https://github.com/ltworf/typedload/issues">Bug reports</a>
                   </li>
+                  <li class="toctree-l1"><a class="" href="https://liberapay.com/ltworf">Donate</a>
+                  </li>
                   <li class="toctree-l1"><a class="" href="https://packages.debian.org/search?keywords=python3-typedload">Debian package</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://pypi.org/project/typedload/">Pypi package</a>
@@ -199,7 +201,8 @@
 <li>This raises an exception <code>jsons.load(1.0, int | float)</code></li>
 </ul>
 </li>
-<li>It is incredibly slow (40x slower in certain cases)</li>
+<li>It is incredibly slow (40x slower in certain cases)
+  For this reason it has been removed from the benchmarks.</li>
 <li><a href="https://github.com/ramonhagenaars/jsons/issues/170">Does not support <code>Literal</code></a></li>
 <li>Can't load iterables as lists</li>
 <li>Exceptions do not have information to find the incorrect data</li>
@@ -219,7 +222,8 @@ load(data, list[Union[float,int]])
 <p>Found <a href="https://github.com/lidatong/dataclasses-json">here</a></p>
 <p><em>It is completely useless for type safety and very slow. I can't understand why it has users.</em></p>
 <ul>
-<li>It is incredibly slow (20x slower in certain cases)</li>
+<li>It is incredibly slow (20x slower in certain cases)
+  For this reason it has been removed from the benchmarks.</li>
 <li>It doesn't enforce type safety (it will be happy to load whatever inside an int field)</li>
 <li>Requires to decorate all the classes</li>
 <li>It is not extensible</li>
@@ -241,11 +245,16 @@ Data.from_dict({'data': [&quot;4&quot;, None, ..., ('qwe',), 1.1]})
 <h2 id="msgspec">msgspec</h2>
 <p>Found <a href="https://jcristharif.com/msgspec/">here</a></p>
 <ul>
-<li>Decodes json directly, which is faster, but it means it can't be used with bson, yaml, and whatever else</li>
-<li>Very rudimental support for unions, so it can't run the performance tests</li>
+<li>Implemented in C, won't run on PyPy</li>
+<li>Supports tagged Unions partially only when inheriting from its Struct type
+  Mypy will not typecheck those classes.
+  To use unions you must give up static typechecking.</li>
+<li>Doesn't support unions between regular dataclass/NamedTuple/Attrs/TypedDict</li>
+<li>Doesn't support untagged Unions</li>
+<li>Doesn't support multiple tags (e.g. <code>tag=Literal[1, 2]</code>)</li>
+<li>Extended using a single function that must handle all cases</li>
+<li>Can't replace type handlers</li>
 </ul>
-<pre><code class="language-python">TypeError: Type unions may not contain more than one dataclass type - type `A | B` is not supported
-</code></pre>
               
             </div>
           </div><footer>
@@ -258,7 +267,7 @@ Data.from_dict({'data': [&quot;4&quot;, None, ..., ('qwe',), 1.1]})
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli</p>
+      <p>Copyright (C) 2018-2023 Salvo "LtWorf" Tomaselli</p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
