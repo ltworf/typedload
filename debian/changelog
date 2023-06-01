@@ -1,8 +1,9 @@
-typedload (2.23-1) UNRELEASED; urgency=medium
+typedload (2.23-1) unstable; urgency=low
 
   * New upstream release
+  * Bump Standards-Version: 4.6.2
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Mon, 27 Feb 2023 12:28:17 +0100
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Thu, 01 Jun 2023 07:54:30 +0200
 
 typedload (2.22-1) unstable; urgency=low
 
