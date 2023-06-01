@@ -1,3 +1,6 @@
+2.24
+====
+
 2.23
 ====
 * When loading a string into datetime.date/time/datetime, ISO 8601 is used
