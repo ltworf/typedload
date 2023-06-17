@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # typedload
-# Copyright (C) 2018-2022 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2018-2023 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@ CLASSIFIERS = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
     'Typing :: Typed',
-    'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
