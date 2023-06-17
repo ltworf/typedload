@@ -1,6 +1,7 @@
 2.24
 ====
 * Drop support to Python 3.7 (which has reached EOL)
+* Make is_optional slightly faster
 
 2.23
 ====
