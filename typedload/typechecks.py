@@ -295,31 +295,27 @@ def notrequiredtype(type_: Any) -> Type[Any]:
     return type_.__args__[0]
 
 
-if sys.version_info >= (3, 8):
-    def discriminatorliterals(type_: Any) -> Dict[str, Set[Any]]:
-        """
-        Takes an object type (NamedTuple, TypedDict, attrs, dataclass)
-        and returns which fields take a literal and which values are
-        allowed by the literal.
+def discriminatorliterals(type_: Any) -> Dict[str, Set[Any]]:
+    """
+    Takes an object type (NamedTuple, TypedDict, attrs, dataclass)
+    and returns which fields take a literal and which values are
+    allowed by the literal.
 
-        For unknown types, an empty dictionary is returned.
+    For unknown types, an empty dictionary is returned.
 
-        Since Literal exists only since 3.8, for previous versions
-        this always returns an empty dictionary
-        """
+    Since Literal exists only since 3.8, for previous versions
+    this always returns an empty dictionary
+    """
 
-        # Give up if the object is unknown
-        try:
-            d = type_.__annotations__.items()
-        except AttributeError:
-            return {}
+    # Give up if the object is unknown
+    try:
+        d = type_.__annotations__.items()
+    except AttributeError:
+        return {}
 
-        r = {}
-        for k, v in d:
-            if not is_literal(v):
-                continue
-            r[k] = literalvalues(v)
-        return r
-else:
-   def discriminatorliterals(type_: Any) -> Dict[str, Set[Any]]:
-       return {}
+    r = {}
+    for k, v in d:
+        if not is_literal(v):
+            continue
+        r[k] = literalvalues(v)
+    return r
