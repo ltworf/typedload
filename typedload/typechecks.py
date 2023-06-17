@@ -130,17 +130,12 @@ else:
 def is_optional(type_: Any) -> bool:
     '''
     Optional[int]
+    int | None
 
     Note that Optional is just a Union, so if is_optional is True then
     also is_union will be True
     '''
-    u = is_union(type_)
-    if not u:
-        return False
-    types = uniontypes(type_)
-    if len(types) != 2:
-        return False
-    return NONETYPE in types
+    return is_union(type_) and (len(type_.__args__) == 2) and NONETYPE in type_.__args__
 
 
 def is_nonetype(type_: Any) -> bool:
