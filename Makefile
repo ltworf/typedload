@@ -10,7 +10,7 @@ test:
 .PHONY: mypy
 mypy:
 	mypy --python-version=$(MINIMUM_PYTHON_VERSION) --config-file mypy.conf typedload
-	mypy --python-version=3.7 example.py
+	mypy --python-version=$(MINIMUM_PYTHON_VERSION) example.py
 
 pyproject.toml: docs/CHANGELOG.md
 	./gensetup.py --$@

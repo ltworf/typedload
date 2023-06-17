@@ -584,8 +584,7 @@ def _typeddictload(l: Loader, value: Any, type_) -> Any:
     if hasattr(type_, '__required_keys__') and hasattr(type_, '__optional_keys__'):
         # TypedDict, since 3.9
         necessary_fields = set(type_.__required_keys__)
-    elif getattr(type_, '__total__', True) == False:
-        # TypedDict, only for 3.8
+    elif not type_.__total__:
         necessary_fields = set()
     else:
         necessary_fields = fields
