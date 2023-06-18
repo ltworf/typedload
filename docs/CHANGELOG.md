@@ -2,6 +2,9 @@
 ====
 * Drop support to Python 3.7 (which has reached EOL)
 * Make is_optional slightly faster
+* Keep track of the index when loading iterables the first time
+  It makes the normal case slightly slower, and gives massive performance
+  improvements when exceptions are raised.
 
 2.23
 ====
