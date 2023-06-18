@@ -844,7 +844,7 @@ def _iterload(l: Loader, value: Any, type_, function) -> Any:
 
     # load calling the handler directly, skipping load()
     try:
-        return function(f(l, v, t) for i, v in enumerate(value) if (index:= i+1))
+        return function(f(l, v, t) for i, v in enumerate(value, 1) if (index:= i))
     except TypedloadException as e:
         annotation = Annotation(AnnotationType.INDEX, index - 1)
         e.trace.insert(0, TraceItem(value, type_, annotation))
