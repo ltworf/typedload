@@ -212,10 +212,10 @@ class Loader:
             (lambda type_: type_ in self.basictypes, _basicload),
             (is_enum, _enumload),
             (is_tuple, _tupleload),
-            (is_list, lambda l, value, type_: _iterload(l, value, type_, list)),
+            (is_list, _iterloadgen(list)),
             (is_dict, _dictload),
-            (is_set, lambda l, value, type_: _iterload(l, value, type_, set)),
-            (is_frozenset, lambda l, value, type_: _iterload(l, value, type_, frozenset)),
+            (is_set, _iterloadgen(set)),
+            (is_frozenset, _iterloadgen(frozenset)),
             (is_namedtuple, _namedtupleload),
             (is_dataclass, _dataclassload),
             (is_forwardref, _forwardrefload),
@@ -417,7 +417,7 @@ def _tupleload(l: Loader, value: Any, type_) -> Tuple:
     args = type_.__args__
 
     if len(args) == 2 and args[1] == ...: # Tuple[something, ...]
-        return _iterload(l, value, type_, tuple)
+        return _iterload_tuple(l, value, type_)
     else: # Tuple[something, something, somethingelse]
         if isinstance(value, dict):
             raise TypedloadTypeError('Unable to load dictionary as a tuple', value=value, type_=type_)
@@ -816,45 +816,46 @@ def _strconstructload(l: Loader, value, type_):
 def _newtypeload(l: Loader, value: Any, type_) -> Any:
     return l.load(value, type_.__supertype__)
 
+def _iterloadgen(function):
+    def _iterload(l: Loader, value: Any, type_) -> Any:
+        """
+        Generic code to load iterables.
 
-def _iterload(l: Loader, value: Any, type_, function) -> Any:
-    """
-    Generic code to load iterables.
+        function is for example list, tuple, set. The call to
+        generate the destination type from an iterable.
+        """
+        if isinstance(value, dict):
+            raise TypedloadTypeError('Unable to load dictionary as an iterable', value=value, type_=type_)
+        t = type_.__args__[0]
 
-    function is for example list, tuple, set. The call to
-    generate the destination type from an iterable.
-    """
-    if isinstance(value, dict):
-        raise TypedloadTypeError('Unable to load dictionary as an iterable', value=value, type_=type_)
-    t = type_.__args__[0]
+        # Get function pointer for the handler
+        cached_f = l._indexcache.get(t)
 
-    # Get function pointer for the handler
-    cached_f = l._indexcache.get(t)
+        if cached_f:
+            f = cached_f
+        else:
+            try:
+                f = l._indexcache[t] = l.handlers[l.index(t)][1]
+            except ValueError:
+                raise TypedloadTypeError(
+                    'Cannot deal with value of type %s' % tname(type_),
+                    value=value,
+                    type_=type_
+                )
 
-    if cached_f:
-        f = cached_f
-    else:
+        # load calling the handler directly, skipping load()
         try:
-            f = l._indexcache[t] = l.handlers[l.index(t)][1]
-        except ValueError:
-            raise TypedloadTypeError(
-                'Cannot deal with value of type %s' % tname(type_),
-                value=value,
-                type_=type_
-            )
+            ctr = count(1)
+            return function(f(l, v, t) for v in compress(value, ctr))
+        except TypedloadException as e:
+            index = next(ctr) - 2
+            annotation = Annotation(AnnotationType.INDEX, index)
+            e.trace.insert(0, TraceItem(value, type_, annotation))
+            raise e
+        except TypeError as e:
+            raise TypedloadTypeError(str(e), value=value, type_=type_)
+        except Exception as e:
+            raise TypedloadTypeError('Exception is not a subclass of TypedloadException. Make sure all handlers only raise TypedloadException')
+    return _iterload
 
-
-
-    # load calling the handler directly, skipping load()
-    try:
-        ctr = count(1)
-        return function(f(l, v, t) for v in compress(value, ctr))
-    except TypedloadException as e:
-        index = next(ctr) - 2
-        annotation = Annotation(AnnotationType.INDEX, index)
-        e.trace.insert(0, TraceItem(value, type_, annotation))
-        raise e
-    except TypeError as e:
-        raise TypedloadTypeError(str(e), value=value, type_=type_)
-    except Exception as e:
-        raise TypedloadTypeError('Exception is not a subclass of TypedloadException. Make sure all handlers only raise TypedloadException')
+_iterload_tuple = _iterloadgen(tuple)
