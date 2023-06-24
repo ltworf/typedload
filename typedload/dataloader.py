@@ -24,6 +24,7 @@ Module to load data into typed data structures
 import datetime
 from enum import Enum
 import ipaddress
+from itertools import compress, count
 from functools import reduce
 from pathlib import Path
 from typing import *
@@ -842,11 +843,15 @@ def _iterload(l: Loader, value: Any, type_, function) -> Any:
                 type_=type_
             )
 
+
+
     # load calling the handler directly, skipping load()
     try:
-        return function(f(l, v, t) for i, v in enumerate(value, 1) if (index:= i))
+        ctr = count(1)
+        return function(f(l, v, t) for v in compress(value, ctr))
     except TypedloadException as e:
-        annotation = Annotation(AnnotationType.INDEX, index - 1)
+        index = next(ctr) - 2
+        annotation = Annotation(AnnotationType.INDEX, index)
         e.trace.insert(0, TraceItem(value, type_, annotation))
         raise e
     except TypeError as e:
