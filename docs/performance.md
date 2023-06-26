@@ -25,7 +25,7 @@ Using Python 3.11
 ![performance chart](3.11_fail_realistic_union_of_objects_as_namedtuple.svg "Load realistic union of objects which raises an exception")
 
 
-Using Pypy 7.3.11
+Using Pypy 7.3.12
 -----------------
 
 ![performance chart](3.9_realistic_union_of_objects_as_namedtuple.svg "Load realistic union of objects")
