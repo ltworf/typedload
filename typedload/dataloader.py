@@ -246,7 +246,7 @@ class Loader:
         for i, cond in ((q[0], q[1][0]) for q in enumerate(self.handlers)):
             try:
                 match = cond(type_)
-            except:
+            except Exception:
                 if self.raiseconditionerrors:
                     raise
                 match = False
@@ -705,7 +705,7 @@ def _enumload(l: Loader, value: Any, type_) -> Enum:
     try:
         # Try naïve conversion
         return type_(value)
-    except:
+    except Exception:
         pass
 
     # Try with the typing hints
