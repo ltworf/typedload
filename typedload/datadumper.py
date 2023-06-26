@@ -165,7 +165,7 @@ class Dumper:
         for i, cond in ((j[0], j[1][0]) for j in enumerate(self.handlers)):
             try:
                 match = cond(value)
-            except:
+            except Exception:
                 if self.raiseconditionerrors:
                     raise
                 match = False
