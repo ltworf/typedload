@@ -133,7 +133,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="223">2.23</h1>
+                <h1 id="224">2.24</h1>
+<ul>
+<li>Drop support to Python 3.7 (which has reached EOL)</li>
+<li>Make is_optional slightly faster</li>
+<li>Keep track of the index when loading iterables the first time
+  It makes the normal case slightly slower, and gives massive performance
+  improvements when exceptions are raised.</li>
+</ul>
+<h1 id="223">2.23</h1>
 <ul>
 <li>When loading a string into datetime.date/time/datetime, ISO 8601 is used</li>
 <li>When dumping, setting <code>isodates=True</code> dumps an ISO 8601 string instead of a list of ints. The previous behaviour is now deprecated.</li>
