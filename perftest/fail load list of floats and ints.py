@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2021-2022 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2021-2023 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ if sys.argv[1] == '--jsons':
     f = lambda: load(data, Data)
 elif sys.argv[1] == '--pydantic':
     import pydantic
-    class DataPy(pydantic.BaseModel, smart_union=True):
+    class DataPy(pydantic.BaseModel):
         data: List[Union[int, float]]
     f = lambda: DataPy(**data)
 elif sys.argv[1] == '--apischema':
