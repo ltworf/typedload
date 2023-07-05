@@ -544,11 +544,27 @@ def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hin
         if k not in fields:
             # Field in value is not in the type
             continue
-        params[k] = l.load(
-            v,
-            type_hints[k],
-            annotation=Annotation(AnnotationType.FIELD, k),
-        )
+
+        # loading field directly, skipping load()
+        field_type = type_hints[k]
+        cached_loader = l._indexcache.get(field_type)
+        if cached_loader:
+            loader_f = cached_loader
+        else:
+            try:
+                loader_f = l._indexcache[field_type] = l.handlers[l.index(field_type)][1]
+            except ValueError:
+                raise TypedloadTypeError(
+                    'Cannot deal with value of type %s' % tname(field_type),
+                    value=value,
+                    type_=field_type
+                )
+        try:
+            params[k] = loader_f(l, v, field_type)
+        except TypedloadException as e:
+            annotation=Annotation(AnnotationType.FIELD, k)
+            e.trace.insert(0, TraceItem(value, type_, annotation))
+            raise e
     try:
         return type_(**params)
     except TypeError as e:
