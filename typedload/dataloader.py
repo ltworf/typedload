@@ -364,6 +364,9 @@ def _dictload(l: Loader, value: Any, type_) -> Dict:
     """
     key_type, value_type = type_.__args__
 
+
+    key_type_basic = key_type in l.basictypes
+
     key_handler = l._indexcache.get(key_type)
     if key_handler is not None:
         key_f = key_handler
@@ -396,7 +399,7 @@ def _dictload(l: Loader, value: Any, type_) -> Dict:
     # Try fast load
     try:
         return {
-            key_f(l, k, key_type): value_f(l, v, value_type) for k, v in value.items()
+            k if key_type_basic and isinstance(k, key_type) else key_f(l, k, key_type): value_f(l, v, value_type) for k, v in value.items()
         }
     except Exception:
         # Failed, do the slow method with exception tracking
