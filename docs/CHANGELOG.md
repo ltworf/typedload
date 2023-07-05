@@ -1,5 +1,6 @@
 2.25
 ====
+* Improve performances for loading objects (attrs/dataclasses/NamedTuple)
 
 2.24
 ====

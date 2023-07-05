@@ -531,24 +531,40 @@ def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hin
             type_=type_,
         )
 
+    if l.failonextra and len(extra_fields := vfields.difference(fields)):
+        extra = ', '.join(extra_fields)
+        raise TypedloadValueError(
+            'Dictionary has unrecognized fields: %s and cannot be loaded into %s' % (extra, tname(type_)),
+            value=value,
+            type_=type_,
+        )
+
     params = {}
     for k, v in value.items():
         if k not in fields:
             # Field in value is not in the type
-            if l.failonextra:
-                extra = ', '.join(vfields.difference(fields))
-                raise TypedloadValueError(
-                    'Dictionary has unrecognized fields: %s and cannot be loaded into %s' % (extra, tname(type_)),
+            continue
+
+        # loading field directly, skipping load()
+        field_type = type_hints[k]
+        cached_loader = l._indexcache.get(field_type)
+        if cached_loader:
+            loader_f = cached_loader
+        else:
+            try:
+                loader_f = l._indexcache[field_type] = l.handlers[l.index(field_type)][1]
+            except ValueError:
+                raise TypedloadTypeError(
+                    'Cannot deal with value of type %s' % tname(field_type),
                     value=value,
-                    type_=type_,
+                    type_=field_type
                 )
-            else:
-                continue
-        params[k] = l.load(
-            v,
-            type_hints[k],
-            annotation=Annotation(AnnotationType.FIELD, k),
-        )
+        try:
+            params[k] = loader_f(l, v, field_type)
+        except TypedloadException as e:
+            annotation=Annotation(AnnotationType.FIELD, k)
+            e.trace.insert(0, TraceItem(value, type_, annotation))
+            raise e
     try:
         return type_(**params)
     except TypeError as e:
@@ -838,12 +854,10 @@ def _iterload(l: Loader, value: Any, type_, function) -> Any:
             f = l._indexcache[t] = l.handlers[l.index(t)][1]
         except ValueError:
             raise TypedloadTypeError(
-                'Cannot deal with value of type %s' % tname(type_),
+                'Cannot deal with value of type %s' % tname(t),
                 value=value,
-                type_=type_
+                type_=t,
             )
-
-
 
     # load calling the handler directly, skipping load()
     try:
