@@ -531,19 +531,19 @@ def _objloader(l: Loader, fields: Set[str], necessary_fields: Set[str], type_hin
             type_=type_,
         )
 
+    if l.failonextra and len(extra_fields := vfields.difference(fields)):
+        extra = ', '.join(extra_fields)
+        raise TypedloadValueError(
+            'Dictionary has unrecognized fields: %s and cannot be loaded into %s' % (extra, tname(type_)),
+            value=value,
+            type_=type_,
+        )
+
     params = {}
     for k, v in value.items():
         if k not in fields:
             # Field in value is not in the type
-            if l.failonextra:
-                extra = ', '.join(vfields.difference(fields))
-                raise TypedloadValueError(
-                    'Dictionary has unrecognized fields: %s and cannot be loaded into %s' % (extra, tname(type_)),
-                    value=value,
-                    type_=type_,
-                )
-            else:
-                continue
+            continue
         params[k] = l.load(
             v,
             type_hints[k],
