@@ -838,12 +838,10 @@ def _iterload(l: Loader, value: Any, type_, function) -> Any:
             f = l._indexcache[t] = l.handlers[l.index(t)][1]
         except ValueError:
             raise TypedloadTypeError(
-                'Cannot deal with value of type %s' % tname(type_),
+                'Cannot deal with value of type %s' % tname(t),
                 value=value,
-                type_=type_
+                type_=t,
             )
-
-
 
     # load calling the handler directly, skipping load()
     try:
