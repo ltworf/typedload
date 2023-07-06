@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2021-2022 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2021-2023 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,36 +16,42 @@
 #
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 
-from typing import List, NamedTuple
-import sys
 from dataclasses import dataclass
+import sys
 
-from common import timeit
+from common import timeit, raised
 
 
 @dataclass
 class Child:
     value: int
 
-
-class Data(NamedTuple):
-    data: List[Child]
-
-
-data = {'data': [{'value': i} for i in range(300000)]}
+@dataclass
+class Data:
+    data: list[Child]
 
 
 if sys.argv[1] == '--typedload':
     from typedload import load
-    print(timeit(lambda: load(data, Data)))
+    f = lambda: load(data, Data)
 elif sys.argv[1] == '--pydantic':
     import pydantic
     class ChildPy(pydantic.BaseModel):
         value: int
     class DataPy(pydantic.BaseModel):
         data: List[ChildPy]
-    print(timeit(lambda: DataPy(**data)))
+    f = lambda: DataPy(**data)
 elif sys.argv[1] == '--apischema':
     import apischema
     apischema.settings.serialization.check_type = True
-    print(timeit(lambda: apischema.deserialize(Data, data)))
+    f = lambda: apischema.deserialize(Data, data)
+
+data = {'data': [{'value': i} for i in range(30)]}
+assert f().data[1].value == 1
+
+data = {'data': [{'value': 'qwe'} for i in range(30)]}
+assert raised(f)
+
+data = {'data': [{'value': i} for i in range(900000)]}
+print(timeit(f))
+
