@@ -81,8 +81,8 @@ def main():
         tags.append('master')
 
     if 'MOREVERSIONS' in os.environ:
-        #TODO add 2.21
-        toadd =  [i for i in ['1.20', '2.0', '2.13', '2.15', '2.17', '2.19'] if i not in tags]
+        #TODO add 2.25
+        toadd =  [i for i in ['1.20', '2.0', '2.13', '2.15', '2.17', '2.19', '2.21', '2.23'] if i not in tags]
         tags = toadd + tags
     print('Testing tags:', ' '.join(tags))
 
@@ -124,7 +124,7 @@ def main():
             print('set xlabel "x-units" font "Times-Roman,12"', file=f)
             print('set style fill solid 1.0', file=f)
             print(f'set title "typedload performance test {version}"', file=f)
-            print(f'set yrange [-0.5:{test_maxtime}]', file=f)
+            print(f'set yrange [0:{test_maxtime + test_maxtime * 0.1}]', file=f)
             print('set term svg', file=f)
             print(f'set output "{outdir}/{PYVER}_{t.replace(" ", "_")}.svg"', file=f)
             print(f'plot "{outdir}/{t}.dat" using 1:3:xtic(2) with boxes title "{t}"', file=f)
