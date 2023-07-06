@@ -462,12 +462,11 @@ def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
     """
     This loads a Dict[str, Any] into a NamedTuple.
     """
-    from dataclasses import _MISSING_TYPE as DT_MISSING_TYPE
     fields = set(type_.__dataclass_fields__.keys())
     necessary_fields = {k for k,v in type_.__dataclass_fields__.items() if
-                        v.init == True and
-                        isinstance(v.default, DT_MISSING_TYPE) and
-                        isinstance(v.default_factory, DT_MISSING_TYPE)}
+                        v.init == True and # Is a field for the constructor
+                        v.default == v.default_factory # Has no default or factory
+                        }
     if l.pep563:
         type_hints = get_type_hints(type_)
     else:
