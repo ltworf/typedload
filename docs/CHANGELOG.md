@@ -1,7 +1,8 @@
 2.25
 ====
-* Improve performances for loading objects (attrs/dataclasses/NamedTuple)
-* Improve performances for loading dictionary keys that are basic types
+* Improve performance for loading objects (attrs/dataclasses/NamedTuple)
+* Improve performance for loading dictionary keys that are basic types
+* Improve performance for loading dataclasses
 
 2.24
 ====

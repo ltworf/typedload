@@ -45,7 +45,7 @@ def main():
         'load list of lists',
         'load big dictionary',
         'load list of NamedTuple objects',
-        #'load list of dataclass objects',
+        'load list of dataclass objects',
         #'load list of attrs objects',
         'realistic union of objects as namedtuple',
         'fail realistic union of objects as namedtuple',
