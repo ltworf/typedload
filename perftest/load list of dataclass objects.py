@@ -35,11 +35,16 @@ if sys.argv[1] == '--typedload':
     from typedload import load
     f = lambda: load(data, Data)
 elif sys.argv[1] == '--pydantic':
-    import pydantic
-    class ChildPy(pydantic.BaseModel):
+    # Yes pydantic supports dataclasses by having a decorator with the same name as the python one -_-'
+    from pydantic.dataclasses import dataclass as dc
+
+    @dc
+    class ChildPy:
         value: int
-    class DataPy(pydantic.BaseModel):
-        data: List[ChildPy]
+
+    @dc
+    class DataPy:
+        data: list[ChildPy]
     f = lambda: DataPy(**data)
 elif sys.argv[1] == '--apischema':
     import apischema
