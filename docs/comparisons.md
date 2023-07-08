@@ -8,9 +8,9 @@ In general, the advantages of typedload over competing libraries are:
 * Works with existing codebase and uses standard types. No inheritance or decorators
 * Easy to use
 * Easy to extend, even with objects from 3rd party libraries
-* Stable API, breaking changes only happen on major releases (it has happened once since 2018)
+* Stable API, breaking changes only happen on major releases (it has happened once since 2018 and most users didn't notice)
 * Supports Union properly
-* Works on python 3.5 (typedload <= 2.20)
+* Works on python 3.5 (until typedload <= 2.20)
 * Mypy and similar work without plugins
 * Can use and convert camelCase and snake_case
 * Functional approach
@@ -60,14 +60,11 @@ pydantic
 
 Found [here](https://pydantic-docs.helpmanual.io/)
 
-* [They change API all the time, between minor releases.](https://pypi.org/project/pydantic/1.9.1/)
-* [Unions behave non-deterministically by default and require a flag to behave normally](https://docs.pydantic.dev/usage/model_config/#smart-union)
-* Slow, despite being compiled
-* Requires all the classes to derive from a superclass, existing code needs to be modified, external libraries are harder to use directly
-* Does not work with mypy:
-    * [Abuses python typing annotation to mean something different, breaking linters](https://pydantic-docs.helpmanual.io/usage/models/#required-optional-fields)
-    * [Uses float=None without using Optional in its own documentation](https://pydantic-docs.helpmanual.io/usage/models/#recursive-models).
-* [Author refuses to include unfavorable comparisons](https://github.com/pydantic/pydantic/pull/1525)
+* Somehow manages to be slower than pure python in certain benchmarks
+* [They break API all the time, between minor releases.](https://docs.pydantic.dev/latest/changelog/) (43 times in 2 major versions so far)
+* [They hate](https://github.com/pydantic/pydantic/pull/3264) [benchmarks](https://github.com/pydantic/pydantic/pull/3881) [that show](https://github.com/pydantic/pydantic/pull/1810) [it's slow](https://github.com/pydantic/pydantic/pull/1525). [So they removed them altogether](https://github.com/pydantic/pydantic/pull/3973)
+* Took them several years to make a version 2 where types on BaseModel finally mean the same thing that they mean in the rest of python
+* Took them several years to implement unions the way typedload had been doing for years
 
 jsons
 -----
