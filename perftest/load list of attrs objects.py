@@ -41,11 +41,8 @@ if sys.argv[1] == '--typedload':
     print(timeit(lambda: load(data, Data)))
 elif sys.argv[1] == '--pydantic':
     import pydantic
-    class ChildPy(pydantic.BaseModel):
-        value: int
-    class DataPy(pydantic.BaseModel):
-        data: List[ChildPy]
-    print(timeit(lambda: DataPy(**data)))
+    ta = pydantic.TypeAdapter(data)
+    print(timeit(lambda: ta.validate_python(data)))
 elif sys.argv[1] == '--apischema':
     import apischema
     apischema.settings.serialization.check_type = True

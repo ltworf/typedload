@@ -49,9 +49,8 @@ elif sys.argv[1] == '--jsons':
     f = lambda: dump(data)
 elif sys.argv[1] == '--pydantic':
     import pydantic
-    class PPossessions(pydantic.BaseModel):
-        possessions: list[Union[House, Car]]
-    f = lambda: PPossessions(possessions=data.possessions).dict()
+    ta = pydantic.TypeAdapter(list[Union[House, Car]])
+    f = lambda: ta.dump_python(data.possessions)
 elif sys.argv[1] == '--apischema':
     import apischema
     apischema.settings.serialization.check_type = True

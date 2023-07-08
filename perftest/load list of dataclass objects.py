@@ -35,17 +35,9 @@ if sys.argv[1] == '--typedload':
     from typedload import load
     f = lambda: load(data, Data)
 elif sys.argv[1] == '--pydantic':
-    # Yes pydantic supports dataclasses by having a decorator with the same name as the python one -_-'
-    from pydantic.dataclasses import dataclass as dc
-
-    @dc
-    class ChildPy:
-        value: int
-
-    @dc
-    class DataPy:
-        data: list[ChildPy]
-    f = lambda: DataPy(**data)
+    import pydantic
+    ta = pydantic.TypeAdapter(Data)
+    f = lambda: ta.validate_python(data)
 elif sys.argv[1] == '--apischema':
     import apischema
     apischema.settings.serialization.check_type = True

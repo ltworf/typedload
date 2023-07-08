@@ -39,11 +39,8 @@ elif sys.argv[1] == '--jsons':
     f = lambda: load(data, Data)
 elif sys.argv[1] == '--pydantic':
     import pydantic
-    class ChildPy(pydantic.BaseModel):
-        value: int
-    class DataPy(pydantic.BaseModel):
-        data: List[ChildPy]
-    f = lambda: DataPy(**data)
+    ta = pydantic.TypeAdapter(Data)
+    f = lambda: ta.validate_python(data)
 elif sys.argv[1] == '--apischema':
     import apischema
     apischema.settings.serialization.check_type = True

@@ -107,36 +107,8 @@ elif sys.argv[1] == '--jsons':
     f = lambda: load(data, EventList)
 elif sys.argv[1] == '--pydantic':
     import pydantic
-    class EventMessagePy(pydantic.BaseModel):
-        timestamp: float
-        type: Literal['message']
-        text: str
-        sender: str
-        receiver: str
-    class EventFilePy(pydantic.BaseModel):
-        timestamp: float
-        type: Literal['file']
-        filename: str
-        sender: str
-        receiver: str
-        url: str
-    class EventPingPy(pydantic.BaseModel):
-        timestamp: float
-        type: Literal['ping']
-    class EventEnterPy(pydantic.BaseModel):
-        type: Literal['enter']
-        timestamp: float
-        sender: str
-        room: int
-    class EventExitPy(pydantic.BaseModel):
-        type: Literal['exit']
-        timestamp: float
-        sender: str
-        room: int
-    EventPy = Union[EventExitPy, EventEnterPy,EventMessagePy, EventPingPy, EventFilePy]
-    class EventListPy(pydantic.BaseModel):
-        data: Tuple[EventPy, ...]
-    f = lambda: EventListPy(**data)
+    ta = pydantic.TypeAdapter(EventList)
+    f = lambda: ta.validate_python(data)
 elif sys.argv[1] == '--apischema':
     import apischema
     apischema.settings.serialization.check_type = True
