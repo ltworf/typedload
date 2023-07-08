@@ -234,6 +234,8 @@ class Loader:
 
         self._indexcache = {}  # type: Dict[Any, Callable[[Loader, Any, Any], Any]]
 
+        self._objfieldscache = {}
+
         self._unionload_discriminatorcache = {}  # type: Dict[Type, Tuple[Optional[str], Optional[Dict[Any, Type]]]]
 
     def index(self, type_: Type[T]) -> int:
@@ -462,25 +464,31 @@ def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
     """
     This loads a Dict[str, Any] into a NamedTuple.
     """
-    fields = set(type_.__dataclass_fields__.keys())
-    necessary_fields = {k for k,v in type_.__dataclass_fields__.items() if
-                        v.init == True and # Is a field for the constructor
-                        v.default == v.default_factory # Has no default or factory
-                        }
-    if l.pep563:
-        type_hints = get_type_hints(type_)
+    cached = l._objfieldscache.get(type_)
+    if cached:
+        fields, necessary_fields, type_hints, transforms = cached
+
     else:
-        type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
+        fields = set(type_.__dataclass_fields__.keys())
+        necessary_fields = {k for k,v in type_.__dataclass_fields__.items() if
+                            v.init == True and # Is a field for the constructor
+                            v.default == v.default_factory # Has no default or factory
+                            }
+        if l.pep563:
+            type_hints = get_type_hints(type_)
+        else:
+            type_hints = {k: v.type for k,v in type_.__dataclass_fields__.items()}
 
-    #Name mangling
+        #Name mangling
 
-    # Prepare the list of the needed name changes
-    transforms = {}  # type: Dict[str, str]
-    for pyname in fields:
-        if type_.__dataclass_fields__[pyname].metadata:
-            name = type_.__dataclass_fields__[pyname].metadata.get(l.mangle_key)
-            if name:
-                transforms[name] = pyname
+        # Prepare the list of the needed name changes
+        transforms = {}  # type: Dict[str, str]
+        for pyname in fields:
+            if type_.__dataclass_fields__[pyname].metadata:
+                name = type_.__dataclass_fields__[pyname].metadata.get(l.mangle_key)
+                if name:
+                    transforms[name] = pyname
+        l._objfieldscache[type_] = (fields, necessary_fields, type_hints, transforms)
 
     try:
         value = _mangle_names(transforms, value, l.failonextra)
