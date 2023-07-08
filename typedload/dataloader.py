@@ -679,12 +679,28 @@ def _unionload(l: Loader, value: Any, type_) -> Any:
     r = None
     for t in sorted_args:
         try:
-            r = l.load(value, t, annotation=Annotation(AnnotationType.UNION, t))
+            # Skip calling load()
+            handler = l._indexcache.get(t)
+            if handler is not None:
+                f = handler
+            else:
+                try:
+                    f = l._indexcache[t] = l.handlers[l.index(t)][1]
+                except ValueError:
+                    raise TypedloadValueError(
+                        'Cannot deal with value of type %s (key of %s)' % (tname(t), tname(type_)),
+                        value=value,
+                        type_=t
+                    )
+
+            r = f(l, value, t)
             loaded_count += 1
             if not l.uniondebugconflict:
                 # Do not try more if we are not debugging
                 break
         except TypedloadException as e:
+            annotation = Annotation(AnnotationType.UNION, t)
+            e.trace.insert(0, TraceItem(value, type_, annotation))
             exceptions.append(e)
 
     if loaded_count == 1:
