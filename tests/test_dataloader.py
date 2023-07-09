@@ -191,11 +191,17 @@ class TestFastIterableLoad(unittest.TestCase):
         with self.assertRaises(exceptions.TypedloadValueError):
             a = loader.load(self.yielder(), Tuple[int, ...])
 
+        loader = dataloader.Loader(basiccast=True)
+        assert loader.load(self.yielder(), Tuple[int, ...]) == (0, 1, 1)
+
     def test_listload_from_generator_with_exception(self):
         loader = dataloader.Loader(basiccast=False)
 
         with self.assertRaises(exceptions.TypedloadValueError):
             a = loader.load(self.yielder(), List[int])
+
+        loader = dataloader.Loader(basiccast=True)
+        assert loader.load(self.yielder(), List[int]) == [0, 1, 1]
 
     def test_frozensetload_from_generator_with_exception(self):
         loader = dataloader.Loader(basiccast=False)
@@ -203,11 +209,17 @@ class TestFastIterableLoad(unittest.TestCase):
         with self.assertRaises(exceptions.TypedloadValueError):
             a = loader.load(self.yielder(), FrozenSet[int])
 
+        loader = dataloader.Loader(basiccast=True)
+        assert loader.load(self.yielder(), FrozenSet[int]) == frozenset((0, 1, 1))
+
     def test_setload_from_generator_with_exception(self):
         loader = dataloader.Loader(basiccast=False)
 
         with self.assertRaises(exceptions.TypedloadValueError):
             a = loader.load(self.yielder(), Set[int])
+
+        loader = dataloader.Loader(basiccast=True)
+        assert loader.load(self.yielder(), Set[int]) == {0, 1, 1}
 
 class TestTupleLoad(unittest.TestCase):
 
