@@ -234,7 +234,7 @@ class Loader:
 
         self._indexcache = {}  # type: Dict[Any, Callable[[Loader, Any, Any], Any]]
 
-        self._objfieldscache = {}
+        self._objfieldscache = {}  # type: Dict[Type, Tuple[Set[str], Set[str], Dict[str, Type], Dict[str, str]]]
 
         self._unionload_discriminatorcache = {}  # type: Dict[Type, Tuple[Optional[str], Optional[Dict[Any, Type]]]]
 
@@ -467,7 +467,6 @@ def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
     cached = l._objfieldscache.get(type_)
     if cached:
         fields, necessary_fields, type_hints, transforms = cached
-
     else:
         fields = set(type_.__dataclass_fields__.keys())
         necessary_fields = {k for k,v in type_.__dataclass_fields__.items() if
@@ -482,7 +481,7 @@ def _dataclassload(l: Loader, value: Dict[str, Any], type_) -> Any:
         #Name mangling
 
         # Prepare the list of the needed name changes
-        transforms = {}  # type: Dict[str, str]
+        transforms = {}
         for pyname in fields:
             if type_.__dataclass_fields__[pyname].metadata:
                 name = type_.__dataclass_fields__[pyname].metadata.get(l.mangle_key)
