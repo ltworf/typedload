@@ -191,8 +191,13 @@ class TestFastIterableLoad(unittest.TestCase):
         with self.assertRaises(exceptions.TypedloadValueError):
             a = loader.load(self.yielder(), Tuple[int, ...])
 
+        with self.assertRaises(exceptions.TypedloadValueError):
+            a = loader.load(self.yielder(), Tuple[Union[float, int], ...])
+
         loader = dataloader.Loader(basiccast=True)
         assert loader.load(self.yielder(), Tuple[int, ...]) == (0, 1, 1)
+        assert loader.load(self.yielder(), Tuple[Union[float, int], ...]) == (0, 1, 1)
+        assert loader.load(self.yielder(), Tuple[Union[str, int], ...]) == (0, 1, '1')
 
     def test_listload_from_generator_with_exception(self):
         loader = dataloader.Loader(basiccast=False)
@@ -200,8 +205,13 @@ class TestFastIterableLoad(unittest.TestCase):
         with self.assertRaises(exceptions.TypedloadValueError):
             a = loader.load(self.yielder(), List[int])
 
+        with self.assertRaises(exceptions.TypedloadValueError):
+            a = loader.load(self.yielder(), List[Union[int, float]])
+
         loader = dataloader.Loader(basiccast=True)
         assert loader.load(self.yielder(), List[int]) == [0, 1, 1]
+        assert loader.load(self.yielder(), List[Union[float, int]]) == [0, 1, 1]
+        assert loader.load(self.yielder(), List[Union[int, str]]) == [0, 1, "1"]
 
     def test_frozensetload_from_generator_with_exception(self):
         loader = dataloader.Loader(basiccast=False)
@@ -218,8 +228,13 @@ class TestFastIterableLoad(unittest.TestCase):
         with self.assertRaises(exceptions.TypedloadValueError):
             a = loader.load(self.yielder(), Set[int])
 
+        with self.assertRaises(exceptions.TypedloadValueError):
+            a = loader.load(self.yielder(), Set[Union[int, float]])
+
         loader = dataloader.Loader(basiccast=True)
         assert loader.load(self.yielder(), Set[int]) == {0, 1, 1}
+        assert loader.load(self.yielder(), Set[Union[float, int]]) == {0, 1, 1}
+        assert loader.load(self.yielder(), Set[Union[int, str]]) == {0, 1, "1"}
 
 class TestTupleLoad(unittest.TestCase):
 
