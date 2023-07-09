@@ -880,7 +880,12 @@ def _iterload(l: Loader, value: Any, type_, function) -> Any:
     # load calling the handler directly, skipping load()
     try:
         ctr = count(1)
-        return function(map(f, repeat(l), compress(value, ctr), repeat(t)))
+        if t in l.basictypes:
+            return function((i if isinstance(i, t) else f(l, i, t) for i in compress(value, ctr)))
+        elif is_union(t) and (types := set(uniontypes(t))).issubset(l.basictypes):
+            return function((i if type(i) in types else f(l, i, t) for i in compress(value, ctr)))
+        else:
+            return function(map(f, repeat(l), compress(value, ctr), repeat(t)))
     except TypedloadException as e:
         index = next(ctr) - 2
         annotation = Annotation(AnnotationType.INDEX, index)
