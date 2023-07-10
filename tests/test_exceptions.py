@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2021 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2021-2023 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,6 +45,34 @@ class Enumeration(enum.Enum):
     C = 3.0
 
 class TestExceptionsStr(unittest.TestCase):
+
+    def test_tuple_exceptions(self):
+        try:
+            load(('1',), Tuple[int, ...], basiccast=False)
+        except exceptions.TypedloadException as e:
+            assert e._path(e.trace) == '.[0]'
+        try:
+            load((1, '1',), Tuple[int, ...], basiccast=False)
+        except exceptions.TypedloadException as e:
+            assert e._path(e.trace) == '.[1]'
+
+        try:
+            load(('1'), Tuple[int], basiccast=False)
+        except exceptions.TypedloadException as e:
+            assert e._path(e.trace) == '.[0]'
+
+        try:
+            load(('1', 1), Tuple[int, int], basiccast=False)
+        except exceptions.TypedloadException as e:
+            assert e._path(e.trace) == '.[0]'
+        try:
+            load((1, '1'), Tuple[int, int], basiccast=False)
+        except exceptions.TypedloadException as e:
+            assert e._path(e.trace) == '.[1]'
+        try:
+            load((1,), Tuple[int, int], basiccast=False)
+        except exceptions.TypedloadException as e:
+            assert e._path(e.trace) == '.'
 
     def test_exceptions_str(self):
         incorrect = [

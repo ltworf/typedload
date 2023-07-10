@@ -426,14 +426,34 @@ def _tupleload(l: Loader, value: Any, type_) -> Tuple:
 
     if len(args) == 2 and args[1] == ...: # Tuple[something, ...]
         return _iterload(l, value, type_, tuple)
-    else: # Tuple[something, something, somethingelse]
-        if isinstance(value, dict):
-            raise TypedloadTypeError('Unable to load dictionary as a tuple', value=value, type_=type_)
-        if l.failonextra and len(value) > len(args):
-            raise TypedloadValueError('Value is too long for type %s' % tname(type_), value=value, type_=type_)
-        elif len(value) < len(args):
-            raise TypedloadValueError('Value is too short for type %s' % tname(type_), value=value, type_=type_)
-        return tuple(l.load(v, t, annotation=Annotation(AnnotationType.INDEX, i)) for i, (v, t) in enumerate(zip(value, args)))
+
+    # Tuple[something, something, somethingelse]
+    if isinstance(value, dict):
+        raise TypedloadTypeError('Unable to load dictionary as a tuple', value=value, type_=type_)
+    if l.failonextra and len(value) > len(args):
+        raise TypedloadValueError('Value is too long for type %s' % tname(type_), value=value, type_=type_)
+    elif len(value) < len(args):
+        raise TypedloadValueError('Value is too short for type %s' % tname(type_), value=value, type_=type_)
+
+    ctr = count(1)  # Keep track of the position in the tuple
+
+    try:
+        return tuple(v if t in l.basictypes and type(v) == t else h(l, v, t)
+            for v, h, t in zip(
+                compress(value, ctr),
+                (l._indexcache.get(t) or l.handlers[l.index(t)][1] for t in args),
+                args
+            )
+        )
+    except TypedloadException as e:
+        index = next(ctr) - 2
+        annotation = Annotation(AnnotationType.INDEX, index)
+        e.trace.insert(0, TraceItem(value, type_, annotation))
+        raise e
+    except TypeError as e:
+        raise TypedloadTypeError(str(e), value=value, type_=type_)
+    except Exception as e:
+        raise TypedloadTypeError('Exception is not a subclass of TypedloadException. Make sure all handlers only raise TypedloadException')
 
 
 def _mangle_names(namesmap: Dict[str, str], value: Dict[str, Any], failonextra: bool) -> Dict[str, Any]:
