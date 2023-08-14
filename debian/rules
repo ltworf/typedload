@@ -13,3 +13,6 @@ endif
 override_dh_link:
 	jdupes -rl debian/python3-typedload-doc/usr/share/doc/
 	dh_link
+
+override_dh_auto_clean:
+	make debian_clean

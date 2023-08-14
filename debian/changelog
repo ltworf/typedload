@@ -2,6 +2,7 @@ typedload (2.25-1) UNRELEASED; urgency=medium
 
   * New upstream release
   * Fix broken symlink in documentation (Closes: #1040601)
+  * Override dh_auto_clean to properly clean (Closes: #1048336)
 
  -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Sun, 02 Jul 2023 09:03:57 +0200
 

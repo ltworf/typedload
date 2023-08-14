@@ -29,21 +29,29 @@ pypi: pyproject.toml setup.py typedload
 	gpg --detach-sign -a pypi/typedload-`head -1 CHANGELOG`.tar.gz
 	gpg --detach-sign -a pypi/typedload-`head -1 CHANGELOG`-py3-none-any.whl
 
-.PHONY: clean
-clean:
+# Debian needs setup and pyproject to be kept since they are in the
+# dist file. However I want to clean them or they will become outdated
+# and not regenerated
+.PHONY: debian_clean
+debian_clean:
 	$(RM) -r pypi
 	$(RM) -r .mypy_cache
 	$(RM) -r typedload.egg-info/
+	$(RM) -r .pybuild
 	$(RM) MANIFEST
 	$(RM) -r `find . -name __pycache__`
 	$(RM) typedload_`head -1 CHANGELOG`.orig.tar.gz
 	$(RM) typedload_`head -1 CHANGELOG`.orig.tar.gz.asc
 	$(RM) -r deb-pkg
-	$(RM) setup.py
-	$(RM) pyproject.toml
 	$(RM) -r html
 	$(RM) -r perftest.output
 	$(RM) docs/*_docgen.md
+
+.PHONY: clean
+clean: debian_clean
+	$(RM) setup.py
+	$(RM) pyproject.toml
+
 
 .PHONY: dist
 dist: clean setup.py pyproject.toml
