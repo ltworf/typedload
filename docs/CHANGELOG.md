@@ -3,6 +3,7 @@
 * Improve performance for loading objects (attrs/dataclasses/NamedTuple)
 * Improve performance for loading dictionary keys that are basic types
 * Improve performance for loading dataclasses
+* Switch performance tests to test against pydantic2
 
 2.24
 ====

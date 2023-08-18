@@ -60,11 +60,21 @@ pydantic
 
 Found [here](https://pydantic-docs.helpmanual.io/)
 
-* Somehow manages to be slower than pure python in certain benchmarks
+* [The author calls you a liar if your pure python library is faster](https://news.ycombinator.com/item?id=36639943)
 * [They break API all the time, between minor releases.](https://docs.pydantic.dev/latest/changelog/) (43 times in 2 major versions so far)
 * [They hate](https://github.com/pydantic/pydantic/pull/3264) [benchmarks](https://github.com/pydantic/pydantic/pull/3881) [that show](https://github.com/pydantic/pydantic/pull/1810) [it's slow](https://github.com/pydantic/pydantic/pull/1525). [So they removed them altogether](https://github.com/pydantic/pydantic/pull/3973)
+* It needs a mypy plugin, and for some kinds of classes it does no static checks whatsoever.
+* Is now related to a company that will need some way to monetize, eventually
+
+
+#### Version 1
+* One of the slowest libraries that exist in this space
+* `int | float` might decide to cast a `float` to `int`, or an `int` to `float`
+
+#### Version 2
+* Somehow manages to be slower than pure python in certain benchmarks, despite months of work to rewrite it in rust
 * Took them several years to make a version 2 where types on BaseModel finally mean the same thing that they mean in the rest of python
-* Took them several years to implement unions the way typedload had been doing for years
+* Took them several years to implement unions to catch up with typedload
 
 jsons
 -----
