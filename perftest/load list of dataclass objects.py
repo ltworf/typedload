@@ -34,7 +34,7 @@ class Data:
 if sys.argv[1] == '--typedload':
     from typedload import load
     f = lambda: load(data, Data)
-elif sys.argv[1] == '--pydantic':
+elif sys.argv[1] == '--pydantic2':
     import pydantic
     ta = pydantic.TypeAdapter(Data)
     f = lambda: ta.validate_python(data)

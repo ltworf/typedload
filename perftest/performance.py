@@ -29,6 +29,18 @@ from pathlib import Path
 PYVER = '.'.join(str(i) for i in sys.version_info[0:2])
 
 
+def cpuname() -> str:
+    try:
+        with open('/proc/cpuinfo', 'rt') as f:
+            for i in f:
+                if i.startswith('model name'):
+                    return i.split(':', 1)[1].strip()
+    except Exception:
+        pass
+    return 'unknown CPU'
+
+
+
 def parse_performance(cmd: list[str]) -> tuple[float, float]:
     try:
         out = check_output(cmd, stderr=DEVNULL).replace(b'(', b'').replace(b')', b'').replace(b' ', b'')
@@ -53,7 +65,7 @@ def main():
         'fail load list of floats and ints',
     ]
 
-    extlibs = ['pydantic', 'apischema']
+    extlibs = ['pydantic2', 'apischema']
 
     outdir = Path('perftest.output')
     if not outdir.exists():
@@ -117,7 +129,7 @@ def main():
                 counter += 1
         with Popen(['gnuplot'], stdin=PIPE, encoding='ascii') as p:
             f = p.stdin
-            version = sys.version.replace('\n', ' ')
+            version = f'python {sys.version_info[0]}.{sys.version_info[1]}.{sys.version_info[2]} {cpuname()}'
             print('set style fill solid 0.2 noborder', file=f)
             print('set ylabel "seconds"', file=f)
             print('set xlabel "package"', file=f)

@@ -29,7 +29,7 @@ class Data(NamedTuple):
 if sys.argv[1] == '--typedload':
     from typedload import load
     f = lambda: load(data, Data)
-elif sys.argv[1] == '--pydantic':
+elif sys.argv[1] == '--pydantic2':
     import pydantic
     class DataPy(pydantic.BaseModel):
         data: dict[tuple[int, int], dict[tuple[int, int], tuple[int, int]]]
