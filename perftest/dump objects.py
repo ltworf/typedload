@@ -47,7 +47,7 @@ if sys.argv[1] == '--typedload':
 elif sys.argv[1] == '--jsons':
     from jsons import dump
     f = lambda: dump(data)
-elif sys.argv[1] == '--pydantic':
+elif sys.argv[1] == '--pydantic2':
     import pydantic
     class PPossessions(pydantic.BaseModel):
         possessions: list[Union[House, Car]]

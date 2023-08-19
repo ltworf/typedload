@@ -65,7 +65,7 @@ def main():
         'fail load list of floats and ints',
     ]
 
-    extlibs = ['pydantic', 'apischema']
+    extlibs = ['pydantic2', 'apischema']
 
     outdir = Path('perftest.output')
     if not outdir.exists():

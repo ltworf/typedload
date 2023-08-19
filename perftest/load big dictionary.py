@@ -1,5 +1,5 @@
 # typedload
-# Copyright (C) 2022 Salvo "LtWorf" Tomaselli
+# Copyright (C) 2022-2023 Salvo "LtWorf" Tomaselli
 #
 # typedload is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ if sys.argv[1] == '--typedload':
 elif sys.argv[1] == '--jsons':
     from jsons import load
     f = lambda: load(data, Data)
-elif sys.argv[1] == '--pydantic':
+elif sys.argv[1] == '--pydantic2':
     import pydantic
     ta = pydantic.TypeAdapter(Data)
     f = lambda: ta.validate_python(data)
