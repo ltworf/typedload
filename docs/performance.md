@@ -1,15 +1,13 @@
 Performance
 ===========
 
-The tests are done on my PC.
-
-`typedload` manages to win quite a few benchmarks despite the competitors are compiled to binary `.so` files. Probably compiling it would make it win hands down. Feel free to help!
-
 Negative values mean that the library could not do the test or returned incorrect values.
 
-* `typedload` ![Downloads](https://pepy.tech/badge/typedload)
-* `pydantic` ![Downloads](https://pepy.tech/badge/pydantic) is always slower
-* `apischema` ![Downloads](https://pepy.tech/badge/apischema) is slower for nested data and faster otherwise
+The tests are done on my PC. The following libraries are tested:
+
+* `typedload`, the 3 most recent versions
+* `pydantic2` years of work to rewrite it in Rust, still managing to lose some benchmarks 😅
+* `apischema` is slower for nested data and faster otherwise
 
 Using Python 3.11
 -----------------
