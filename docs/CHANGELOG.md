@@ -1,3 +1,7 @@
+2.26
+====
+
+
 2.25
 ====
 * Improve performance for loading objects (attrs/dataclasses/NamedTuple)
