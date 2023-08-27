@@ -147,13 +147,14 @@
 <li>Works with existing codebase and uses standard types. No inheritance or decorators</li>
 <li>Easy to use</li>
 <li>Easy to extend, even with objects from 3rd party libraries</li>
-<li>Stable API, breaking changes only happen on major releases (it has happened once since 2018)</li>
+<li>Stable API, breaking changes only happen on major releases (it has happened once since 2018 and most users didn't notice)</li>
 <li>Supports Union properly</li>
-<li>Works on python 3.5 (typedload &lt;= 2.20)</li>
+<li>Works on python 3.5 (until typedload &lt;= 2.20)</li>
 <li>Mypy and similar work without plugins</li>
 <li>Can use and convert camelCase and snake_case</li>
 <li>Functional approach</li>
 <li>Pure Python, no compiling</li>
+<li>Very small, it's fast for automated tests to extract and install compared to huge binary libraries</li>
 </ul>
 <h3 id="it-works-with-existing-codebase">It works with existing codebase</h3>
 <p>Most libraries require your classes to extend or use decorators from the library itself.</p>
@@ -180,16 +181,22 @@
 <h2 id="pydantic">pydantic</h2>
 <p>Found <a href="https://pydantic-docs.helpmanual.io/">here</a></p>
 <ul>
-<li><a href="https://pypi.org/project/pydantic/1.9.1/">They change API all the time, between minor releases.</a></li>
-<li><a href="https://docs.pydantic.dev/usage/model_config/#smart-union">Unions behave non-deterministically by default and require a flag to behave normally</a></li>
-<li>Slow, despite being compiled</li>
-<li>Requires all the classes to derive from a superclass, existing code needs to be modified, external libraries are harder to use directly</li>
-<li>Does not work with mypy:<ul>
-<li><a href="https://pydantic-docs.helpmanual.io/usage/models/#required-optional-fields">Abuses python typing annotation to mean something different, breaking linters</a></li>
-<li><a href="https://pydantic-docs.helpmanual.io/usage/models/#recursive-models">Uses float=None without using Optional in its own documentation</a>.</li>
+<li><a href="https://news.ycombinator.com/item?id=36639943">The author calls you a liar if your pure python library is faster</a></li>
+<li><a href="https://docs.pydantic.dev/latest/changelog/">Breaks API all the time, between minor releases.</a> (43 times in 2 major versions so far)</li>
+<li><a href="https://github.com/pydantic/pydantic/pull/3264">They hate</a> <a href="https://github.com/pydantic/pydantic/pull/3881">benchmarks</a> <a href="https://github.com/pydantic/pydantic/pull/1810">that show</a> <a href="https://github.com/pydantic/pydantic/pull/1525">it's slow</a>. <a href="https://github.com/pydantic/pydantic/pull/3973">So they removed them altogether</a></li>
+<li>It needs a mypy plugin, and for some kinds of classes it does no static checks whatsoever.</li>
+<li>Is now related to a company that will need some way to monetize, eventually</li>
 </ul>
-</li>
-<li><a href="https://github.com/pydantic/pydantic/pull/1525">Author refuses to include unfavorable comparisons</a></li>
+<h4 id="version-1">Version 1</h4>
+<ul>
+<li>One of the slowest libraries that exist in this space</li>
+<li><code>int | float</code> might decide to cast a <code>float</code> to <code>int</code>, or an <code>int</code> to <code>float</code></li>
+</ul>
+<h4 id="version-2">Version 2</h4>
+<ul>
+<li>Somehow manages to be slower than pure python in certain benchmarks, despite months of work to rewrite it in rust</li>
+<li>Took them several years to make a version 2 where types on BaseModel finally mean the same thing that they mean in the rest of python</li>
+<li>Took them several years to implement unions to catch up with typedload</li>
 </ul>
 <h2 id="jsons">jsons</h2>
 <p>Found <a href="https://github.com/ramonhagenaars/jsons">here</a></p>
