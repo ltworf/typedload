@@ -1,10 +1,10 @@
-typedload (2.25-1) UNRELEASED; urgency=medium
+typedload (2.25-1) unstable; urgency=low
 
   * New upstream release
   * Fix broken symlink in documentation (Closes: #1040601)
   * Override dh_auto_clean to properly clean (Closes: #1048336)
 
- -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Sun, 02 Jul 2023 09:03:57 +0200
+ -- Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>  Sun, 27 Aug 2023 09:46:39 +0200
 
 typedload (2.24-1) unstable; urgency=low
 
