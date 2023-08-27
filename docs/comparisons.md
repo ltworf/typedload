@@ -15,6 +15,7 @@ In general, the advantages of typedload over competing libraries are:
 * Can use and convert camelCase and snake_case
 * Functional approach
 * Pure Python, no compiling
+* Very small, it's fast for automated tests to extract and install compared to huge binary libraries
 
 ### It works with existing codebase
 
@@ -61,7 +62,7 @@ pydantic
 Found [here](https://pydantic-docs.helpmanual.io/)
 
 * [The author calls you a liar if your pure python library is faster](https://news.ycombinator.com/item?id=36639943)
-* [They break API all the time, between minor releases.](https://docs.pydantic.dev/latest/changelog/) (43 times in 2 major versions so far)
+* [Breaks API all the time, between minor releases.](https://docs.pydantic.dev/latest/changelog/) (43 times in 2 major versions so far)
 * [They hate](https://github.com/pydantic/pydantic/pull/3264) [benchmarks](https://github.com/pydantic/pydantic/pull/3881) [that show](https://github.com/pydantic/pydantic/pull/1810) [it's slow](https://github.com/pydantic/pydantic/pull/1525). [So they removed them altogether](https://github.com/pydantic/pydantic/pull/3973)
 * It needs a mypy plugin, and for some kinds of classes it does no static checks whatsoever.
 * Is now related to a company that will need some way to monetize, eventually

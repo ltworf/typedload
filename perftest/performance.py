@@ -137,7 +137,7 @@ def main():
             print('set xlabel "x-units" font "Times-Roman,12"', file=f)
             print('set style fill solid 1.0', file=f)
             print(f'set title "typedload performance test {version}"', file=f)
-            print(f'set yrange [0:{test_maxtime + test_maxtime * 0.1}]', file=f)
+            print(f'set yrange [-0.1:{test_maxtime + test_maxtime * 0.1}]', file=f)
             print('set term svg', file=f)
             print(f'set output "{outdir}/{PYVER}_{t.replace(" ", "_")}.svg"', file=f)
             print(f'plot "{outdir}/{t}.dat" using 1:3:xtic(2) with boxes title "{t}"', file=f)
