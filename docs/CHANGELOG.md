@@ -1,6 +1,6 @@
 2.26
 ====
-
+* Update type hints file
 
 2.25
 ====
