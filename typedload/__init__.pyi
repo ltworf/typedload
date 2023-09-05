@@ -34,11 +34,13 @@ def load(
     handlers: List[
         Tuple[Callable[[Any], bool], Callable[[Loader, Any, Type[Any]], Any]]
     ] = ...,
+    pep563: bool = ...,
 ) -> T: ...
 
 def dump(
     value: Any,
     hidedefault: bool = ...,
+    isodates: bool = ...,
     raiseconditionerrors: bool = ...,
     mangle_key: str = ...,
     handlers: List[Tuple[Callable[[Any], bool], Callable[['Dumper', Any], Any]]] = ...,
