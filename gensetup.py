@@ -78,7 +78,7 @@ authors = [
 ]
 description = "{DESCRIPTION}"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = {CLASSIFIERS!r}
 keywords = {KEYWORDS.split(' ')!r}
 license = {{file = "LICENSE"}}
