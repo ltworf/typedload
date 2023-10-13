@@ -85,8 +85,8 @@ The following things are supported:
  * dataclass
  * attr.s
  * ForwardRef (Refer to the type in its own definition)
- * Literal (requires Python 3.8)
- * TypedDict (requires Python 3.8)
+ * Literal
+ * TypedDict
  * datetime.date, datetime.time, datetime.datetime
  * Path
  * IPv4Address, IPv6Address
