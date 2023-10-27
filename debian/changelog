@@ -2,6 +2,7 @@ typedload (2.26-1) unstable; urgency=medium
 
   * New upstream release
   * Change my email address to the debian one
+  * Update copyright file
 
  -- Salvo 'LtWorf' Tomaselli <ltworf@debian.org>  Mon, 11 Sep 2023 13:54:09 +0200
 
