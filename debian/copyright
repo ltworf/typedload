@@ -1,10 +1,10 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Author: Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
+Author: Salvo "LtWorf" Tomaselli <ltworf@debian.org>
 Source: https://github.com/ltworf/typedload
 Upstream-Name: typedload
 
 Files: *
-Copyright: 2018 Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
+Copyright: 2018-2023 Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 License: GPL-3 or LGPL-3
  This software is released under the GNU General Public License 3.
  .

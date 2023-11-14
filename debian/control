@@ -1,7 +1,7 @@
 Source: typedload
 Section: python
 Priority: optional
-Maintainer: Salvo 'LtWorf' Tomaselli <tiposchi@tiscali.it>
+Maintainer: Salvo 'LtWorf' Tomaselli <ltworf@debian.org>
 Build-Depends:
  debhelper (>= 13),
  python3-all:any,
