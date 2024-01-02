@@ -20,6 +20,7 @@
 from enum import Enum
 from ipaddress import IPv4Address, IPv4Network, IPv4Interface, IPv6Address, IPv6Network, IPv6Interface
 from pathlib import Path
+import re
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
 
@@ -157,3 +158,7 @@ class TestDumpCommonTypes(unittest.TestCase):
         assert dump(IPv6Address('fe80::123')) == 'fe80::123'
         assert dump(IPv6Network('fe80::/64')) == 'fe80::/64'
         assert dump(IPv6Interface('fe80::123/64')) == 'fe80::123/64'
+
+    def test_pattern(self):
+        assert dump(re.compile(r'[bc](at|ot)\d+')) == r'[bc](at|ot)\d+'
+        assert dump(re.compile(br'[bc](at|ot)\d+')) == br'[bc](at|ot)\d+'
