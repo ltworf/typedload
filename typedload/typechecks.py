@@ -257,6 +257,9 @@ def is_literal(type_: Any) -> bool:
 
 
 def is_pattern(type_: Any) -> bool:
+    '''
+    Check if the type is a re.Pattern
+    '''
     return type_ == Pattern or getattr(type_, "__origin__", None) == Pattern
 
 

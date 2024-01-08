@@ -490,6 +490,38 @@ class TestCommonTypes(unittest.TestCase):
         assert loader.load(r'[bc](at|ot)\d+', typing.Pattern) == re.compile(r'[bc](at|ot)\d+')
         assert loader.load(br'[bc](at|ot)\d+', typing.Pattern) == re.compile(br'[bc](at|ot)\d+')
 
+        # Right type, invalid value
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(r'((((((', re.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(br'((((((', re.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(r'((((((', typing.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(br'((((((', typing.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(r'(?P<my_group>[bc])(?P<my_group>(at|ot))\d+', re.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(br'(?P<my_group>[bc])(?P<my_group>(at|ot))\d+', re.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(r'(?P<my_group>[bc])(?P<my_group>(at|ot))\d+', typing.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(br'(?P<my_group>[bc])(?P<my_group>(at|ot))\d+', typing.Pattern)
+
+        # Wrong type
+        with self.assertRaises(exceptions.TypedloadTypeError) as e:
+            assert loader.load(33, re.Pattern)
+        with self.assertRaises(exceptions.TypedloadTypeError) as e:
+            assert loader.load(33, typing.Pattern)
+        with self.assertRaises(exceptions.TypedloadTypeError) as e:
+            assert loader.load(False, re.Pattern)
+        with self.assertRaises(exceptions.TypedloadTypeError) as e:
+            assert loader.load(False, typing.Pattern)
+        with self.assertRaises(exceptions.TypedloadTypeError) as e:
+            assert loader.load(None, re.Pattern)
+        with self.assertRaises(exceptions.TypedloadTypeError) as e:
+            assert loader.load(None, typing.Pattern)
+
     def test_ipaddress(self):
         loader = dataloader.Loader()
         assert loader.load('10.10.10.1', IPv4Address) == IPv4Address('10.10.10.1')

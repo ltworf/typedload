@@ -224,8 +224,8 @@ class Loader:
             (is_typeddict, _typeddictload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
             (is_pattern, _patternload),
-            (lambda type_: type_ in self.strconstructed, _strconstructload),
             (lambda type_: type_ == datetime.timedelta, _timedeltaload),
+            (lambda type_: type_ in self.strconstructed, _strconstructload),
             (is_attrs, _attrload),
             (is_any, _anyload),
             (is_newtype, _newtypeload),
@@ -822,7 +822,12 @@ def _patternload(l: Loader, value: Any, type_) -> re.Pattern:
         (input_type,) = type_.__args__
         if input_type in {bytes, str} and type(value) != input_type:
             raise TypedloadValueError('Got %s of type %s, expected %s' % (repr(value), tname(type(value)), tname(type_)), value=value, type_=type_)
-    return re.compile(value)
+    try:
+        return re.compile(value)
+    except re.error as e:
+        raise TypedloadException(str(e), value=value, type_=type_)
+    except TypeError as e:
+        raise TypedloadTypeError(str(e), value=value, type_=type_)
 
 
 def _timedeltaload(l: Loader, value, type_) -> datetime.timedelta:
