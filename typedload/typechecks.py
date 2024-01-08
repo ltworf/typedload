@@ -33,11 +33,13 @@ different versions of Python.
 # author Salvo "LtWorf" Tomaselli <tiposchi@tiscali.it>
 import sys
 from enum import Enum
+from re import Pattern
 from typing import Any, Tuple, Union, Set, List, Dict, Type, FrozenSet, NewType
 
 
 __all__ = [
     'is_any',
+    'is_pattern',
     'is_attrs',
     'is_dataclass',
     'is_dict',
@@ -252,6 +254,13 @@ def is_literal(type_: Any) -> bool:
     Check if the type is a typing.Literal
     '''
     return getattr(type_, '__origin__', None) == Literal
+
+
+def is_pattern(type_: Any) -> bool:
+    '''
+    Check if the type is a re.Pattern
+    '''
+    return type_ == Pattern or getattr(type_, "__origin__", None) == Pattern
 
 
 def is_typeddict(type_: Any) -> bool:

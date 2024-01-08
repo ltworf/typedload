@@ -25,6 +25,7 @@ import ipaddress
 from inspect import signature
 from enum import Enum
 import pathlib
+import re
 from typing import *
 
 from .exceptions import TypedloadValueError
@@ -146,6 +147,7 @@ class Dumper:
             (is_attrs, _attrdump),
             (lambda value: isinstance(value, (datetime.date, datetime.time)), _datetimedump),
             (lambda value: isinstance(value, datetime.timedelta), _timedeltadump),
+            (lambda value: isinstance(value, re.Pattern), _patterndump),
             (lambda value: type(value) in self.strconstructed, lambda l, value, t: str(value)),
         ]  # type: List[Tuple[Callable[[Any], bool], Callable[['Dumper', Any, Any], Any]|Callable[['Dumper', Any], Any]]]
 
@@ -240,6 +242,10 @@ def _datetimedump(d: Dumper, value: Union[datetime.time, datetime.date, datetime
 
 def _timedeltadump(d: Dumper, value: datetime.timedelta, t) -> float:
     return value.total_seconds()
+
+
+def _patterndump(d: Dumper, value: re.Pattern, t):
+    return value.pattern
 
 
 def _namedtupledump(d: Dumper, value, t) -> Dict[str, Any]:

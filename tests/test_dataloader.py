@@ -21,6 +21,9 @@ import argparse
 from enum import Enum
 from ipaddress import IPv4Address, IPv6Address, IPv6Network, IPv4Network, IPv4Interface, IPv6Interface
 from pathlib import Path
+import re
+import sys
+import typing
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union, Any, NewType, FrozenSet
 import unittest
 
@@ -461,6 +464,63 @@ class TestCommonTypes(unittest.TestCase):
     def test_path(self):
         loader = dataloader.Loader()
         assert loader.load('/', Path) == Path('/')
+
+    def test_pattern_str(self):
+        loader = dataloader.Loader()
+        if sys.version_info[:2] <= (3, 8):
+            with self.assertRaises(TypeError):
+                assert loader.load(r'[bc](at|ot)\d+', re.Pattern[str])
+        else:
+            assert loader.load(r'[bc](at|ot)\d+', re.Pattern[str]) == re.compile(r'[bc](at|ot)\d+')
+        assert loader.load(r'[bc](at|ot)\d+', typing.Pattern[str]) == re.compile(r'[bc](at|ot)\d+')
+
+    def test_pattern_bytes(self):
+        loader = dataloader.Loader()
+        if sys.version_info[:2] <= (3, 8):
+            with self.assertRaises(TypeError):
+                assert loader.load(br'[bc](at|ot)\d+', re.Pattern[bytes])
+        else:
+            assert loader.load(br'[bc](at|ot)\d+', re.Pattern[bytes]) == re.compile(br'[bc](at|ot)\d+')
+        assert loader.load(br'[bc](at|ot)\d+', typing.Pattern[bytes]) == re.compile(br'[bc](at|ot)\d+')
+
+    def test_pattern(self):
+        loader = dataloader.Loader()
+        assert loader.load(r'[bc](at|ot)\d+', re.Pattern) == re.compile(r'[bc](at|ot)\d+')
+        assert loader.load(br'[bc](at|ot)\d+', re.Pattern) == re.compile(br'[bc](at|ot)\d+')
+        assert loader.load(r'[bc](at|ot)\d+', typing.Pattern) == re.compile(r'[bc](at|ot)\d+')
+        assert loader.load(br'[bc](at|ot)\d+', typing.Pattern) == re.compile(br'[bc](at|ot)\d+')
+
+        # Right type, invalid value
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(r'((((((', re.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(br'((((((', re.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(r'((((((', typing.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(br'((((((', typing.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(r'(?P<my_group>[bc])(?P<my_group>(at|ot))\d+', re.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(br'(?P<my_group>[bc])(?P<my_group>(at|ot))\d+', re.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(r'(?P<my_group>[bc])(?P<my_group>(at|ot))\d+', typing.Pattern)
+        with self.assertRaises(exceptions.TypedloadException) as e:
+            assert loader.load(br'(?P<my_group>[bc])(?P<my_group>(at|ot))\d+', typing.Pattern)
+
+        # Wrong type
+        with self.assertRaises(exceptions.TypedloadTypeError) as e:
+            assert loader.load(33, re.Pattern)
+        with self.assertRaises(exceptions.TypedloadTypeError) as e:
+            assert loader.load(33, typing.Pattern)
+        with self.assertRaises(exceptions.TypedloadTypeError) as e:
+            assert loader.load(False, re.Pattern)
+        with self.assertRaises(exceptions.TypedloadTypeError) as e:
+            assert loader.load(False, typing.Pattern)
+        with self.assertRaises(exceptions.TypedloadTypeError) as e:
+            assert loader.load(None, re.Pattern)
+        with self.assertRaises(exceptions.TypedloadTypeError) as e:
+            assert loader.load(None, typing.Pattern)
 
     def test_ipaddress(self):
         loader = dataloader.Loader()

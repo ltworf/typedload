@@ -27,6 +27,7 @@ import ipaddress
 from itertools import compress, count, repeat
 from functools import reduce
 from pathlib import Path
+import re
 from typing import *
 
 from .exceptions import *
@@ -222,6 +223,7 @@ class Loader:
             (is_literal, _literalload),
             (is_typeddict, _typeddictload),
             (lambda type_: type_ in {datetime.date, datetime.time, datetime.datetime}, _datetimeload),
+            (is_pattern, _patternload),
             (lambda type_: type_ == datetime.timedelta, _timedeltaload),
             (lambda type_: type_ in self.strconstructed, _strconstructload),
             (is_attrs, _attrload),
@@ -813,6 +815,19 @@ def _datetimeload(l: Loader, value: Any, type_) -> Union[datetime.date, datetime
         raise TypedloadTypeError(str(e), type_=type_, value=value)
     except ValueError as e:
         raise TypedloadValueError(str(e), type_=type_, value=value)
+
+
+def _patternload(l: Loader, value: Any, type_) -> re.Pattern:
+    if hasattr(type, "__args__"):
+        (input_type,) = type_.__args__
+        if input_type in {bytes, str} and type(value) != input_type:
+            raise TypedloadValueError('Got %s of type %s, expected %s' % (repr(value), tname(type(value)), tname(type_)), value=value, type_=type_)
+    try:
+        return re.compile(value)
+    except re.error as e:
+        raise TypedloadException(str(e), value=value, type_=type_)
+    except TypeError as e:
+        raise TypedloadTypeError(str(e), value=value, type_=type_)
 
 
 def _timedeltaload(l: Loader, value, type_) -> datetime.timedelta:

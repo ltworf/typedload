@@ -480,3 +480,9 @@ When dumping, the default is to dump a list of ints, unless `isodates=True` is s
 The format with the list of ints is deprecated and kept for backward compatibility. Everybody should use the ISO 8601 strings.
 
 The format with the list of ints does not support timezones.
+
+re.Pattern
+----------
+
+Loads a str or bytes as a compiled Pattern object by passing through re.compile.
+When dumping gives back the original str or bytes pattern.

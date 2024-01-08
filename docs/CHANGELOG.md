@@ -1,3 +1,7 @@
+2.27
+====
+* Add support for regex Patterns
+
 2.26
 ====
 * Update type hints file
