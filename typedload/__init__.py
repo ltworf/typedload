@@ -71,6 +71,7 @@ There is support for:
     * attrs
     * TypedDict
     * datetime
+    * re.Pattern
     * Path
     * IPv4Address, IPv6Address
 

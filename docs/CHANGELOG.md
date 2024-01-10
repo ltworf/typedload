@@ -1,6 +1,6 @@
 2.27
 ====
-* Add support for regex Patterns
+* Add support for re.Patterns
 
 2.26
 ====
