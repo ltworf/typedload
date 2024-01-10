@@ -88,6 +88,7 @@ The following things are supported:
  * Literal
  * TypedDict
  * datetime.date, datetime.time, datetime.datetime
+ * re.Pattern
  * Path
  * IPv4Address, IPv6Address
  * typing.Any
