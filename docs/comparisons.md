@@ -65,7 +65,7 @@ Found [here](https://pydantic-docs.helpmanual.io/)
 * [Breaks API all the time, between minor releases.](https://docs.pydantic.dev/latest/changelog/) (43 times in 2 major versions so far)
 * [They hate](https://github.com/pydantic/pydantic/pull/3264) [benchmarks](https://github.com/pydantic/pydantic/pull/3881) [that show](https://github.com/pydantic/pydantic/pull/1810) [it's slow](https://github.com/pydantic/pydantic/pull/1525). [So they removed them altogether](https://github.com/pydantic/pydantic/pull/3973)
 * It needs a mypy plugin, and for some kinds of classes it does no static checks whatsoever.
-* Is now related to a company that will need some way to monetize, eventually
+* Is now VC funded, so eventually some draconian monetizing plan might appear.
 
 
 #### Version 1
