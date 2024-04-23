@@ -1,3 +1,6 @@
+2.28
+====
+
 2.27
 ====
 * Add support for re.Patterns
