@@ -26,6 +26,7 @@ import sys
 import typing
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union, Any, NewType, FrozenSet
 import unittest
+from uuid import UUID
 
 from typedload import dataloader, load, exceptions
 
@@ -521,6 +522,14 @@ class TestCommonTypes(unittest.TestCase):
             assert loader.load(None, re.Pattern)
         with self.assertRaises(exceptions.TypedloadTypeError) as e:
             assert loader.load(None, typing.Pattern)
+
+    def test_uuid(self):
+        loader = dataloader.Loader()
+        assert loader.load('631b09cb-016e-11ef-97ce-000000000001', UUID) == UUID('631b09cb-016e-11ef-97ce-000000000001')
+
+        # Invalid UUID
+        with self.assertRaises(ValueError):
+            loader.load('631b09cb-016e-11ef-97ce-00000000000', UUID)
 
     def test_ipaddress(self):
         loader = dataloader.Loader()

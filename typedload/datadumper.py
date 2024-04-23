@@ -27,6 +27,7 @@ from enum import Enum
 import pathlib
 import re
 from typing import *
+import uuid
 
 from .exceptions import TypedloadValueError
 from .typechecks import is_attrs, NONETYPE
@@ -135,6 +136,7 @@ class Dumper:
                 ipaddress.IPv6Network,
                 ipaddress.IPv4Interface,
                 ipaddress.IPv6Interface,
+                uuid.UUID,
             }
 
         self.handlers = [

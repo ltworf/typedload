@@ -23,6 +23,7 @@ from pathlib import Path
 import re
 from typing import Dict, List, NamedTuple, Optional, Set, Tuple, Union
 import unittest
+from uuid import UUID
 
 from typedload import datadumper, dump, load
 
@@ -158,6 +159,9 @@ class TestDumpCommonTypes(unittest.TestCase):
         assert dump(IPv6Address('fe80::123')) == 'fe80::123'
         assert dump(IPv6Network('fe80::/64')) == 'fe80::/64'
         assert dump(IPv6Interface('fe80::123/64')) == 'fe80::123/64'
+
+    def test_uuid(self):
+        assert dump(UUID('631b09cb-016e-11ef-97ce-000000000001')) == '631b09cb-016e-11ef-97ce-000000000001'
 
     def test_pattern(self):
         assert dump(re.compile(r'[bc](at|ot)\d+')) == r'[bc](at|ot)\d+'

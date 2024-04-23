@@ -93,6 +93,7 @@ The following things are supported:
  * IPv4Address, IPv6Address
  * typing.Any
  * typing.NewType
+ * uuid.UUID
 
 Unions
 ------
