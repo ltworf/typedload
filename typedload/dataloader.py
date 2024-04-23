@@ -29,6 +29,7 @@ from functools import reduce
 from pathlib import Path
 import re
 from typing import *
+import uuid
 
 from .exceptions import *
 from .typechecks import *
@@ -198,7 +199,8 @@ class Loader:
             ipaddress.IPv4Network,
             ipaddress.IPv6Network,
             ipaddress.IPv4Interface,
-            ipaddress.IPv6Interface
+            ipaddress.IPv6Interface,
+            uuid.UUID,
         }
 
         # Bah
