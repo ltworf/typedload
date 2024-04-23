@@ -1,5 +1,6 @@
 2.28
 ====
+* Add support for uuid.UUID
 
 2.27
 ====

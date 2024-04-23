@@ -452,6 +452,10 @@ Loads a string as a `Path`; when dumping it goes back to being a string.
 * `ipaddress.IPv4Interface`
 * `ipaddress.IPv6Interface`
 
+### uuid.UUID
+
+* `uuid.UUID`
+
 ```python
 In : typedload.load('10.1.1.3', IPv4Address)
 Out: IPv4Address('10.1.1.3')
