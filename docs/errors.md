@@ -1,3 +1,5 @@
+[THE PROJECT MIGRATED TO CODEBERG](https://ltworf.codeberg.page/typedload/)
+
 Errors in typedload
 ===================
 

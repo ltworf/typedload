@@ -1,3 +1,5 @@
+[THE PROJECT MIGRATED TO CODEBERG](https://ltworf.codeberg.page/typedload/)
+
 # Security Policy
 
 I do not expect any security issues in this package, but just to make
